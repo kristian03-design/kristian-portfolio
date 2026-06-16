@@ -67,8 +67,11 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
     $_SERVER['SESSION_DRIVER'] = 'cookie';
     $_ENV['CACHE_STORE'] = 'file';
     $_SERVER['CACHE_STORE'] = 'file';
-    $_ENV['LOG_CHANNEL'] = $_ENV['LOG_CHANNEL'] ?? 'stderr';
-    $_SERVER['LOG_CHANNEL'] = $_SERVER['LOG_CHANNEL'] ?? 'stderr';
+    $_ENV['LOG_CHANNEL'] = 'stderr';
+    $_SERVER['LOG_CHANNEL'] = 'stderr';
+    $_ENV['APP_URL'] = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'kristian-portfolio-two.vercel.app');
+    $_SERVER['APP_URL'] = $_ENV['APP_URL'];
+    $_SERVER['HTTPS'] = 'on';
 
     foreach ([
         $storagePath . '/app',

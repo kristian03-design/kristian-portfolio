@@ -10,23 +10,23 @@
   "routes": [
     {
       "src": "/build/(.*)",
-      "dest": "/public/build/$1"
+      "dest": "/api/index.php"
     },
     {
       "src": "/images/(.*)",
-      "dest": "/public/images/$1"
+      "dest": "/api/index.php"
     },
     {
       "src": "/uploads/(.*)",
-      "dest": "/public/uploads/$1"
+      "dest": "/api/index.php"
     },
     {
       "src": "/resume/(.*)",
-      "dest": "/public/resume/$1"
+      "dest": "/api/index.php"
     },
     {
       "src": "/favicon.ico",
-      "dest": "/public/favicon.ico"
+      "dest": "/api/index.php"
     },
     {
       "src": "/(.*)",

@@ -8,15 +8,17 @@ use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Experience;
 use App\Models\Certification;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PortfolioController extends Controller
 {
     public function index()
     {
-        $projects = Project::orderBy('order', 'asc')->get();
-        $skills = Skill::orderBy('proficiency_level', 'desc')->get();
-        $experiences = Experience::orderBy('start_date', 'desc')->get();
-        $certifications = Certification::orderBy('issue_date', 'desc')->get();
+        $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+        $skills = $this->safeCollection('skills', fn () => Skill::orderBy('proficiency_level', 'desc')->get());
+        $experiences = $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get());
+        $certifications = $this->safeCollection('certifications', fn () => Certification::orderBy('issue_date', 'desc')->get());
 
         $services = [
             [
@@ -50,15 +52,15 @@ class PortfolioController extends Controller
 
     public function projects()
     {
-        $projects = Project::orderBy('order', 'asc')->get();
+        $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
         return view('projects', compact('projects'));
     }
 
     public function data()
     {
-        $projects = Project::orderBy('order', 'asc')->get();
-        $skills = Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get();
-        $experiences = Experience::orderBy('start_date', 'desc')->get();
+        $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+        $skills = $this->safeCollection('skills', fn () => Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get());
+        $experiences = $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get());
 
         return response()->json([
             'counts' => [
@@ -74,16 +76,27 @@ class PortfolioController extends Controller
 
     public function projectData()
     {
-        return response()->json(Project::orderBy('order', 'asc')->get());
+        return response()->json($this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get()));
     }
 
     public function skillData()
     {
-        return response()->json(Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get());
+        return response()->json($this->safeCollection('skills', fn () => Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get()));
     }
 
     public function experienceData()
     {
-        return response()->json(Experience::orderBy('start_date', 'desc')->get());
+        return response()->json($this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get()));
+    }
+
+    private function safeCollection(string $label, callable $query)
+    {
+        try {
+            return $query();
+        } catch (Throwable $e) {
+            Log::error("Portfolio {$label} query failed", ['exception' => $e]);
+
+            return collect();
+        }
     }
 }
