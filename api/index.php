@@ -63,6 +63,10 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
     $_SERVER['APP_ROUTES_CACHE'] = $storagePath . '/framework/cache/routes.php';
     $_ENV['APP_EVENTS_CACHE'] = $storagePath . '/framework/cache/events.php';
     $_SERVER['APP_EVENTS_CACHE'] = $storagePath . '/framework/cache/events.php';
+    $_ENV['SESSION_DRIVER'] = 'cookie';
+    $_SERVER['SESSION_DRIVER'] = 'cookie';
+    $_ENV['CACHE_STORE'] = 'file';
+    $_SERVER['CACHE_STORE'] = 'file';
     $_ENV['LOG_CHANNEL'] = $_ENV['LOG_CHANNEL'] ?? 'stderr';
     $_SERVER['LOG_CHANNEL'] = $_SERVER['LOG_CHANNEL'] ?? 'stderr';
 
