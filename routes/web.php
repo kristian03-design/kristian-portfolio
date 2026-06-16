@@ -6,14 +6,27 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MessageController;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-Route::get('/', [PortfolioController::class, 'index'])->name('home');
-Route::get('/home', [PortfolioController::class, 'index']);
-Route::get('/projects', [PortfolioController::class, 'projects'])->name('projects.index');
-Route::get('/api/portfolio', [PortfolioController::class, 'data'])->name('portfolio.data');
-Route::get('/api/projects', [PortfolioController::class, 'projectData'])->name('portfolio.projects.data');
-Route::get('/api/skills', [PortfolioController::class, 'skillData'])->name('portfolio.skills.data');
-Route::get('/api/experiences', [PortfolioController::class, 'experienceData'])->name('portfolio.experiences.data');
+$statelessPublic = [
+    EncryptCookies::class,
+    AddQueuedCookiesToResponse::class,
+    StartSession::class,
+    ShareErrorsFromSession::class,
+    VerifyCsrfToken::class,
+];
+
+Route::get('/', [PortfolioController::class, 'index'])->name('home')->withoutMiddleware($statelessPublic);
+Route::get('/home', [PortfolioController::class, 'index'])->withoutMiddleware($statelessPublic);
+Route::get('/projects', [PortfolioController::class, 'projects'])->name('projects.index')->withoutMiddleware($statelessPublic);
+Route::get('/api/portfolio', [PortfolioController::class, 'data'])->name('portfolio.data')->withoutMiddleware($statelessPublic);
+Route::get('/api/projects', [PortfolioController::class, 'projectData'])->name('portfolio.projects.data')->withoutMiddleware($statelessPublic);
+Route::get('/api/skills', [PortfolioController::class, 'skillData'])->name('portfolio.skills.data')->withoutMiddleware($statelessPublic);
+Route::get('/api/experiences', [PortfolioController::class, 'experienceData'])->name('portfolio.experiences.data')->withoutMiddleware($statelessPublic);
 Route::post('/contact', [MessageController::class, 'store'])->name('contact.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {

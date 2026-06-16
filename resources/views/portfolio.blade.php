@@ -245,7 +245,7 @@
         <article class="proj-card r d{{ $loop->index % 4 }}">
           <div class="proj-thumb">
             @if ($project->image_path)
-              <img class="proj-image" src="{{ asset(ltrim($project->image_path, '/')) }}" alt="{{ $project->title }}">
+              <img class="proj-image" src="{{ asset(ltrim($project->image_path, '/')) }}" alt="{{ $project->title }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}">
             @else
               <div class="proj-thumb-text">{{ $projectInitials($project->title) ?: 'KH' }}</div>
             @endif
@@ -299,7 +299,7 @@
               @endphp
               <div class="sk-icon-cell">
                 @if ($icon)
-                  <img class="sk-icon-img" src="{{ $icon }}" alt="{{ $skill->name }}" loading="lazy">
+                  <img class="sk-icon-img" src="{{ $icon }}" alt="{{ $skill->name }}" loading="lazy" decoding="async">
                 @else
                   <span class="sk-icon-fallback">{{ strtoupper(substr($skill->name, 0, 2)) }}</span>
                 @endif
@@ -394,7 +394,7 @@
                 data-lightbox-url="{{ $certUrl }}"
                 data-lightbox-caption="{{ $cert->title }} — {{ $cert->issuer }}"
                 onclick="openLightbox(this.dataset.lightboxUrl, this.dataset.lightboxCaption)">
-                <img src="{{ $certUrl }}" alt="{{ $cert->title }}" class="cert-img" loading="lazy">
+                <img src="{{ $certUrl }}" alt="{{ $cert->title }}" class="cert-img" loading="lazy" decoding="async">
                 <div class="cert-img-overlay">
                   <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>

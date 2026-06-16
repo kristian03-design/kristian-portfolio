@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Experience;
 use App\Models\Certification;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -15,10 +16,17 @@ class PortfolioController extends Controller
 {
     public function index()
     {
-        $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
-        $skills = $this->safeCollection('skills', fn () => Skill::orderBy('proficiency_level', 'desc')->get());
-        $experiences = $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get());
-        $certifications = $this->safeCollection('certifications', fn () => Certification::orderBy('issue_date', 'desc')->get());
+        $data = Cache::remember('portfolio.public.index', now()->addMinutes(10), fn () => [
+            'projects' => $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get()),
+            'skills' => $this->safeCollection('skills', fn () => Skill::orderBy('proficiency_level', 'desc')->get()),
+            'experiences' => $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get()),
+            'certifications' => $this->safeCollection('certifications', fn () => Certification::orderBy('issue_date', 'desc')->get()),
+        ]);
+
+        $projects = $data['projects'];
+        $skills = $data['skills'];
+        $experiences = $data['experiences'];
+        $certifications = $data['certifications'];
 
         $services = [
             [
@@ -47,20 +55,37 @@ class PortfolioController extends Controller
             ]
         ];
 
-        return view('portfolio', compact('projects', 'skills', 'experiences', 'certifications', 'services'));
+        return response()
+            ->view('portfolio', compact('projects', 'skills', 'experiences', 'certifications', 'services'))
+            ->header('Cache-Control', 'public, max-age=60, s-maxage=600, stale-while-revalidate=86400')
+            ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=86400');
     }
 
     public function projects()
     {
-        $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
-        return view('projects', compact('projects'));
+        $projects = Cache::remember(
+            'portfolio.public.projects',
+            now()->addMinutes(10),
+            fn () => $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get())
+        );
+
+        return response()
+            ->view('projects', compact('projects'))
+            ->header('Cache-Control', 'public, max-age=60, s-maxage=600, stale-while-revalidate=86400')
+            ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=86400');
     }
 
     public function data()
     {
-        $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
-        $skills = $this->safeCollection('skills', fn () => Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get());
-        $experiences = $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get());
+        $data = Cache::remember('portfolio.public.api', now()->addMinutes(10), fn () => [
+            'projects' => $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get()),
+            'skills' => $this->safeCollection('skills', fn () => Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get()),
+            'experiences' => $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get()),
+        ]);
+
+        $projects = $data['projects'];
+        $skills = $data['skills'];
+        $experiences = $data['experiences'];
 
         return response()->json([
             'counts' => [
@@ -76,17 +101,29 @@ class PortfolioController extends Controller
 
     public function projectData()
     {
-        return response()->json($this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get()));
+        return response()->json(Cache::remember(
+            'portfolio.public.api.projects',
+            now()->addMinutes(10),
+            fn () => $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get())
+        ));
     }
 
     public function skillData()
     {
-        return response()->json($this->safeCollection('skills', fn () => Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get()));
+        return response()->json(Cache::remember(
+            'portfolio.public.api.skills',
+            now()->addMinutes(10),
+            fn () => $this->safeCollection('skills', fn () => Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get())
+        ));
     }
 
     public function experienceData()
     {
-        return response()->json($this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get()));
+        return response()->json(Cache::remember(
+            'portfolio.public.api.experiences',
+            now()->addMinutes(10),
+            fn () => $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get())
+        ));
     }
 
     private function safeCollection(string $label, callable $query)

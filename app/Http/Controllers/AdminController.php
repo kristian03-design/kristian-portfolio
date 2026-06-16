@@ -10,6 +10,7 @@ use App\Models\Experience;
 use App\Models\Message;
 use App\Models\Certification;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
@@ -25,6 +26,20 @@ class AdminController extends Controller
         $messages = Message::orderBy('created_at', 'desc')->get();
         
         return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages'));
+    }
+
+    private function clearPortfolioCache(): void
+    {
+        foreach ([
+            'portfolio.public.index',
+            'portfolio.public.projects',
+            'portfolio.public.api',
+            'portfolio.public.api.projects',
+            'portfolio.public.api.skills',
+            'portfolio.public.api.experiences',
+        ] as $key) {
+            Cache::forget($key);
+        }
     }
 
     private function validateProject(Request $request): array
@@ -151,6 +166,7 @@ class AdminController extends Controller
         }
 
         Project::create($validated);
+        $this->clearPortfolioCache();
 
         $redirect = redirect()->back()->with('success', 'Project created.');
 
@@ -179,6 +195,7 @@ class AdminController extends Controller
         }
 
         $project->update($validated);
+        $this->clearPortfolioCache();
 
         $redirect = redirect()->back()->with('success', 'Project updated.');
 
@@ -193,16 +210,22 @@ class AdminController extends Controller
         $project = Project::findOrFail($id);
         $this->deleteUpload($project->image_path);
         $project->delete();
+        $this->clearPortfolioCache();
+
         return redirect()->back()->with('success', 'Project deleted.');
     }
 
     public function storeSkill(Request $request) {
         $validated = $request->validate(['name' => 'required|string', 'category' => 'required|string', 'proficiency_level' => 'required|integer']);
         Skill::create($validated);
+        $this->clearPortfolioCache();
+
         return redirect()->back()->with('success', 'Skill created.');
     }
     public function destroySkill(string $id) {
         Skill::findOrFail($id)->delete();
+        $this->clearPortfolioCache();
+
         return redirect()->back()->with('success', 'Skill deleted.');
     }
 
@@ -215,10 +238,14 @@ class AdminController extends Controller
             'description' => 'nullable|string',
         ]);
         Experience::create($validated);
+        $this->clearPortfolioCache();
+
         return redirect()->back()->with('success', 'Experience created.');
     }
     public function destroyExperience(string $id) {
         Experience::findOrFail($id)->delete();
+        $this->clearPortfolioCache();
+
         return redirect()->back()->with('success', 'Experience deleted.');
     }
 
@@ -241,6 +268,8 @@ class AdminController extends Controller
         }
 
         Certification::create($validated);
+        $this->clearPortfolioCache();
+
         return redirect()->back()->with('success', 'Certification created.');
     }
 
@@ -248,6 +277,8 @@ class AdminController extends Controller
         $cert = Certification::findOrFail($id);
         $this->deleteUpload($cert->image_path);
         $cert->delete();
+        $this->clearPortfolioCache();
+
         return redirect()->back()->with('success', 'Certification deleted.');
     }
 

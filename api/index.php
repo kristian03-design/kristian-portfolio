@@ -38,7 +38,8 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
 
         header('Content-Type: ' . ($types[$extension] ?? 'application/octet-stream'));
         header('Content-Length: ' . filesize($staticPath));
-        header('Cache-Control: public, max-age=31536000, immutable');
+        header('Cache-Control: public, max-age=31536000, s-maxage=31536000, immutable');
+        header('CDN-Cache-Control: public, max-age=31536000, immutable');
 
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'HEAD') {
             readfile($staticPath);

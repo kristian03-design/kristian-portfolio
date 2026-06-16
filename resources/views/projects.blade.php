@@ -46,7 +46,7 @@
         <article class="proj-card r in d{{ $loop->index % 4 }}">
           <div class="proj-thumb">
             @if ($project->image_path)
-              <img class="proj-image" src="{{ asset(ltrim($project->image_path, '/')) }}" alt="{{ $project->title }}">
+              <img class="proj-image" src="{{ asset(ltrim($project->image_path, '/')) }}" alt="{{ $project->title }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}">
             @else
               <div class="proj-thumb-text">{{ $projectInitials($project->title) ?: 'KH' }}</div>
             @endif
