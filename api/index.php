@@ -1,5 +1,8 @@
 <?php
 
+ini_set('expose_php', '0');
+header_remove('X-Powered-By');
+
 if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
     $uriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 
@@ -31,6 +34,7 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
             'svg' => 'image/svg+xml',
             'ico' => 'image/x-icon',
             'pdf' => 'application/pdf',
+            'txt' => 'text/plain; charset=utf-8',
             'woff' => 'font/woff',
             'woff2' => 'font/woff2',
         ];
@@ -40,6 +44,13 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
         header('Content-Length: ' . filesize($staticPath));
         header('Cache-Control: public, max-age=31536000, s-maxage=31536000, immutable');
         header('CDN-Cache-Control: public, max-age=31536000, immutable');
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: DENY');
+        header('Referrer-Policy: strict-origin-when-cross-origin');
+
+        if (preg_match('#^/(uploads|media|storage)/#', $uriPath)) {
+            header('X-Robots-Tag: noindex, nofollow, noarchive');
+        }
 
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'HEAD') {
             readfile($staticPath);
@@ -66,10 +77,22 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
     $_SERVER['APP_EVENTS_CACHE'] = $storagePath . '/framework/cache/events.php';
     $_ENV['SESSION_DRIVER'] = 'cookie';
     $_SERVER['SESSION_DRIVER'] = 'cookie';
+    $_ENV['SESSION_SECURE_COOKIE'] = 'true';
+    $_SERVER['SESSION_SECURE_COOKIE'] = 'true';
+    $_ENV['SESSION_HTTP_ONLY'] = 'true';
+    $_SERVER['SESSION_HTTP_ONLY'] = 'true';
+    $_ENV['SESSION_SAME_SITE'] = 'lax';
+    $_SERVER['SESSION_SAME_SITE'] = 'lax';
     $_ENV['CACHE_STORE'] = 'file';
     $_SERVER['CACHE_STORE'] = 'file';
     $_ENV['LOG_CHANNEL'] = 'stderr';
     $_SERVER['LOG_CHANNEL'] = 'stderr';
+    $_ENV['APP_DEBUG'] = 'false';
+    $_SERVER['APP_DEBUG'] = 'false';
+    $_ENV['ADMIN_EMAILS'] = $_ENV['ADMIN_EMAILS'] ?? $_SERVER['ADMIN_EMAILS'] ?? 'hkristianlloyd2@gmail.com';
+    $_SERVER['ADMIN_EMAILS'] = $_ENV['ADMIN_EMAILS'];
+    $_ENV['ADMIN_REGISTRATION_ENABLED'] = 'false';
+    $_SERVER['ADMIN_REGISTRATION_ENABLED'] = 'false';
     $_ENV['APP_URL'] = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'kristian-portfolio-two.vercel.app');
     $_SERVER['APP_URL'] = $_ENV['APP_URL'];
     $_SERVER['HTTPS'] = 'on';

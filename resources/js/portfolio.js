@@ -72,6 +72,53 @@ const so = new IntersectionObserver(entries => {
 }, { threshold: 0.3 });
 document.querySelectorAll('.sk-fill').forEach(fill => so.observe(fill));
 
+const welcomeModal = document.getElementById('welcome-modal');
+const welcomeSeenKey = 'portfolio_welcome_seen';
+
+function closeWelcomeModal() {
+  if (!welcomeModal) return;
+
+  welcomeModal.classList.remove('open');
+  welcomeModal.setAttribute('aria-hidden', 'true');
+
+  try {
+    localStorage.setItem(welcomeSeenKey, 'true');
+  } catch (error) {
+    // Ignore storage failures so the modal never blocks browsing.
+  }
+}
+
+function openWelcomeModal() {
+  if (!welcomeModal) return;
+
+  welcomeModal.classList.add('open');
+  welcomeModal.setAttribute('aria-hidden', 'false');
+}
+
+if (welcomeModal) {
+  let hasSeenWelcome = false;
+
+  try {
+    hasSeenWelcome = localStorage.getItem(welcomeSeenKey) === 'true';
+  } catch (error) {
+    hasSeenWelcome = false;
+  }
+
+  if (!hasSeenWelcome) {
+    window.setTimeout(openWelcomeModal, 450);
+  }
+
+  welcomeModal.querySelectorAll('[data-welcome-close]').forEach(element => {
+    element.addEventListener('click', closeWelcomeModal);
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && welcomeModal.classList.contains('open')) {
+      closeWelcomeModal();
+    }
+  });
+}
+
 const contactForm = document.getElementById('contactForm');
 const formMessage = document.getElementById('formMessage');
 

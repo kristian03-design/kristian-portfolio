@@ -5,6 +5,7 @@ const tabTitles = {
     experience: 'Experience',
     certifications: 'Certifications',
     messages: 'Messages',
+    profile: 'Profile',
 };
 
 function switchTab(name, smooth = true) {
@@ -27,7 +28,9 @@ document.querySelectorAll('[data-tab]').forEach(button => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const activeTab = localStorage.getItem('admin_active_tab');
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    const activeTab = tabParam || localStorage.getItem('admin_active_tab');
     if (activeTab && tabTitles[activeTab]) {
         switchTab(activeTab, false);
     }
@@ -748,4 +751,51 @@ document.addEventListener('DOMContentLoaded', () => {
             element.style.backgroundColor = '';
         }, 100);
     }
+});
+
+// --------- REPLY MODAL CONTROLS ---------------------------------------------------
+function closeReplyModal(event) {
+    const modal = document.getElementById('reply-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+window.closeReplyModal = closeReplyModal;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('reply-modal');
+    if (!modal) return;
+
+    const replyForm = document.getElementById('reply-form');
+    const mName = document.getElementById('modal-sender-name');
+    const mEmail = document.getElementById('modal-sender-email');
+    const mDate = document.getElementById('modal-message-date');
+    const mOrig = document.getElementById('modal-original-msg');
+    const rSubject = document.getElementById('reply-subject');
+    const rBody = document.getElementById('reply-body');
+
+    document.querySelectorAll('.btn-reply-trigger').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const msgId = btn.dataset.messageId;
+            const dataEl = document.getElementById(`message-data-${msgId}`);
+            if (!dataEl) return;
+
+            try {
+                const msg = JSON.parse(dataEl.textContent);
+                mName.textContent = msg.name || 'Anonymous';
+                mEmail.textContent = msg.email || '';
+                mDate.textContent = msg.date || '';
+                mOrig.textContent = msg.message || '';
+
+                rSubject.value = `Re: Message from ${msg.name}`;
+                rBody.value = '';
+
+                replyForm.action = `/admin/messages/${msg.id}/reply`;
+                modal.classList.remove('hidden');
+            } catch (e) {
+                console.error('Failed to parse message data', e);
+            }
+        });
+    });
 });

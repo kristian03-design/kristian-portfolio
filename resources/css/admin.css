@@ -1239,3 +1239,116 @@
         .mono {
             font-family: var(--font-mono);
         }
+
+        /* Reply Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 10, 12, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.hidden {
+            display: none !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .modal-card {
+            width: 90%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(1);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.hidden .modal-card {
+            transform: scale(0.95);
+        }
+
+        /* Toggle Switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--surface2);
+            border: 1px solid var(--border);
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-muted);
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+            background-color: #ffffff;
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 24px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* Unread Badge-pill under Workspace navigation */
+        .badge-pill {
+            background-color: var(--danger);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            line-height: 1;
+            margin-left: auto;
+        }
+
+        /* Unread Indicator on Inbox Tab */
+        .unread-count-text {
+            font-size: 13px;
+            color: var(--danger);
+            font-weight: 500;
+        }

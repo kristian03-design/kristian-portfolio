@@ -28,6 +28,7 @@ class User extends Authenticatable
         'status',
         'otp_code',
         'otp_expires_at',
+        'two_factor_enabled',
     ];
 
     /**
@@ -51,6 +52,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'otp_expires_at' => 'datetime',
             'password' => 'hashed',
+            'two_factor_enabled' => 'boolean',
         ];
     }
 

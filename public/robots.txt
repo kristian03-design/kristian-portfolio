@@ -1,2 +1,13 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /login
+Disallow: /register
+Disallow: /otp
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /media
+Disallow: /.env
+Disallow: /vendor
+Disallow: /storage

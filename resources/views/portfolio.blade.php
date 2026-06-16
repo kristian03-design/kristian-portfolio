@@ -500,6 +500,7 @@
     <form class="cform r d2" id="contactForm" method="POST" action="{{ route('contact.store') }}">
       @csrf
       <div id="formMessage" class="form-message hidden"></div>
+      <input type="text" name="website" class="contact-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="cf-row">
         <div class="cf-grp cf-flat">
           <label class="cf-lbl" for="contactName">Name</label>
@@ -531,6 +532,26 @@
   <span>&copy; {{ date('Y') }} Kristian Hernandez &mdash; All rights reserved</span>
   <span>Bulacan, Philippines</span>
 </footer>
+
+<div class="welcome-modal" id="welcome-modal" aria-hidden="true">
+  <div class="welcome-backdrop" data-welcome-close></div>
+  <section class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div class="welcome-kicker">Portfolio Access</div>
+    <h2 id="welcome-title" class="welcome-title">Welcome to my portfolio.</h2>
+    <p class="welcome-copy">
+      I’m Kristian, a web and mobile developer building practical systems, clean interfaces, and focused digital experiences.
+    </p>
+    <div class="welcome-actions">
+      <button type="button" class="welcome-primary" data-welcome-close>Explore Portfolio</button>
+      <button type="button" class="welcome-secondary" data-welcome-close>Skip Intro</button>
+    </div>
+    <blockquote class="welcome-quote">
+      “God never said that the journey will be easy, but He did say that the arrival will be worthwhile.”
+      <cite>Max Lucado</cite>
+    </blockquote>
+  </section>
+</div>
+
 <!-- Lightbox Modal for Certifications -->
 <div id="portfolio-lightbox" class="lightbox-modal" onclick="closeLightbox()">
   <span class="lightbox-close" onclick="closeLightbox()">&times;</span>

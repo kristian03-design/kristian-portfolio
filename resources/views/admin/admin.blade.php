@@ -54,6 +54,9 @@
             <button type="button" class="nav-item" data-tab="certifications">
                 <i class="ti ti-certificate"></i>Certifications
             </button>
+            <button type="button" class="nav-item" data-tab="profile">
+                <i class="ti ti-user"></i>Profile
+            </button>
 
             <div class="nav-section">Comms</div>
 
@@ -927,16 +930,28 @@
 
                             <div class="inbox-meta">
                                 <div class="inbox-time">{{ $msg->created_at->diffForHumans() }}</div>
-                                @if($isUnread)
-                                    <form method="POST" action="/admin/messages/{{ $msg->id }}/read">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn btn-ghost btn-sm">
-                                            <i class="ti ti-check"></i>Mark read
-                                        </button>
-                                    </form>
-                                @endif
+                                <div style="display: flex; gap: 8px; margin-top: 4px;">
+                                    <button type="button" class="btn btn-ghost btn-sm btn-reply-trigger" data-message-id="{{ $msg->id }}">
+                                        <i class="ti ti-arrow-back-up"></i>Reply
+                                    </button>
+                                    @if($isUnread)
+                                        <form method="POST" action="/admin/messages/{{ $msg->id }}/read">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-ghost btn-sm">
+                                                <i class="ti ti-check"></i>Mark read
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
+                            <script type="application/json" id="message-data-{{ $msg->id }}">{!! json_encode([
+                                'id' => $msg->id,
+                                'name' => $msg->name,
+                                'email' => $msg->email,
+                                'message' => $msg->message,
+                                'date' => $msg->created_at->format('M d, Y h:i A'),
+                            ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}</script>
                         </div>
                     @empty
                         <div class="empty-panel-lg">
@@ -947,8 +962,149 @@
 
             </section>
 
+            {{-- ------------------------------------------------------------------------------------------------------------------------------------------------------
+                 PROFILE TAB
+            --------------------------------------------------------------------------------------------------------------------------------------------------------- --}}
+            <section id="tab-profile" class="tab">
+                <div class="two-col">
+                    {{-- Profile Details --}}
+                    <form method="POST" action="{{ route('profile.update') }}" class="panel">
+                        @csrf
+                        @method('PATCH')
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="ti ti-user-edit"></i>Profile Information
+                            </div>
+                        </div>
+                        <div class="form-body">
+                            <div class="field-group">
+                                <label>Full Name</label>
+                                <input type="text" name="full_name" class="field" value="{{ auth()->user()->full_name }}" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Email Address</label>
+                                <input type="email" name="email" class="field" value="{{ auth()->user()->email }}" required>
+                            </div>
+                            <div class="field-group">
+                                <label>Position / Role</label>
+                                <input type="text" name="position" class="field" value="{{ auth()->user()->position }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary full-width">
+                                <i class="ti ti-device-floppy"></i>Save Profile
+                            </button>
+                        </div>
+                    </form>
+
+                    {{-- Security Column --}}
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        
+                        {{-- Change Password --}}
+                        <form method="POST" action="{{ route('password.update') }}" class="panel">
+                            @csrf
+                            @method('PUT')
+                            <div class="panel-head">
+                                <div class="panel-title">
+                                    <i class="ti ti-key"></i>Update Password
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <div class="field-group">
+                                    <label>Current Password</label>
+                                    <input type="password" name="current_password" class="field" required autocomplete="current-password">
+                                </div>
+                                <div class="field-group">
+                                    <label>New Password</label>
+                                    <input type="password" name="password" class="field" required autocomplete="new-password">
+                                </div>
+                                <div class="field-group">
+                                    <label>Confirm Password</label>
+                                    <input type="password" name="password_confirmation" class="field" required autocomplete="new-password">
+                                </div>
+                                <button type="submit" class="btn btn-primary full-width">
+                                    <i class="ti ti-lock-open"></i>Change Password
+                                </button>
+                            </div>
+                        </form>
+
+                        {{-- Two-Factor Authentication --}}
+                        <div class="panel">
+                            <div class="panel-head">
+                                <div class="panel-title">
+                                    <i class="ti ti-shield-lock"></i>Two-Factor Authentication
+                                </div>
+                            </div>
+                            <div class="form-body">
+                                <p style="font-size: 13px; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px;">
+                                    Secure your admin dashboard by enabling email-based Two-Factor Authentication (OTP). Every sign-in attempt will require a 6-digit verification code sent to your registered email address.
+                                </p>
+                                <form method="POST" action="{{ route('profile.update') }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="full_name" value="{{ auth()->user()->full_name }}">
+                                    <input type="hidden" name="email" value="{{ auth()->user()->email }}">
+                                    <input type="hidden" name="position" value="{{ auth()->user()->position }}">
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; margin-bottom: 16px;">
+                                        <div>
+                                            <div style="font-size: 14px; font-weight: 600; color: var(--text);">Enable 2FA Authentication</div>
+                                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Require OTP code at sign in</div>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" name="two_factor_enabled" value="1" onchange="this.form.submit()" {{ auth()->user()->two_factor_enabled ? 'checked' : '' }}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
         </div>{{-- /content --}}
     </main>
+</div>
+
+<div id="reply-modal" class="modal-overlay hidden" onclick="closeReplyModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+        <div class="panel">
+            <div class="panel-head">
+                <div class="panel-title">
+                    <i class="ti ti-mail-forward"></i>Reply to Message
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="closeReplyModal()">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <form id="reply-form" method="POST" action="">
+                @csrf
+                <div class="form-body">
+                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                        <div style="font-size: 14px; font-weight: 600; color: var(--text);" id="modal-sender-name">Sender Name</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;" id="modal-sender-email">sender@example.com</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;" id="modal-message-date">June 16, 2026 04:00 PM</div>
+                        <p style="font-size: 13px; line-height: 1.6; color: var(--text); margin-top: 12px; white-space: pre-wrap; word-break: break-all;" id="modal-original-msg">
+                            This is the original message...
+                        </p>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label>Email Subject</label>
+                        <input type="text" name="subject" id="reply-subject" class="field" required>
+                    </div>
+                    <div class="field-group">
+                        <label>Reply Message</label>
+                        <textarea name="message" id="reply-body" class="field" rows="6" placeholder="Write your reply here..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary full-width">
+                        <i class="ti ti-send"></i>Send Email Reply
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div id="toast-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px;"></div>
@@ -959,6 +1115,10 @@
 
         @if(session('success'))
             window.showToast(@json(session('success')), 'success');
+        @endif
+
+        @if(session('status') === 'password-updated')
+            window.showToast('Password updated successfully.', 'success');
         @endif
 
         @if(session('warning'))

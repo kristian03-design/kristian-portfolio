@@ -45,32 +45,40 @@ class AuthenticatedSessionController extends Controller
 
         $user = \App\Models\User::where('email', $request->email)->first();
 
-        // Generate OTP
-        $otp = rand(100000, 999999);
-        $user->update([
-            'otp_code' => $otp,
-            'otp_expires_at' => now()->addMinutes(10),
-        ]);
+        if ($user->two_factor_enabled) {
+            // Generate OTP
+            $otp = rand(100000, 999999);
+            $user->update([
+                'otp_code' => $otp,
+                'otp_expires_at' => now()->addMinutes(10),
+            ]);
 
-        session(['otp_user_id' => $user->id]);
+            session(['otp_user_id' => $user->id]);
 
-        try {
-            Mail::to($user->email)->send(new OtpMail($otp));
-        } catch (Throwable) {
-            if (app()->environment('local')) {
-                return redirect()
-                    ->route('otp.verify')
-                    ->with('success', "Local development OTP: {$otp}");
+            try {
+                Mail::to($user->email)->send(new OtpMail($otp));
+            } catch (Throwable) {
+                if (app()->environment('local')) {
+                    return redirect()
+                        ->route('otp.verify')
+                        ->with('success', "Local development OTP: {$otp}");
+                }
+
+                session()->forget('otp_user_id');
+
+                return back()
+                    ->withInput($request->only('email'))
+                    ->withErrors(['email' => 'Login details are correct, but the OTP email could not be sent. Please check your mail settings and try again.']);
             }
 
-            session()->forget('otp_user_id');
-
-            return back()
-                ->withInput($request->only('email'))
-                ->withErrors(['email' => 'Login details are correct, but the OTP email could not be sent. Please check your mail settings and try again.']);
+            return redirect()->route('otp.verify');
         }
 
-        return redirect()->route('otp.verify');
+        // Log user in directly if 2FA is disabled
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

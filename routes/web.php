@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MessageController;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
@@ -20,6 +23,15 @@ $statelessPublic = [
     VerifyCsrfToken::class,
 ];
 
+RateLimiter::for('contact', function (Request $request) {
+    $key = $request->ip() ?: 'guest';
+
+    return [
+        Limit::perMinute(3)->by($key),
+        Limit::perDay(20)->by($key),
+    ];
+});
+
 Route::get('/', [PortfolioController::class, 'index'])->name('home')->withoutMiddleware($statelessPublic);
 Route::get('/home', [PortfolioController::class, 'index'])->withoutMiddleware($statelessPublic);
 Route::get('/projects', [PortfolioController::class, 'projects'])->name('projects.index')->withoutMiddleware($statelessPublic);
@@ -28,9 +40,9 @@ Route::get('/api/projects', [PortfolioController::class, 'projectData'])->name('
 Route::get('/api/skills', [PortfolioController::class, 'skillData'])->name('portfolio.skills.data')->withoutMiddleware($statelessPublic);
 Route::get('/api/experiences', [PortfolioController::class, 'experienceData'])->name('portfolio.experiences.data')->withoutMiddleware($statelessPublic);
 Route::get('/media/{path}', [PortfolioController::class, 'media'])->where('path', '.*')->name('portfolio.media')->withoutMiddleware($statelessPublic);
-Route::post('/contact', [MessageController::class, 'store'])->name('contact.store');
+Route::post('/contact', [MessageController::class, 'store'])->middleware('throttle:contact')->name('contact.store')->withoutMiddleware($statelessPublic);
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/dashboard', function () {
         return redirect()->route('admin.dashboard');
@@ -51,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/admin/certifications/{id}', [AdminController::class, 'destroyCertification']);
 
     Route::patch('/admin/messages/{id}/read', [AdminController::class, 'markMessageRead']);
+    Route::post('/admin/messages/{id}/reply', [AdminController::class, 'replyMessage']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

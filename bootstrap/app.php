@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\EnsureAdminUser;
+use App\Http\Middleware\SecurityHeaders;
 
 $app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,7 +13,10 @@ $app = Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->append(SecurityHeaders::class);
+        $middleware->alias([
+            'admin' => EnsureAdminUser::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
@@ -22,4 +27,3 @@ if ($storagePath = env('LARAVEL_STORAGE_PATH')) {
 }
 
 return $app;
-

@@ -10,6 +10,8 @@ use App\Models\Experience;
 use App\Models\Message;
 use App\Models\Certification;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MessageReplyMail;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -422,5 +424,26 @@ class AdminController extends Controller
         $msg = Message::findOrFail($id);
         $msg->update(['status' => 'read']);
         return redirect()->back()->with('success', 'Message marked as read.');
+    }
+
+    public function replyMessage(Request $request, string $id) {
+        $msg = Message::findOrFail($id);
+
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        try {
+            Mail::to($msg->email)->send(new MessageReplyMail($validated['subject'], $validated['message'], $msg));
+            
+            // Mark the message as read after successful send
+            $msg->update(['status' => 'read']);
+            
+            return redirect()->back()->with('success', 'Reply sent successfully.');
+        } catch (\Throwable $e) {
+            Log::error('Failed to send reply email: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['message' => 'Failed to send reply email: ' . $e->getMessage()]);
+        }
     }
 }

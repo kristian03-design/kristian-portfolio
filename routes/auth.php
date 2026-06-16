@@ -13,30 +13,36 @@ use App\Http\Controllers\Auth\OtpController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+    if (filter_var(env('ADMIN_REGISTRATION_ENABLED', false), FILTER_VALIDATE_BOOLEAN)) {
+        Route::get('register', [RegisteredUserController::class, 'create'])
+            ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
+        Route::post('register', [RegisteredUserController::class, 'store'])
+            ->middleware('throttle:3,60');
+    }
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+        ->middleware('throttle:5,1');
 
     Route::get('otp/verify', [OtpController::class, 'show'])->name('otp.verify');
-    Route::post('otp/verify', [OtpController::class, 'verify']);
-    Route::get('otp/resend', [OtpController::class, 'resend'])->name('otp.resend');
+    Route::post('otp/verify', [OtpController::class, 'verify'])->middleware('throttle:5,1');
+    Route::get('otp/resend', [OtpController::class, 'resend'])->middleware('throttle:3,1')->name('otp.resend');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
 
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+        ->middleware('throttle:3,1')
         ->name('password.email');
 
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
         ->name('password.reset');
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
+        ->middleware('throttle:5,1')
         ->name('password.store');
 });
 
