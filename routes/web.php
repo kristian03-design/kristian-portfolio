@@ -27,6 +27,7 @@ Route::get('/api/portfolio', [PortfolioController::class, 'data'])->name('portfo
 Route::get('/api/projects', [PortfolioController::class, 'projectData'])->name('portfolio.projects.data')->withoutMiddleware($statelessPublic);
 Route::get('/api/skills', [PortfolioController::class, 'skillData'])->name('portfolio.skills.data')->withoutMiddleware($statelessPublic);
 Route::get('/api/experiences', [PortfolioController::class, 'experienceData'])->name('portfolio.experiences.data')->withoutMiddleware($statelessPublic);
+Route::get('/media/{path}', [PortfolioController::class, 'media'])->where('path', '.*')->name('portfolio.media')->withoutMiddleware($statelessPublic);
 Route::post('/contact', [MessageController::class, 'store'])->name('contact.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {

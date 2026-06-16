@@ -10,6 +10,7 @@ use App\Models\Experience;
 use App\Models\Certification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class PortfolioController extends Controller
@@ -124,6 +125,41 @@ class PortfolioController extends Controller
             now()->addMinutes(10),
             fn () => $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get())
         ));
+    }
+
+    public function media(string $path)
+    {
+        $path = ltrim($path, '/');
+
+        try {
+            $disk = Storage::disk('supabase');
+
+            if (! $disk->exists($path)) {
+                abort(404);
+            }
+
+            $stream = $disk->readStream($path);
+            $mimeType = $disk->mimeType($path) ?: 'application/octet-stream';
+
+            return response()->stream(function () use ($stream) {
+                fpassthru($stream);
+
+                if (is_resource($stream)) {
+                    fclose($stream);
+                }
+            }, 200, [
+                'Content-Type' => $mimeType,
+                'Cache-Control' => 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+                'CDN-Cache-Control' => 'public, max-age=86400, stale-while-revalidate=604800',
+            ]);
+        } catch (Throwable $e) {
+            Log::error('Supabase media stream failed', [
+                'path' => $path,
+                'exception' => $e,
+            ]);
+
+            abort(404);
+        }
     }
 
     private function safeCollection(string $label, callable $query)

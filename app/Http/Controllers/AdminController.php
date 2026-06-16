@@ -11,6 +11,7 @@ use App\Models\Message;
 use App\Models\Certification;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
@@ -61,10 +62,12 @@ class AdminController extends Controller
         $skills = Skill::orderBy('category')->orderBy('name')->get();
         $experiences = Experience::orderByDesc('start_date')->get();
         $certifications = Certification::orderByDesc('issue_date')->get();
-        $messages = Message::orderBy('created_at', 'desc')->get();
+        $messages = Message::latest()->limit(25)->get();
+        $unreadCount = Message::where('status', 'unread')->count();
+        $latestMsg = $messages->first();
         $skillCatalog = self::SKILL_CATALOG;
         
-        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages', 'skillCatalog'));
+        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages', 'skillCatalog', 'unreadCount', 'latestMsg'));
     }
 
     private function clearPortfolioCache(): void
@@ -148,19 +151,44 @@ class AdminController extends Controller
 
         try {
             $disk = Storage::disk('supabase');
-            $disk->put($path, file_get_contents($file->getRealPath()), [
+            $disk->put($path, $file->getContent(), [
                 'visibility' => 'public',
                 'ContentType' => $file->getMimeType(),
             ]);
         } catch (\Throwable $e) {
-            report($e);
+            Log::error('Supabase upload failed.', [
+                'exception' => get_class($e),
+                'message' => $e->getMessage(),
+                'bucket' => config('filesystems.disks.supabase.bucket'),
+                'endpoint' => config('filesystems.disks.supabase.endpoint'),
+                'path' => $path,
+            ]);
 
             throw ValidationException::withMessages([
-                'image' => 'The file could not be uploaded to Supabase Storage. Please check the Supabase storage credentials in Vercel.',
+                'image' => $this->friendlyUploadError($e),
             ]);
         }
 
-        return $disk->url($path);
+        return '/media/' . ltrim($path, '/');
+    }
+
+    private function friendlyUploadError(\Throwable $e): string
+    {
+        $message = $e->getMessage();
+
+        if (str_contains($message, 'NoSuchBucket') || str_contains($message, 'Bucket not found')) {
+            return 'Supabase upload failed because the configured bucket was not found. Vercel must use the existing File_Images bucket.';
+        }
+
+        if (str_contains($message, 'InvalidAccessKeyId') || str_contains($message, 'SignatureDoesNotMatch')) {
+            return 'Supabase upload failed because the storage access key or secret key is invalid.';
+        }
+
+        if (str_contains($message, 'AccessDenied')) {
+            return 'Supabase upload failed because the storage credentials do not have permission to write to this bucket.';
+        }
+
+        return 'The file could not be uploaded to Supabase Storage. Please check the Supabase storage settings in Vercel.';
     }
 
     private function deleteUpload(?string $pathOrUrl): void
@@ -172,11 +200,15 @@ class AdminController extends Controller
         $disk = Storage::disk('supabase');
         $diskUrl = rtrim((string) config('filesystems.disks.supabase.url'), '/');
         $objectPath = null;
+        $urlPath = parse_url($pathOrUrl, PHP_URL_PATH);
 
-        if ($diskUrl && str_starts_with($pathOrUrl, $diskUrl . '/')) {
+        if ($urlPath && str_starts_with($urlPath, '/media/')) {
+            $objectPath = ltrim(substr($urlPath, strlen('/media/')), '/');
+        } elseif ($diskUrl && str_starts_with($pathOrUrl, $diskUrl . '/')) {
             $objectPath = ltrim(substr($pathOrUrl, strlen($diskUrl)), '/');
         } elseif (! Str::startsWith($pathOrUrl, ['http://', 'https://'])) {
             $objectPath = ltrim($pathOrUrl, '/');
+            $objectPath = str_starts_with($objectPath, 'media/') ? substr($objectPath, strlen('media/')) : $objectPath;
         }
 
         if ($objectPath) {

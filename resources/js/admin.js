@@ -214,6 +214,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!fileInput) return;
 
+    const ocrScripts = [
+        'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
+        'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+    ];
+    const loadedScripts = new Map();
+
+    function loadScriptOnce(src) {
+        if (loadedScripts.has(src)) {
+            return loadedScripts.get(src);
+        }
+
+        const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing) {
+            const promise = Promise.resolve();
+            loadedScripts.set(src, promise);
+            return promise;
+        }
+
+        const promise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Could not load ${src}`));
+            document.head.appendChild(script);
+        });
+
+        loadedScripts.set(src, promise);
+        return promise;
+    }
+
+    async function ensureOcrLibraries() {
+        await Promise.all(ocrScripts.map(loadScriptOnce));
+
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        }
+    }
+
     // Drag-and-drop triggers
     ['dragenter', 'dragover'].forEach(eventName => {
         dropzone.addEventListener(eventName, (e) => {
@@ -262,14 +301,27 @@ document.addEventListener('DOMContentLoaded', () => {
         fDesc.value = '';
     });
 
-    function handleFile(file) {
+    async function handleFile(file) {
         warningAlert.style.display = 'none';
+        loadingState.style.display = 'flex';
+        progressBar.style.width = '0%';
+        progressPercent.textContent = '0%';
+
+        try {
+            await ensureOcrLibraries();
+        } catch (error) {
+            console.error('OCR library loading error:', error);
+            loadingState.style.display = 'none';
+            window.showToast('Certificate scanner could not load. Please check your internet connection.', 'error');
+            return;
+        }
         
         if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
             handlePDF(file);
         } else if (file.type.match('image.*')) {
             handleImage(file);
         } else {
+            loadingState.style.display = 'none';
             window.showToast('Please upload an image or PDF file.', 'error');
         }
     }
@@ -299,9 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof pdfjsLib === 'undefined') {
                     throw new Error('PDF.js library is not loaded. Check internet connection or CDN.');
                 }
-                
-                // Configure PDF.js worker
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
                 
                 const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
                 if (pdf.numPages === 0) {

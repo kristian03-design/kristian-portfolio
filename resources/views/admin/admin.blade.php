@@ -11,15 +11,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 </head>
 <body>
 
 @php
-    $unreadCount  = $messages->where('status', 'unread')->count();
+    $unreadCount  = $unreadCount ?? $messages->where('status', 'unread')->count();
     $avgSkill     = $skills->count() ? round($skills->avg('proficiency_level')) : 0;
-    $latestMsg    = $messages->first();
+    $latestMsg    = $latestMsg ?? $messages->first();
 
     $initials = fn($name) => collect(explode(' ', $name))
         ->take(2)->map(fn($w) => strtoupper($w[0]))->implode('');
