@@ -515,28 +515,37 @@
                     @endphp
                     <div class="skills-form-row">
                         <div class="field-group">
-                            <label>Skill Name</label>
-                            <select name="name" id="skill-name-select" class="field" required>
-                                <option value="" selected disabled>Select a skill</option>
+                            <label>Select Skills</label>
+                            <div class="tech-tags-container skill-tags-container">
                                 @foreach($skillCatalog as $category => $catalogSkills)
-                                    <optgroup label="{{ $category }}">
-                                        @foreach($catalogSkills as $catalogSkill)
-                                            @php
-                                                $isExistingSkill = in_array(strtolower($catalogSkill), $existingSkillNames, true);
-                                            @endphp
-                                            <option value="{{ $catalogSkill }}"
-                                                    data-category="{{ $category }}"
-                                                    @disabled($isExistingSkill)>
-                                                {{ $catalogSkill }}{{ $isExistingSkill ? ' - already added' : '' }}
-                                            </option>
-                                        @endforeach
-                                    </optgroup>
+                                    @foreach($catalogSkills as $catalogSkill)
+                                        @php
+                                            $isExistingSkill = in_array(strtolower($catalogSkill), $existingSkillNames, true);
+                                        @endphp
+                                        <label class="tech-tag-label {{ $isExistingSkill ? 'is-disabled' : '' }}"
+                                               title="{{ $isExistingSkill ? 'Already added' : $category }}">
+                                            <input type="checkbox"
+                                                   name="names[]"
+                                                   value="{{ $catalogSkill }}"
+                                                   class="tech-checkbox"
+                                                   @disabled($isExistingSkill)>
+                                            <span class="tech-tag-btn">{{ $catalogSkill }}</span>
+                                        </label>
+                                    @endforeach
                                 @endforeach
-                            </select>
+                            </div>
+                            <label>Custom / Other Skills <span class="label-note">(comma-separated)</span></label>
+                            <input type="text" name="custom_skills" class="field"
+                                   placeholder="e.g. GraphQL, AWS, Redis">
                         </div>
                         <div class="field-group">
-                            <label>Category</label>
-                            <input type="text" id="skill-category-display" class="field" value="Select a skill first" readonly>
+                            <label>Custom Category</label>
+                            <select name="custom_category" class="field">
+                                <option value="Tools">Tools</option>
+                                <option value="Frontend">Frontend</option>
+                                <option value="Backend">Backend</option>
+                                <option value="Mobile">Mobile</option>
+                            </select>
                         </div>
                         <div class="field-group narrow">
                             <label>Level %</label>

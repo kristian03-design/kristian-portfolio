@@ -937,6 +937,16 @@
             color: var(--accent);
         }
 
+        .tech-tag-label.is-disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+        }
+
+        .tech-tag-label.is-disabled .tech-tag-btn {
+            background: var(--surface2);
+            color: var(--muted);
+        }
+
         .tech-checkbox:checked + .tech-tag-btn {
             background: var(--accent);
             color: #fff;

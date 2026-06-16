@@ -256,31 +256,75 @@ class AdminController extends Controller
 
     public function storeSkill(Request $request) {
         $validated = $request->validate([
-            'name' => 'required|string',
+            'names' => 'nullable|array',
+            'names.*' => 'required|string',
+            'custom_skills' => 'nullable|string',
+            'custom_category' => 'required_with:custom_skills|in:Frontend,Backend,Mobile,Tools',
             'proficiency_level' => 'required|integer|min:0|max:100',
         ]);
 
         $catalog = collect(self::SKILL_CATALOG)
             ->flatMap(fn (array $skills, string $category) => collect($skills)->mapWithKeys(fn (string $skill) => [$skill => $category]));
 
-        if (! $catalog->has($validated['name'])) {
+        $selectedSkills = collect($validated['names'] ?? [])
+            ->map(fn (string $name) => trim($name))
+            ->filter()
+            ->values();
+
+        $invalidSkills = $selectedSkills->reject(fn (string $name) => $catalog->has($name));
+
+        if ($invalidSkills->isNotEmpty()) {
             throw ValidationException::withMessages([
-                'name' => 'Please select a skill from the approved list.',
+                'names' => 'Please select skills from the approved list.',
             ]);
         }
 
-        if (Skill::whereRaw('lower(name) = ?', [strtolower($validated['name'])])->exists()) {
+        $customSkills = collect(explode(',', (string) ($validated['custom_skills'] ?? '')))
+            ->map(fn (string $name) => trim($name))
+            ->filter()
+            ->unique(fn (string $name) => strtolower($name))
+            ->values();
+
+        $skillsToCreate = $selectedSkills
+            ->map(fn (string $name) => [
+                'name' => $name,
+                'category' => $catalog[$name],
+            ])
+            ->merge($customSkills->map(fn (string $name) => [
+                'name' => $name,
+                'category' => $validated['custom_category'] ?? 'Tools',
+            ]))
+            ->unique(fn (array $skill) => strtolower($skill['name']))
+            ->values();
+
+        if ($skillsToCreate->isEmpty()) {
             throw ValidationException::withMessages([
-                'name' => 'That skill is already in your list.',
+                'names' => 'Select at least one skill or enter a custom skill.',
             ]);
         }
 
-        $validated['category'] = $catalog[$validated['name']];
+        $existingSkills = Skill::whereIn(
+            \Illuminate\Support\Facades\DB::raw('lower(name)'),
+            $skillsToCreate->pluck('name')->map(fn (string $name) => strtolower($name))
+        )->pluck('name');
 
-        Skill::create($validated);
+        if ($existingSkills->isNotEmpty()) {
+            throw ValidationException::withMessages([
+                'names' => 'One or more selected skills are already in your list.',
+            ]);
+        }
+
+        $skillsToCreate->each(function (array $skill) use ($validated) {
+            Skill::create([
+                'name' => $skill['name'],
+                'category' => $skill['category'],
+                'proficiency_level' => $validated['proficiency_level'],
+            ]);
+        });
+
         $this->clearPortfolioCache();
 
-        return redirect()->back()->with('success', 'Skill created.');
+        return redirect()->back()->with('success', $skillsToCreate->count() === 1 ? 'Skill created.' : 'Skills created.');
     }
     public function destroySkill(string $id) {
         Skill::findOrFail($id)->delete();

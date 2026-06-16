@@ -50,21 +50,6 @@ document.querySelectorAll('.js-skill-pct').forEach(label => {
     label.style.color = label.dataset.color;
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const skillSelect = document.getElementById('skill-name-select');
-    const categoryDisplay = document.getElementById('skill-category-display');
-
-    if (!skillSelect || !categoryDisplay) return;
-
-    function syncSkillCategory() {
-        const selected = skillSelect.selectedOptions[0];
-        categoryDisplay.value = selected?.dataset.category || 'Select a skill first';
-    }
-
-    skillSelect.addEventListener('change', syncSkillCategory);
-    syncSkillCategory();
-});
-
 // --------- PROJECT EDITING ---------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('project-form');
