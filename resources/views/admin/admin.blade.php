@@ -100,28 +100,6 @@
 
         <div class="content">
 
-            {{-- Flash messages --}}
-            @if(session('success'))
-                <div class="alert alert-success">
-                    <i class="ti ti-circle-check"></i>
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('warning'))
-                <div class="alert alert-error">
-                    <i class="ti ti-alert-triangle"></i>
-                    {{ session('warning') }}
-                </div>
-            @endif
-
-            @if($errors->any())
-                <div class="alert alert-error">
-                    <i class="ti ti-alert-circle"></i>
-                    {{ $errors->first() }}
-                </div>
-            @endif
-
             {{-- ------------------------------------------------------------------------------------------------------------------------------------------------------
                  DASHBOARD TAB
             --------------------------------------------------------------------------------------------------------------------------------------------------------- --}}
@@ -975,15 +953,23 @@
 
 <div id="toast-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px;"></div>
 
-@if(session('success'))
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.showToast) {
-                window.showToast("{{ session('success') }}", 'success');
-            }
-        });
-    </script>
-@endif
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!window.showToast) return;
+
+        @if(session('success'))
+            window.showToast(@json(session('success')), 'success');
+        @endif
+
+        @if(session('warning'))
+            window.showToast(@json(session('warning')), 'error');
+        @endif
+
+        @if($errors->any())
+            window.showToast(@json($errors->first()), 'error');
+        @endif
+    });
+</script>
 
 </body>
 </html>
