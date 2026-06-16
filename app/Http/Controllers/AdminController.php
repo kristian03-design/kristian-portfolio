@@ -9,7 +9,9 @@ use App\Models\Skill;
 use App\Models\Experience;
 use App\Models\Message;
 use App\Models\Certification;
-use Illuminate\Support\Facades\File;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -67,12 +69,49 @@ class AdminController extends Controller
             return null;
         }
 
-        $file = $request->file('image');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        File::ensureDirectoryExists(public_path('uploads/projects'));
-        $file->move(public_path('uploads/projects'), $filename);
+        return $this->storeUpload($request->file('image'), 'uploads/projects');
+    }
 
-        return '/uploads/projects/' . $filename;
+    private function storeUpload(UploadedFile $file, string $directory): string
+    {
+        $filename = now()->timestamp . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+        $extension = $file->getClientOriginalExtension();
+        $path = trim($directory, '/') . '/' . $filename . ($extension ? '.' . $extension : '');
+
+        $disk = Storage::disk('supabase');
+        $disk->put($path, file_get_contents($file->getRealPath()), [
+            'visibility' => 'public',
+            'ContentType' => $file->getMimeType(),
+        ]);
+
+        return $disk->url($path);
+    }
+
+    private function deleteUpload(?string $pathOrUrl): void
+    {
+        if (! $pathOrUrl) {
+            return;
+        }
+
+        $disk = Storage::disk('supabase');
+        $diskUrl = rtrim((string) config('filesystems.disks.supabase.url'), '/');
+        $objectPath = null;
+
+        if ($diskUrl && str_starts_with($pathOrUrl, $diskUrl . '/')) {
+            $objectPath = ltrim(substr($pathOrUrl, strlen($diskUrl)), '/');
+        } elseif (! Str::startsWith($pathOrUrl, ['http://', 'https://'])) {
+            $objectPath = ltrim($pathOrUrl, '/');
+        }
+
+        if ($objectPath) {
+            $disk->delete($objectPath);
+
+            return;
+        }
+
+        if (file_exists(public_path($pathOrUrl))) {
+            @unlink(public_path($pathOrUrl));
+        }
     }
 
     public function storeProject(Request $request) {
@@ -95,9 +134,7 @@ class AdminController extends Controller
         unset($validated['custom_tech_stack'], $validated['image']);
 
         if ($imagePath = $this->storeProjectImage($request)) {
-            if ($project->image_path && file_exists(public_path($project->image_path))) {
-                @unlink(public_path($project->image_path));
-            }
+            $this->deleteUpload($project->image_path);
 
             $validated['image_path'] = $imagePath;
         }
@@ -108,9 +145,7 @@ class AdminController extends Controller
 
     public function destroyProject(string $id) {
         $project = Project::findOrFail($id);
-        if ($project->image_path && file_exists(public_path($project->image_path))) {
-            @unlink(public_path($project->image_path));
-        }
+        $this->deleteUpload($project->image_path);
         $project->delete();
         return redirect()->back()->with('success', 'Project deleted.');
     }
@@ -156,11 +191,7 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('certificate_image')) {
-            $file = $request->file('certificate_image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            File::ensureDirectoryExists(public_path('uploads/certifications'));
-            $file->move(public_path('uploads/certifications'), $filename);
-            $validated['image_path'] = '/uploads/certifications/' . $filename;
+            $validated['image_path'] = $this->storeUpload($request->file('certificate_image'), 'uploads/certifications');
         }
 
         Certification::create($validated);
@@ -169,9 +200,7 @@ class AdminController extends Controller
 
     public function destroyCertification(string $id) {
         $cert = Certification::findOrFail($id);
-        if ($cert->image_path && file_exists(public_path($cert->image_path))) {
-            @unlink(public_path($cert->image_path));
-        }
+        $this->deleteUpload($cert->image_path);
         $cert->delete();
         return redirect()->back()->with('success', 'Certification deleted.');
     }
