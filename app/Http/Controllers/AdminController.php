@@ -17,6 +17,44 @@ use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    private const SKILL_CATALOG = [
+        'Frontend' => [
+            'HTML',
+            'CSS',
+            'JavaScript',
+            'TypeScript',
+            'Tailwind CSS',
+            'Bootstrap',
+            'React',
+            'Vue.js',
+            'Vite',
+        ],
+        'Backend' => [
+            'PHP',
+            'Laravel',
+            'MySQL',
+            'PostgreSQL',
+            'Supabase',
+            'REST API',
+            'Node.js',
+            'Express.js',
+        ],
+        'Mobile' => [
+            'Flutter',
+            'Dart',
+            'Firebase',
+        ],
+        'Tools' => [
+            'Git',
+            'GitHub',
+            'Docker',
+            'Figma',
+            'Postman',
+            'Vercel',
+            'XAMPP',
+        ],
+    ];
+
     public function index()
     {
         $projects = Project::orderBy('order')->latest()->get();
@@ -24,8 +62,9 @@ class AdminController extends Controller
         $experiences = Experience::orderByDesc('start_date')->get();
         $certifications = Certification::orderByDesc('issue_date')->get();
         $messages = Message::orderBy('created_at', 'desc')->get();
+        $skillCatalog = self::SKILL_CATALOG;
         
-        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages'));
+        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages', 'skillCatalog'));
     }
 
     private function clearPortfolioCache(): void
@@ -216,7 +255,28 @@ class AdminController extends Controller
     }
 
     public function storeSkill(Request $request) {
-        $validated = $request->validate(['name' => 'required|string', 'category' => 'required|string', 'proficiency_level' => 'required|integer']);
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'proficiency_level' => 'required|integer|min:0|max:100',
+        ]);
+
+        $catalog = collect(self::SKILL_CATALOG)
+            ->flatMap(fn (array $skills, string $category) => collect($skills)->mapWithKeys(fn (string $skill) => [$skill => $category]));
+
+        if (! $catalog->has($validated['name'])) {
+            throw ValidationException::withMessages([
+                'name' => 'Please select a skill from the approved list.',
+            ]);
+        }
+
+        if (Skill::whereRaw('lower(name) = ?', [strtolower($validated['name'])])->exists()) {
+            throw ValidationException::withMessages([
+                'name' => 'That skill is already in your list.',
+            ]);
+        }
+
+        $validated['category'] = $catalog[$validated['name']];
+
         Skill::create($validated);
         $this->clearPortfolioCache();
 

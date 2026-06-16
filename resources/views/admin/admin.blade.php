@@ -508,19 +508,35 @@
                 {{-- Add skill form --}}
                 <form method="POST" action="/admin/skills" class="panel panel-spaced">
                     @csrf
+                    @php
+                        $existingSkillNames = $skills->pluck('name')
+                            ->map(fn($name) => strtolower($name))
+                            ->all();
+                    @endphp
                     <div class="skills-form-row">
                         <div class="field-group">
                             <label>Skill Name</label>
-                            <input type="text" name="name" class="field"
-                                   placeholder="e.g. TypeScript" required>
+                            <select name="name" id="skill-name-select" class="field" required>
+                                <option value="" selected disabled>Select a skill</option>
+                                @foreach($skillCatalog as $category => $catalogSkills)
+                                    <optgroup label="{{ $category }}">
+                                        @foreach($catalogSkills as $catalogSkill)
+                                            @php
+                                                $isExistingSkill = in_array(strtolower($catalogSkill), $existingSkillNames, true);
+                                            @endphp
+                                            <option value="{{ $catalogSkill }}"
+                                                    data-category="{{ $category }}"
+                                                    @disabled($isExistingSkill)>
+                                                {{ $catalogSkill }}{{ $isExistingSkill ? ' - already added' : '' }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="field-group">
                             <label>Category</label>
-                            <select name="category" class="field" required>
-                                <option value="Frontend">Frontend</option>
-                                <option value="Backend">Backend</option>
-                                <option value="Tools">Tools</option>
-                            </select>
+                            <input type="text" id="skill-category-display" class="field" value="Select a skill first" readonly>
                         </div>
                         <div class="field-group narrow">
                             <label>Level %</label>
