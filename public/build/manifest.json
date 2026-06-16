@@ -1,0 +1,77 @@
+{
+  "resources/css/admin.css": {
+    "file": "assets/admin-B5bXhWgK.css",
+    "src": "resources/css/admin.css",
+    "isEntry": true,
+    "name": "admin",
+    "names": [
+      "admin.css"
+    ]
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-D5NSepxa.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/css/auth-login.css": {
+    "file": "assets/auth-login-C9BhNwKO.css",
+    "src": "resources/css/auth-login.css",
+    "isEntry": true,
+    "name": "auth-login",
+    "names": [
+      "auth-login.css"
+    ]
+  },
+  "resources/css/auth-otp.css": {
+    "file": "assets/auth-otp-D2lhY5S_.css",
+    "src": "resources/css/auth-otp.css",
+    "isEntry": true,
+    "name": "auth-otp",
+    "names": [
+      "auth-otp.css"
+    ]
+  },
+  "resources/css/portfolio.css": {
+    "file": "assets/portfolio-B8a1_Ccx.css",
+    "src": "resources/css/portfolio.css",
+    "isEntry": true,
+    "name": "portfolio",
+    "names": [
+      "portfolio.css"
+    ]
+  },
+  "resources/js/admin.js": {
+    "file": "assets/admin-WY6y_Huv.js",
+    "name": "admin",
+    "src": "resources/js/admin.js",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DRzmipv6.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/auth-login.js": {
+    "file": "assets/auth-login-DkxEt9dA.js",
+    "name": "auth-login",
+    "src": "resources/js/auth-login.js",
+    "isEntry": true
+  },
+  "resources/js/auth-otp.js": {
+    "file": "assets/auth-otp-CqXTDcbT.js",
+    "name": "auth-otp",
+    "src": "resources/js/auth-otp.js",
+    "isEntry": true
+  },
+  "resources/js/portfolio.js": {
+    "file": "assets/portfolio-B86H2ZEc.js",
+    "name": "portfolio",
+    "src": "resources/js/portfolio.js",
+    "isEntry": true
+  }
+}
