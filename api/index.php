@@ -53,11 +53,22 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
     $_SERVER['LARAVEL_STORAGE_PATH'] = $storagePath;
     $_ENV['VIEW_COMPILED_PATH'] = $storagePath . '/framework/views';
     $_SERVER['VIEW_COMPILED_PATH'] = $storagePath . '/framework/views';
+    $_ENV['APP_PACKAGES_CACHE'] = $storagePath . '/framework/cache/packages.php';
+    $_SERVER['APP_PACKAGES_CACHE'] = $storagePath . '/framework/cache/packages.php';
+    $_ENV['APP_SERVICES_CACHE'] = $storagePath . '/framework/cache/services.php';
+    $_SERVER['APP_SERVICES_CACHE'] = $storagePath . '/framework/cache/services.php';
+    $_ENV['APP_CONFIG_CACHE'] = $storagePath . '/framework/cache/config.php';
+    $_SERVER['APP_CONFIG_CACHE'] = $storagePath . '/framework/cache/config.php';
+    $_ENV['APP_ROUTES_CACHE'] = $storagePath . '/framework/cache/routes.php';
+    $_SERVER['APP_ROUTES_CACHE'] = $storagePath . '/framework/cache/routes.php';
+    $_ENV['APP_EVENTS_CACHE'] = $storagePath . '/framework/cache/events.php';
+    $_SERVER['APP_EVENTS_CACHE'] = $storagePath . '/framework/cache/events.php';
     $_ENV['LOG_CHANNEL'] = $_ENV['LOG_CHANNEL'] ?? 'stderr';
     $_SERVER['LOG_CHANNEL'] = $_SERVER['LOG_CHANNEL'] ?? 'stderr';
 
     foreach ([
         $storagePath . '/app',
+        $storagePath . '/framework/cache',
         $storagePath . '/framework/cache/data',
         $storagePath . '/framework/sessions',
         $storagePath . '/framework/views',
