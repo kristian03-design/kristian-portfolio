@@ -11,6 +11,7 @@ use App\Models\Message;
 use App\Models\Certification;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
@@ -74,15 +75,36 @@ class AdminController extends Controller
 
     private function storeUpload(UploadedFile $file, string $directory): string
     {
+        $required = [
+            'SUPABASE_STORAGE_BUCKET' => config('filesystems.disks.supabase.bucket'),
+            'SUPABASE_STORAGE_ACCESS_KEY_ID' => config('filesystems.disks.supabase.key'),
+            'SUPABASE_STORAGE_SECRET_ACCESS_KEY' => config('filesystems.disks.supabase.secret'),
+            'SUPABASE_STORAGE_ENDPOINT' => config('filesystems.disks.supabase.endpoint'),
+        ];
+
+        if (in_array(null, $required, true) || in_array('', $required, true)) {
+            throw ValidationException::withMessages([
+                'image' => 'Supabase file storage is not fully configured. Please add the storage bucket, endpoint, access key, and secret key in Vercel.',
+            ]);
+        }
+
         $filename = now()->timestamp . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
         $extension = $file->getClientOriginalExtension();
         $path = trim($directory, '/') . '/' . $filename . ($extension ? '.' . $extension : '');
 
-        $disk = Storage::disk('supabase');
-        $disk->put($path, file_get_contents($file->getRealPath()), [
-            'visibility' => 'public',
-            'ContentType' => $file->getMimeType(),
-        ]);
+        try {
+            $disk = Storage::disk('supabase');
+            $disk->put($path, file_get_contents($file->getRealPath()), [
+                'visibility' => 'public',
+                'ContentType' => $file->getMimeType(),
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            throw ValidationException::withMessages([
+                'image' => 'The file could not be uploaded to Supabase Storage. Please check the Supabase storage credentials in Vercel.',
+            ]);
+        }
 
         return $disk->url($path);
     }
@@ -118,13 +140,25 @@ class AdminController extends Controller
         $validated = $this->validateProject($request);
         $validated['tech_stack'] = $this->resolveProjectTechStack($request);
         unset($validated['custom_tech_stack'], $validated['image']);
+        $warning = null;
 
-        if ($imagePath = $this->storeProjectImage($request)) {
-            $validated['image_path'] = $imagePath;
+        try {
+            if ($imagePath = $this->storeProjectImage($request)) {
+                $validated['image_path'] = $imagePath;
+            }
+        } catch (ValidationException $e) {
+            $warning = $e->errors()['image'][0] ?? 'The project was saved, but the preview image could not be uploaded.';
         }
 
         Project::create($validated);
-        return redirect()->back()->with('success', 'Project created.');
+
+        $redirect = redirect()->back()->with('success', 'Project created.');
+
+        if ($warning) {
+            $redirect->with('warning', $warning);
+        }
+
+        return $redirect;
     }
 
     public function updateProject(Request $request, string $id) {
@@ -132,15 +166,27 @@ class AdminController extends Controller
         $validated = $this->validateProject($request);
         $validated['tech_stack'] = $this->resolveProjectTechStack($request);
         unset($validated['custom_tech_stack'], $validated['image']);
+        $warning = null;
 
-        if ($imagePath = $this->storeProjectImage($request)) {
-            $this->deleteUpload($project->image_path);
+        try {
+            if ($imagePath = $this->storeProjectImage($request)) {
+                $this->deleteUpload($project->image_path);
 
-            $validated['image_path'] = $imagePath;
+                $validated['image_path'] = $imagePath;
+            }
+        } catch (ValidationException $e) {
+            $warning = $e->errors()['image'][0] ?? 'The project was updated, but the preview image could not be uploaded.';
         }
 
         $project->update($validated);
-        return redirect()->back()->with('success', 'Project updated.');
+
+        $redirect = redirect()->back()->with('success', 'Project updated.');
+
+        if ($warning) {
+            $redirect->with('warning', $warning);
+        }
+
+        return $redirect;
     }
 
     public function destroyProject(string $id) {

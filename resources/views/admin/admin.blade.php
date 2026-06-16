@@ -110,6 +110,13 @@
                 </div>
             @endif
 
+            @if(session('warning'))
+                <div class="alert alert-error">
+                    <i class="ti ti-alert-triangle"></i>
+                    {{ session('warning') }}
+                </div>
+            @endif
+
             @if($errors->any())
                 <div class="alert alert-error">
                     <i class="ti ti-alert-circle"></i>
