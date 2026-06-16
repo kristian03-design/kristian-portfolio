@@ -1,7 +1,7 @@
 <?php
 
 if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
-    $storagePath = '/tmp/laravel-storage';
+    $storagePath = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'laravel-storage';
 
     $_ENV['LARAVEL_STORAGE_PATH'] = $storagePath;
     $_SERVER['LARAVEL_STORAGE_PATH'] = $storagePath;
