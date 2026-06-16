@@ -72,7 +72,16 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
 try {
     require __DIR__ . '/../public/index.php';
 } catch (Throwable $e) {
-    error_log((string) $e);
+    for ($i = 0, $throwable = $e; $throwable !== null; $i++, $throwable = $throwable->getPrevious()) {
+        error_log(sprintf(
+            'APP_BOOT_ERROR[%d] %s: %s in %s:%d',
+            $i,
+            get_class($throwable),
+            $throwable->getMessage(),
+            $throwable->getFile(),
+            $throwable->getLine()
+        ));
+    }
 
     http_response_code(500);
     header('Content-Type: text/plain; charset=utf-8');
