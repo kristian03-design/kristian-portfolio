@@ -2,7 +2,6 @@
   "version": 2,
   "framework": null,
   "buildCommand": "composer install --no-dev --optimize-autoloader && npm ci && npm run build",
-  "outputDirectory": "public",
   "builds": [
     {
       "src": "api/index.php",
@@ -17,6 +16,10 @@
     {
       "src": "/images/(.*)",
       "dest": "/public/images/$1"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/public/uploads/$1"
     },
     {
       "src": "/resume/(.*)",
