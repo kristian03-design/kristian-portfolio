@@ -97,10 +97,10 @@
     };
 
     $dateRange = function ($experience) {
-        $start = Carbon::parse($experience->start_date)->format('Y');
+        $start = Carbon::parse($experience->start_date)->format('M Y');
         $end = $experience->is_current || ! $experience->end_date
             ? 'Now'
-            : Carbon::parse($experience->end_date)->format('Y');
+            : Carbon::parse($experience->end_date)->format('M Y');
 
         return $start . '<br>&mdash; ' . $end;
     };
