@@ -215,7 +215,7 @@
 
     <div class="r d1">
       <div class="about-body">
-        <p>I’m <strong>Kristian Lloyd DC. Hernandez</strong>, a BS Information Technology graduate with a passion for building practical software solutions that solve real-world problems.</p>
+        <p>I’m <strong>Kristian Lloyd DC. Hernandez</strong>, a <strong>Bachelor of Science in Information Technology</strong> graduate with a passion for building practical software solutions that solve real-world problems.</p>
         <p>My experience spans full-stack web development, database design, API integration, and responsive user interfaces. During my internship and personal projects, I developed systems that streamlined manual processes, improved data management, and enhanced user experience. </p>
         <p>Currently, I specialize in <strong>Laravel</strong>, <strong>PHP</strong>, <strong>MySQL</strong>, <strong>HTML</strong>, <strong>CSS</strong>, <strong>Javascript</strong>, and building full-stack systems from the ground up. I am committed to writing clean, maintainable code and delivering reliable digital solutions.</p>
 
