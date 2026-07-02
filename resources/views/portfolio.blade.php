@@ -129,7 +129,7 @@
       <li><a href="#contact" data-section="contact">Contact</a></li>
     </ul>
     <div class="nav-right">
-      <a href="{{ asset('resume/HERNANDEZ_KRISTIAN_RESUME 2025.pdf') }}" class="nav-resume">Resume &darr;</a>
+      <a href="{{ asset('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf') }}" class="nav-resume">Resume &darr;</a>
       <button class="nav-burger" id="burger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
