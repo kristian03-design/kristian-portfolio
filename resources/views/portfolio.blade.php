@@ -180,59 +180,6 @@
   </div>
 </section>
 
-<section class="highlights-deck" aria-label="Portfolio highlights">
-  <div class="highlights-deck-inner">
-    <div class="highlight-card" data-glow>
-      <div class="card-content">
-        <div class="card-header">
-          <span class="card-kicker">Core Stack</span>
-          <span class="card-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-          </span>
-        </div>
-        <div class="card-value">Laravel &amp; PHP</div>
-        <div class="card-desc">Robust backend architectures &amp; scalable APIs</div>
-      </div>
-    </div>
-    <div class="highlight-card" data-glow>
-      <div class="card-content">
-        <div class="card-header">
-          <span class="card-kicker">Data Layer</span>
-          <span class="card-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>
-          </span>
-        </div>
-        <div class="card-value">MySQL / Postgres</div>
-        <div class="card-desc">Normalized database schemas &amp; query tuning</div>
-      </div>
-    </div>
-    <div class="highlight-card" data-glow>
-      <div class="card-content">
-        <div class="card-header">
-          <span class="card-kicker">Interface</span>
-          <span class="card-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-          </span>
-        </div>
-        <div class="card-value">Responsive UI</div>
-        <div class="card-desc">Sleek, fluid, and accessibility-first layouts</div>
-      </div>
-    </div>
-    <div class="highlight-card" data-glow>
-      <div class="card-content">
-        <div class="card-header">
-          <span class="card-kicker">Current Status</span>
-          <span class="card-status-dot">
-            <span class="status-pulse"></span>
-            <span class="status-core"></span>
-          </span>
-        </div>
-        <div class="card-value">Open to Work</div>
-        <div class="card-desc">Available for Full-Time Junior/Associate Roles</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section id="services">
   <div class="s-in services-in">
