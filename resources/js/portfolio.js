@@ -169,3 +169,15 @@ contactForm?.addEventListener('submit', async event => {
     submit.disabled = false;
   }
 });
+
+// Cursor hover glow effect for highlight cards
+document.querySelectorAll('.highlight-card[data-glow]').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+  });
+});
+
