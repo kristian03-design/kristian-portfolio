@@ -104,6 +104,12 @@
 
         return $start . '<br>&mdash; ' . $end;
     };
+
+    $resumeVersion = '1.0.0';
+    $resumeFilePath = public_path('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf');
+    if (file_exists($resumeFilePath)) {
+        $resumeVersion = filemtime($resumeFilePath);
+    }
 @endphp
 
 <div id="progress"></div>
@@ -129,7 +135,7 @@
       <li><a href="#contact" data-section="contact">Contact</a></li>
     </ul>
     <div class="nav-right">
-      <a href="{{ asset('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf') }}" class="nav-resume">Resume &darr;</a>
+      <a href="{{ asset('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf') }}?v={{ $resumeVersion }}" class="nav-resume">Resume &darr;</a>
       <button class="nav-burger" id="burger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
