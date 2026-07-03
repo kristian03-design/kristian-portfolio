@@ -239,43 +239,55 @@ button {
   display: none;
 }
 
-/* === MARQUEE === */
-.marquee-strip {
-  background: var(--ink);
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 10px 0;
+/* === FOCUS STRIP === */
+.focus-strip {
+  background: #101010;
+  border-top: 1px solid rgba(245, 244, 240, .08);
+  border-bottom: 1px solid rgba(245, 244, 240, .08);
 }
 
-.marquee-track {
-  display: inline-flex;
-  gap: 0;
-  animation: marquee 22s linear infinite;
+.focus-strip-inner {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1.15rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
 }
 
-.marquee-track span {
-  display: inline-block;
-  font-size: .62rem;
-  font-weight: 600;
-  letter-spacing: .2em;
+.focus-item {
+  min-height: 52px;
+  padding: .25rem 1.5rem;
+  border-left: 1px solid rgba(245, 244, 240, .08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .35rem;
+}
+
+.focus-item:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.focus-kicker,
+.focus-value {
+  display: block;
   text-transform: uppercase;
-  color: rgba(245, 244, 240, .35);
-  padding: 0 2.5rem;
 }
 
-.marquee-track .dot {
+.focus-kicker {
+  font-size: .56rem;
+  font-weight: 700;
+  letter-spacing: .18em;
   color: var(--lime);
-  padding: 0;
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+.focus-value {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: rgba(245, 244, 240, .84);
 }
 
 /* === HERO === */
@@ -774,9 +786,9 @@ section {
 }
 
 .a-body {
-  font-size: .72rem;
-  line-height: 1.6;
-  color: var(--ink-40);
+  font-size: .76rem;
+  line-height: 1.7;
+  color: rgba(13, 13, 13, .68);
 }
 
 /* === PROJECTS === */

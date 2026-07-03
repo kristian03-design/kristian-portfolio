@@ -180,13 +180,26 @@
   </div>
 </section>
 
-<div class="marquee-strip">
-  <div class="marquee-track">
-    @foreach (['Laravel', 'Flutter', 'Full-Stack Developer', 'MySQL', 'Tailwind CSS', 'REST API', 'Bulacan, PH', 'Open to Work', 'Laravel', 'Flutter', 'Full-Stack Developer', 'MySQL', 'Tailwind CSS', 'REST API', 'Bulacan, PH', 'Open to Work'] as $item)
-      <span>{{ $item }}</span><span class="dot">&bull;</span>
-    @endforeach
+<section class="focus-strip" aria-label="Portfolio highlights">
+  <div class="focus-strip-inner">
+    <div class="focus-item">
+      <span class="focus-kicker">Core Stack</span>
+      <span class="focus-value">Laravel / PHP</span>
+    </div>
+    <div class="focus-item">
+      <span class="focus-kicker">Data Layer</span>
+      <span class="focus-value">MySQL / PostgreSQL</span>
+    </div>
+    <div class="focus-item">
+      <span class="focus-kicker">Interface</span>
+      <span class="focus-value">Responsive UI</span>
+    </div>
+    <div class="focus-item">
+      <span class="focus-kicker">Status</span>
+      <span class="focus-value">Open to Work</span>
+    </div>
   </div>
-</div>
+</section>
 
 <section id="services">
   <div class="s-in services-in">
