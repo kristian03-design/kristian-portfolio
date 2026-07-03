@@ -180,6 +180,14 @@
   </div>
 </section>
 
+<div class="marquee-strip" aria-hidden="true">
+  <div class="marquee-track">
+    @foreach (['Laravel', 'Flutter', 'Full-Stack Developer', 'MySQL', 'Tailwind CSS', 'REST API', 'Bulacan, PH', 'Open to Work', 'Laravel', 'Flutter', 'Full-Stack Developer', 'MySQL', 'Tailwind CSS', 'REST API', 'Bulacan, PH', 'Open to Work'] as $item)
+      <span class="marquee-item">{{ $item }}</span>
+      <span class="marquee-dot"></span>
+    @endforeach
+  </div>
+</div>
 
 <section id="services">
   <div class="s-in services-in">
