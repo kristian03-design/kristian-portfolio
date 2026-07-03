@@ -108,7 +108,7 @@
     $resumeVersion = '1.0.0';
     $resumeFilePath = public_path('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf');
     if (file_exists($resumeFilePath)) {
-        $resumeVersion = filemtime($resumeFilePath);
+        $resumeVersion = substr(md5_file($resumeFilePath) ?: '1.0.0', 0, 8);
     }
 @endphp
 
