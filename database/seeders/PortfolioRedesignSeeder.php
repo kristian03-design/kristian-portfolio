@@ -20,7 +20,7 @@ class PortfolioRedesignSeeder extends Seeder
                 'title' => 'BTECH Admission System',
                 'slug' => 'btech-admissions',
                 'description' => 'An automated system for handling student applications, entrance exams, and enrollment workflows for a technical college.',
-                'image_path' => '/images/projects/btech-admissions-desktop.png',
+                'image_path' => '/images/btech-admissions.png',
                 'url' => 'https://btech-admissions.example.com',
                 'github_url' => 'https://github.com/kristian03-design/btech-admission',
                 'tech_stack' => ['Laravel', 'PHP', 'Tailwind CSS', 'MySQL', 'Vite', 'REST API', 'Git'],
