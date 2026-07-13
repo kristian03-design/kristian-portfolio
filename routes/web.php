@@ -34,7 +34,10 @@ RateLimiter::for('contact', function (Request $request) {
 
 Route::get('/', [PortfolioController::class, 'index'])->name('home')->withoutMiddleware($statelessPublic);
 Route::get('/home', [PortfolioController::class, 'index'])->withoutMiddleware($statelessPublic);
+Route::get('/resume', [PortfolioController::class, 'viewResume'])->name('resume.view')->withoutMiddleware($statelessPublic);
+Route::get('/resume/download', [PortfolioController::class, 'downloadResume'])->name('resume.download')->withoutMiddleware($statelessPublic);
 Route::get('/projects', [PortfolioController::class, 'projects'])->name('projects.index')->withoutMiddleware($statelessPublic);
+Route::get('/projects/{project:slug}', [PortfolioController::class, 'show'])->name('projects.show')->withoutMiddleware($statelessPublic);
 Route::get('/api/portfolio', [PortfolioController::class, 'data'])->name('portfolio.data')->withoutMiddleware($statelessPublic);
 Route::get('/api/projects', [PortfolioController::class, 'projectData'])->name('portfolio.projects.data')->withoutMiddleware($statelessPublic);
 Route::get('/api/skills', [PortfolioController::class, 'skillData'])->name('portfolio.skills.data')->withoutMiddleware($statelessPublic);

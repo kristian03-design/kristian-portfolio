@@ -1,18 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kristian Hernandez &mdash; Web &amp; Mobile Developer</title>
-<meta name="description" content="Full-stack web and mobile developer based in Bulacan, Philippines. Laravel, Flutter, clean architecture.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="icon" type="image/svg+xml" href="{{ asset('images/chibi-logo.png') }}">
+@extends('layouts.app')
 
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-@vite(['resources/css/portfolio.css', 'resources/js/portfolio.js'])
-</head>
-<body>
+@section('title', 'Kristian Hernandez — Web & Mobile Developer')
+
+@section('mobile_menu_links')
+  <a href="#about" class="mm-link">About</a>
+  <a href="#projects" class="mm-link">Projects</a>
+  <a href="#skills" class="mm-link">Skills</a>
+  <a href="#certifications" class="mm-link">Certifications</a>
+  <a href="#experience" class="mm-link">Experience</a>
+  <a href="#contact" class="mm-link">Contact</a>
+@endsection
+
+@section('navigation')
+  <x-nav />
+@endsection
+
+@section('content')
 @php
     use Illuminate\Support\Carbon;
     use Illuminate\Support\Str;
@@ -23,11 +26,6 @@
         ? max(1, Carbon::parse($firstExperience->start_date)->diffInYears(now()) + 1)
         : 3;
     $skillsByCategory = $skills->groupBy('category');
-
-    $projectInitials = function ($title) {
-        $words = preg_split('/\s+/', trim($title));
-        return collect($words)->filter()->take(2)->map(fn($word) => strtoupper(substr($word, 0, 1)))->implode('');
-    };
 
     $skillIconMap = [
         'html' => 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
@@ -104,44 +102,7 @@
 
         return $start . '<br>&mdash; ' . $end;
     };
-
-    $resumeVersion = '1.0.0';
-    $resumeFilePath = public_path('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf');
-    if (file_exists($resumeFilePath)) {
-        $resumeVersion = substr(md5_file($resumeFilePath) ?: '1.0.0', 0, 8);
-    }
 @endphp
-
-<div id="progress"></div>
-
-<div id="mobile-menu">
-  <a href="#about" class="mm-link">About</a>
-  <a href="#projects" class="mm-link">Projects</a>
-  <a href="#skills" class="mm-link">Skills</a>
-  <a href="#certifications" class="mm-link">Certifications</a>
-  <a href="#experience" class="mm-link">Experience</a>
-  <a href="#contact" class="mm-link">Contact</a>
-</div>
-
-<nav id="nav">
-  <div class="nav-inner">
-    <a href="#hero" class="nav-logo">Kristian<span class="nav-logo-dot">.</span></a>
-    <ul class="nav-links">
-      <li><a href="#about" data-section="about">About</a></li>
-      <li><a href="#projects" data-section="projects">Projects</a></li>
-      <li><a href="#skills" data-section="skills">Skills</a></li>
-      <li><a href="#certifications" data-section="certifications">Certifications</a></li>
-      <li><a href="#experience" data-section="experience">Experience</a></li>
-      <li><a href="#contact" data-section="contact">Contact</a></li>
-    </ul>
-    <div class="nav-right">
-      <a href="{{ asset('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf') }}?v={{ $resumeVersion }}" class="nav-resume">Resume &darr;</a>
-      <button class="nav-burger" id="burger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</nav>
 
 <section id="hero">
   <div class="hero-ghost">KH</div>
@@ -276,36 +237,7 @@
 
     <div class="proj-grid">
       @forelse ($projects as $project)
-        <article class="proj-card r d{{ $loop->index % 4 }}">
-          <div class="proj-thumb">
-            @if ($project->image_path)
-              <img class="proj-image" src="{{ asset(ltrim($project->image_path, '/')) }}" alt="{{ $project->title }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}">
-            @else
-              <div class="proj-thumb-text">{{ $projectInitials($project->title) ?: 'KH' }}</div>
-            @endif
-            <div class="proj-arrow">
-              <svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-            </div>
-          </div>
-          <div class="proj-body">
-            <div class="proj-idx">/ {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</div>
-            <h3 class="proj-title">{{ $project->title }}</h3>
-            <div class="proj-tags">
-              @foreach (($project->tech_stack ?? []) as $tech)
-                <span class="p-tag">{{ $tech }}</span>
-              @endforeach
-            </div>
-            <p class="proj-desc">{{ Str::limit(strip_tags($project->description), 260) }}</p>
-            <div class="proj-links">
-              @if ($project->url)
-                <a href="{{ $project->url }}" target="_blank" rel="noopener" class="pl-live">Live Demo</a>
-              @endif
-              @if ($project->github_url)
-                <a href="{{ $project->github_url }}" target="_blank" rel="noopener" class="pl-code">Source</a>
-              @endif
-            </div>
-          </div>
-        </article>
+        <x-project-card :project="$project" :loop="$loop" />
       @empty
         <div class="empty-state">Projects will appear here once they are published from the CMS.</div>
       @endforelse
@@ -534,12 +466,6 @@
   </div>
 </section>
 
-<footer>
-  <span class="footer-logo">Kristian<span>.</span></span>
-  <span>&copy; {{ date('Y') }} Kristian Hernandez &mdash; All rights reserved</span>
-  <span>Bulacan, Philippines</span>
-</footer>
-
 <div class="welcome-modal" id="welcome-modal" aria-hidden="true">
   <div class="welcome-backdrop" data-welcome-close></div>
   <section class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
@@ -558,45 +484,4 @@
     </blockquote>
   </section>
 </div>
-
-<!-- Lightbox Modal for Certifications -->
-<div id="portfolio-lightbox" class="lightbox-modal" onclick="closeLightbox()">
-  <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-  <img class="lightbox-content" id="lightbox-img" alt="Certificate Zoom">
-  <div id="lightbox-caption" class="lightbox-caption"></div>
-</div>
-
-<script>
-  function openLightbox(imgUrl, captionText) {
-    const lightbox = document.getElementById('portfolio-lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxCaption = document.getElementById('lightbox-caption');
-    
-    if (lightbox && lightboxImg) {
-      lightboxImg.src = imgUrl;
-      if (lightboxCaption) {
-        lightboxCaption.innerHTML = captionText;
-      }
-      lightbox.style.display = 'block';
-      document.body.style.overflow = 'hidden'; // Disable page scrolling
-    }
-  }
-
-  function closeLightbox() {
-    const lightbox = document.getElementById('portfolio-lightbox');
-    if (lightbox) {
-      lightbox.style.display = 'none';
-      document.body.style.overflow = ''; // Re-enable page scrolling
-    }
-  }
-
-  // Close lightbox on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeLightbox();
-    }
-  });
-</script>
-
-</body>
-</html>
+@endsection

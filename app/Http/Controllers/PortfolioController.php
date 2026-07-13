@@ -155,6 +155,37 @@ class PortfolioController extends Controller
         }
     }
 
+    public function viewResume()
+    {
+        $filePath = public_path('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf');
+        if (!file_exists($filePath)) {
+            return response()->view('resume.error', [], 404);
+        }
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="HERNANDEZ_KRISTIAN_RESUME_2025.pdf"'
+        ]);
+    }
+
+    public function downloadResume()
+    {
+        $filePath = public_path('resume/HERNANDEZ_KRISTIAN_RESUME_2025.pdf');
+        if (!file_exists($filePath)) {
+            return redirect()->route('resume.view');
+        }
+        return response()->download($filePath, 'HERNANDEZ_KRISTIAN_RESUME_2025.pdf');
+    }
+
+    public function show(Project $project)
+    {
+        $relatedProjects = Project::where('id', '!=', $project->id)
+            ->orderBy('order', 'asc')
+            ->take(4)
+            ->get();
+
+        return view('projects.show', compact('project', 'relatedProjects'));
+    }
+
     private function safeCollection(string $label, callable $query)
     {
         try {
