@@ -33,6 +33,7 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
             'gif' => 'image/gif',
             'svg' => 'image/svg+xml',
             'ico' => 'image/x-icon',
+            'webp' => 'image/webp',
             'pdf' => 'application/pdf',
             'txt' => 'text/plain; charset=utf-8',
             'woff' => 'font/woff',
