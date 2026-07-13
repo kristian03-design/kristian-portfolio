@@ -1449,25 +1449,30 @@
 /* Scrollable form body */
 .details-form-body {
     flex: 1;
-    overflow: hidden;
+    min-height: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 /* Tab panels */
 .dtab-panel {
     display: none;
+}
+.dtab-panel.active {
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
 }
-.dtab-panel.active { display: flex; flex-direction: column; }
 
 .dtab-panel-inner {
-    padding: 24px 24px 0;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    flex: 1;
+    flex-shrink: 0; /* let content grow naturally, don't stretch */
 }
 
 /* Section label (inside drawer) */

@@ -1385,17 +1385,17 @@
                 </div>
             </div>
         </div>
-
-        {{-- Footer save button --}}
-        <div class="details-drawer-footer">
-            <a id="details-footer-view-link" href="#" target="_blank" class="btn btn-ghost btn-sm">
-                <i class="ti ti-external-link"></i>View Page
-            </a>
-            <button type="submit" class="btn btn-primary" id="details-save-btn">
-                <i class="ti ti-device-floppy"></i>Save Details
-            </button>
-        </div>
     </form>
+
+    {{-- Footer save button — outside form so it's never clipped --}}
+    <div class="details-drawer-footer">
+        <a id="details-footer-view-link" href="#" target="_blank" class="btn btn-ghost btn-sm">
+            <i class="ti ti-external-link"></i>View Page
+        </a>
+        <button type="submit" form="details-form" class="btn btn-primary" id="details-save-btn">
+            <i class="ti ti-device-floppy"></i>Save Details
+        </button>
+    </div>
 </aside>
 
 <div id="reply-modal" class="modal-overlay hidden" onclick="closeReplyModal(event)">
