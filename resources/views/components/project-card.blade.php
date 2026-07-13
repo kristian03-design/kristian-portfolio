@@ -32,9 +32,6 @@
       @if ($project->url && $project->url !== '#')
         <a href="{{ $project->url }}" target="_blank" rel="noopener noreferrer" class="pl-live">Live Demo</a>
       @endif
-      @if ($project->github_url)
-        <a href="{{ $project->github_url }}" target="_blank" rel="noopener noreferrer" class="pl-code">GitHub</a>
-      @endif
     </div>
   </div>
 </article>

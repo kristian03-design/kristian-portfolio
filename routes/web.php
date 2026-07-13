@@ -54,6 +54,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     // API-like routes for admin panel (since UI is single page)
     Route::post('/admin/projects', [AdminController::class, 'storeProject']);
     Route::patch('/admin/projects/{id}', [AdminController::class, 'updateProject']);
+    Route::patch('/admin/projects/{id}/details', [AdminController::class, 'updateProjectDetails']);
     Route::delete('/admin/projects/{id}', [AdminController::class, 'destroyProject']);
 
     Route::post('/admin/skills', [AdminController::class, 'storeSkill']);

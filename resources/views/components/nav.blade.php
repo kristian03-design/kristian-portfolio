@@ -39,7 +39,7 @@
     <div class="nav-right">
       <div class="nav-resume-wrapper">
         <a href="{{ route('resume.view') }}" target="_blank" rel="noopener noreferrer" class="nav-resume-premium btn-view-resume" aria-label="View Resume in a new tab">
-          <span class="btn-icon">📄</span> <span class="btn-text">View Resume</span> <span class="nav-arrow">↗</span>
+          <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <span class="nav-arrow">↗</span>
         </a>
         <a href="{{ route('resume.download') }}" class="nav-resume-premium btn-download-resume" title="Download Resume" aria-label="Download Resume PDF">
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">

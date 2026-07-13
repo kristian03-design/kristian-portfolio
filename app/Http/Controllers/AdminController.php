@@ -288,6 +288,53 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Project deleted.');
     }
 
+    public function updateProjectDetails(Request $request, string $id) {
+        $project = Project::findOrFail($id);
+
+        $request->validate([
+            'slug'              => 'nullable|string|max:255',
+            'category'          => 'nullable|string|max:100',
+            'status'            => 'nullable|string|max:100',
+            'duration'          => 'nullable|string|max:100',
+            'role'              => 'nullable|string|max:100',
+            'documentation_url' => 'nullable|url|max:500',
+            'video_demo_url'    => 'nullable|string|max:500',
+            // JSON fields are sent as raw JSON strings from the form
+            'metrics'           => 'nullable|string',
+            'overview'          => 'nullable|string',
+            'gallery'           => 'nullable|string',
+            'features'          => 'nullable|string',
+            'architecture'      => 'nullable|string',
+            'challenges'        => 'nullable|string',
+            'timeline'          => 'nullable|string',
+            'performance'       => 'nullable|string',
+            'security_details'  => 'nullable|string',
+        ]);
+
+        $jsonFields = ['metrics','overview','gallery','features','architecture','challenges','timeline','performance','security_details'];
+
+        $data = $request->only(['slug','category','status','duration','role','documentation_url','video_demo_url']);
+
+        // Decode each JSON string field; skip if invalid/empty
+        foreach ($jsonFields as $field) {
+            $raw = $request->input($field);
+            if ($raw && $raw !== 'null') {
+                $decoded = json_decode($raw, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $data[$field] = $decoded;
+                }
+            } else {
+                $data[$field] = null;
+            }
+        }
+
+        $project->update($data);
+        $this->clearPortfolioCache();
+
+        return redirect()->route('admin.dashboard', ['tab' => 'projects'])
+                         ->with('success', 'Project details updated for "' . $project->title . '".');
+    }
+
     public function storeSkill(Request $request) {
         $validated = $request->validate([
             'names' => 'nullable|array',

@@ -799,3 +799,313 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// ===================================================================================
+// PROJECT DETAILS DRAWER
+// ===================================================================================
+(function () {
+    const overlay  = document.getElementById('details-overlay');
+    const drawer   = document.getElementById('details-drawer');
+    const form     = document.getElementById('details-form');
+    if (!drawer || !form) return;
+
+    let currentSlug = '';
+
+    // ── Open / Close ──────────────────────────────────────────────────────────────
+    function openDetailsDrawer(projectId) {
+        const dataEl = document.getElementById(`project-data-${projectId}`);
+        if (!dataEl) return;
+
+        let p;
+        try { p = JSON.parse(dataEl.textContent); }
+        catch (e) { console.error('Details drawer: bad JSON', e); return; }
+
+        // Set form action
+        form.action = `/admin/projects/${p.id}/details`;
+        currentSlug = p.slug || '';
+
+        // Project name in header
+        document.getElementById('details-drawer-project-name').textContent = p.title;
+
+        // View-page links
+        const viewUrl = currentSlug ? `/projects/${currentSlug}` : '#';
+        document.getElementById('details-view-link').href = viewUrl;
+        document.getElementById('details-footer-view-link').href = viewUrl;
+
+        // Populate all fields
+        populateMeta(p);
+        populateMetrics(p.metrics || {});
+        populateOverview(p.overview || {});
+        populateFeatures(p.features || []);
+        populateArchitecture(p.architecture || {});
+        populateChallenges(p.challenges || {});
+        populateTimeline(p.timeline || {});
+        populatePerformance(p.performance || {});
+        populateSecurity(p.security_details || {});
+        populateGallery(p.gallery || {});
+
+        // Reset to first tab
+        switchDTab('meta');
+
+        overlay.classList.remove('hidden');
+        drawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    window.closeDetailsDrawer = function (e) {
+        if (e && e.target !== overlay) return; // only close when clicking overlay itself, or direct call
+        overlay.classList.add('hidden');
+        drawer.classList.remove('open');
+        document.body.style.overflow = '';
+    };
+
+    // Close on Esc
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('open')) {
+            overlay.classList.add('hidden');
+            drawer.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Attach to all "Details" buttons
+    document.querySelectorAll('.project-details-btn').forEach(btn => {
+        btn.addEventListener('click', () => openDetailsDrawer(btn.dataset.projectId));
+    });
+
+    // ── Inner tab switching ────────────────────────────────────────────────────────
+    function switchDTab(name) {
+        document.querySelectorAll('.dtab').forEach(t => t.classList.toggle('active', t.dataset.dtab === name));
+        document.querySelectorAll('.dtab-panel').forEach(p => p.classList.toggle('active', p.id === `dpanel-${name}`));
+    }
+    document.querySelectorAll('.dtab').forEach(t => {
+        t.addEventListener('click', () => switchDTab(t.dataset.dtab));
+    });
+
+    // ── Populate helpers ──────────────────────────────────────────────────────────
+    function val(id, value) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = value ?? '';
+    }
+
+    function populateMeta(p) {
+        val('d-slug',              p.slug);
+        val('d-category',          p.category);
+        val('d-duration',          p.duration);
+        val('d-role',              p.role);
+        val('d-documentation_url', p.documentation_url);
+        val('d-video_demo_url',    p.video_demo_url);
+        const statusEl = document.getElementById('d-status');
+        if (statusEl) statusEl.value = p.status || 'Completed';
+    }
+
+    function populateMetrics(m) {
+        val('dm-loc',              m.loc);
+        val('dm-db_tables',        m.db_tables);
+        val('dm-api_endpoints',    m.api_endpoints);
+        val('dm-modules',          m.modules);
+        val('dm-completion_date',  m.completion_date);
+        val('dm-development_time', m.development_time);
+    }
+
+    function populateOverview(o) {
+        val('dov-what',             o.what);
+        val('dov-why',              o.why);
+        val('dov-target_users',     o.target_users);
+        val('dov-business_purpose', o.business_purpose);
+        val('dov-expected_outcome', o.expected_outcome);
+    }
+
+    function populateArchitecture(a) {
+        val('da-system_architecture', a.system_architecture);
+        val('da-auth_flow',           a.auth_flow);
+        val('da-api_flow',            a.api_flow);
+        val('da-database_erd',        a.database_erd);
+        val('da-folder_structure',    a.folder_structure);
+    }
+
+    function populateChallenges(c) {
+        val('dc-problem',  c.problem);
+        val('dc-solution', c.solution);
+        val('dc-result',   c.result);
+    }
+
+    function populatePerformance(perf) {
+        val('dp-performance_score', perf.performance_score);
+        val('dp-accessibility',     perf.accessibility);
+        val('dp-lazy_loading',      perf.lazy_loading);
+        val('dp-caching',           perf.caching);
+        val('dp-image_optimization',perf.image_optimization);
+        val('dp-seo',               perf.seo);
+    }
+
+    function populateGallery(g) {
+        val('dg-desktop', g.desktop);
+        val('dg-tablet',  g.tablet);
+        val('dg-mobile',  g.mobile);
+    }
+
+    // ── Dynamic rows ─────────────────────────────────────────────────────────────
+    function makeFeaturesRow(title = '', description = '') {
+        const row = document.createElement('div');
+        row.className = 'dynamic-row feature-row';
+        row.innerHTML = `
+            <div class="field-group" style="margin:0;">
+                <label style="font-size:11px;">Title</label>
+                <input type="text" class="field feat-title" value="${escHtml(title)}" placeholder="Feature title">
+            </div>
+            <div class="field-group" style="margin:0;">
+                <label style="font-size:11px;">Description</label>
+                <textarea class="field feat-desc" rows="2" placeholder="Feature description...">${escHtml(description)}</textarea>
+            </div>
+            <button type="button" class="dynamic-row-remove" title="Remove">✕</button>`;
+        row.querySelector('.dynamic-row-remove').addEventListener('click', () => row.remove());
+        return row;
+    }
+
+    function makeKVRow(key = '', value = '', keyPlaceholder = 'Key', valuePlaceholder = 'Description') {
+        const row = document.createElement('div');
+        row.className = 'dynamic-row kv-row';
+        row.innerHTML = `
+            <div class="field-group" style="margin:0;">
+                <label style="font-size:11px;">Label / Key</label>
+                <input type="text" class="field kv-key" value="${escHtml(key)}" placeholder="${escHtml(keyPlaceholder)}">
+            </div>
+            <div class="field-group" style="margin:0;">
+                <label style="font-size:11px;">Description</label>
+                <textarea class="field kv-val" rows="2" placeholder="${escHtml(valuePlaceholder)}">${escHtml(value)}</textarea>
+            </div>
+            <button type="button" class="dynamic-row-remove" title="Remove">✕</button>`;
+        row.querySelector('.dynamic-row-remove').addEventListener('click', () => row.remove());
+        return row;
+    }
+
+    function populateFeatures(features) {
+        const list = document.getElementById('features-list');
+        list.innerHTML = '';
+        if (Array.isArray(features)) {
+            features.forEach(f => list.appendChild(makeFeaturesRow(f.title, f.description)));
+        }
+    }
+
+    function populateTimeline(timeline) {
+        const list = document.getElementById('timeline-list');
+        list.innerHTML = '';
+        if (timeline && typeof timeline === 'object') {
+            Object.entries(timeline).forEach(([k, v]) => list.appendChild(makeKVRow(k, v, 'Phase name', 'Phase description')));
+        }
+    }
+
+    function populateSecurity(sec) {
+        const list = document.getElementById('security-list');
+        list.innerHTML = '';
+        if (sec && typeof sec === 'object') {
+            Object.entries(sec).forEach(([k, v]) => list.appendChild(makeKVRow(k, v, 'Guard / Label', 'Security detail')));
+        }
+    }
+
+    // Add-row buttons
+    document.getElementById('add-feature-btn')?.addEventListener('click', () => {
+        document.getElementById('features-list').appendChild(makeFeaturesRow());
+    });
+    document.getElementById('add-timeline-btn')?.addEventListener('click', () => {
+        document.getElementById('timeline-list').appendChild(makeKVRow('', '', 'Phase name', 'Phase description'));
+    });
+    document.getElementById('add-security-btn')?.addEventListener('click', () => {
+        document.getElementById('security-list').appendChild(makeKVRow('', '', 'Guard / Label', 'Security detail'));
+    });
+
+    // ── Pre-submit: serialize dynamic fields into hidden JSON inputs ──────────────
+    form.addEventListener('submit', (e) => {
+        // Metrics
+        setJson('d-json-metrics', {
+            loc:              document.getElementById('dm-loc')?.value.trim() || null,
+            db_tables:        document.getElementById('dm-db_tables')?.value.trim() || null,
+            api_endpoints:    document.getElementById('dm-api_endpoints')?.value.trim() || null,
+            modules:          document.getElementById('dm-modules')?.value.trim() || null,
+            completion_date:  document.getElementById('dm-completion_date')?.value.trim() || null,
+            development_time: document.getElementById('dm-development_time')?.value.trim() || null,
+        });
+
+        // Overview
+        setJson('d-json-overview', {
+            what:             document.getElementById('dov-what')?.value.trim() || null,
+            why:              document.getElementById('dov-why')?.value.trim() || null,
+            target_users:     document.getElementById('dov-target_users')?.value.trim() || null,
+            business_purpose: document.getElementById('dov-business_purpose')?.value.trim() || null,
+            expected_outcome: document.getElementById('dov-expected_outcome')?.value.trim() || null,
+        });
+
+        // Gallery
+        setJson('d-json-gallery', {
+            desktop: document.getElementById('dg-desktop')?.value.trim() || null,
+            tablet:  document.getElementById('dg-tablet')?.value.trim() || null,
+            mobile:  document.getElementById('dg-mobile')?.value.trim() || null,
+        });
+
+        // Features (array)
+        const features = [];
+        document.querySelectorAll('#features-list .feature-row').forEach(row => {
+            const title = row.querySelector('.feat-title')?.value.trim();
+            const desc  = row.querySelector('.feat-desc')?.value.trim();
+            if (title) features.push({ title, description: desc || '' });
+        });
+        setJson('d-json-features', features.length ? features : null);
+
+        // Architecture
+        setJson('d-json-architecture', {
+            system_architecture: document.getElementById('da-system_architecture')?.value.trim() || null,
+            auth_flow:           document.getElementById('da-auth_flow')?.value.trim() || null,
+            api_flow:            document.getElementById('da-api_flow')?.value.trim() || null,
+            database_erd:        document.getElementById('da-database_erd')?.value.trim() || null,
+            folder_structure:    document.getElementById('da-folder_structure')?.value.trim() || null,
+        });
+
+        // Challenges
+        setJson('d-json-challenges', {
+            problem:  document.getElementById('dc-problem')?.value.trim() || null,
+            solution: document.getElementById('dc-solution')?.value.trim() || null,
+            result:   document.getElementById('dc-result')?.value.trim() || null,
+        });
+
+        // Timeline (object: key → description)
+        const timeline = {};
+        document.querySelectorAll('#timeline-list .kv-row').forEach(row => {
+            const k = row.querySelector('.kv-key')?.value.trim();
+            const v = row.querySelector('.kv-val')?.value.trim();
+            if (k) timeline[k] = v || '';
+        });
+        setJson('d-json-timeline', Object.keys(timeline).length ? timeline : null);
+
+        // Performance
+        setJson('d-json-performance', {
+            performance_score: document.getElementById('dp-performance_score')?.value || null,
+            accessibility:     document.getElementById('dp-accessibility')?.value || null,
+            lazy_loading:      document.getElementById('dp-lazy_loading')?.value.trim() || null,
+            caching:           document.getElementById('dp-caching')?.value.trim() || null,
+            image_optimization:document.getElementById('dp-image_optimization')?.value.trim() || null,
+            seo:               document.getElementById('dp-seo')?.value.trim() || null,
+        });
+
+        // Security (object: key → description)
+        const security = {};
+        document.querySelectorAll('#security-list .kv-row').forEach(row => {
+            const k = row.querySelector('.kv-key')?.value.trim();
+            const v = row.querySelector('.kv-val')?.value.trim();
+            if (k) security[k] = v || '';
+        });
+        setJson('d-json-security_details', Object.keys(security).length ? security : null);
+    });
+
+    function setJson(id, data) {
+        const el = document.getElementById(id);
+        if (el) el.value = data !== null ? JSON.stringify(data) : 'null';
+    }
+
+    function escHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+})();
+

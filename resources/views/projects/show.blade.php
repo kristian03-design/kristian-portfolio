@@ -213,46 +213,6 @@
       <hr class="s-rule" style="margin: 4rem 0;">
     @endif
 
-    <!-- Architecture Section -->
-    @if(!empty($project->architecture))
-      <section class="details-section r d1">
-        <h2 class="section-title-small">System Architecture</h2>
-        <div class="architecture-grid">
-          <div class="architecture-main">
-            <h3 class="arch-sub-title">System Overview</h3>
-            <p>{{ $project->architecture['system_architecture'] }}</p>
-
-            <h3 class="arch-sub-title" style="margin-top: 2rem;">Authentication Flow</h3>
-            <div class="flow-chart-block">
-              <code class="flow-code">{{ $project->architecture['auth_flow'] }}</code>
-            </div>
-
-            <h3 class="arch-sub-title" style="margin-top: 2rem;">API Communication Flow</h3>
-            <div class="flow-chart-block">
-              <code class="flow-code">{{ $project->architecture['api_flow'] }}</code>
-            </div>
-          </div>
-          
-          <div class="architecture-sidebar">
-            <div class="sidebar-block schema-block">
-              <h4>Database ERD Schema</h4>
-              <div class="schema-code-wrapper">
-                <pre class="schema-pre"><code>{{ $project->architecture['database_erd'] }}</code></pre>
-              </div>
-            </div>
-            <div class="sidebar-block schema-block" style="margin-top: 2rem;">
-              <h4>Directory Structure</h4>
-              <div class="schema-code-wrapper">
-                <pre class="schema-pre"><code>{{ $project->architecture['folder_structure'] }}</code></pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <hr class="s-rule" style="margin: 4rem 0;">
-    @endif
-
     <!-- Challenges Section -->
     @if(!empty($project->challenges))
       <section class="details-section r d1">

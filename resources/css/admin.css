@@ -1352,3 +1352,205 @@
             color: var(--danger);
             font-weight: 500;
         }
+
+/* =====================================================================================
+   PROJECT DETAILS DRAWER
+   ===================================================================================== */
+
+/* Backdrop overlay */
+.details-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(2px);
+    z-index: 900;
+    transition: opacity 0.25s ease;
+}
+.details-overlay.hidden { display: none; }
+
+/* Drawer panel (slides in from right) */
+.details-drawer {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100vh;
+    width: min(780px, 100vw);
+    background: var(--surface);
+    border-left: 1px solid var(--border2);
+    display: flex;
+    flex-direction: column;
+    z-index: 901;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+.details-drawer.open { transform: translateX(0); }
+
+/* Drawer header */
+.details-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    background: var(--surface);
+}
+.details-drawer-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+.details-drawer-title i {
+    color: var(--accent);
+    font-size: 18px;
+}
+.details-drawer-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Inner drawer tab nav */
+.details-tab-nav {
+    display: flex;
+    flex-shrink: 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    gap: 0;
+    scrollbar-width: none;
+}
+.details-tab-nav::-webkit-scrollbar { display: none; }
+
+.dtab {
+    padding: 10px 16px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+}
+.dtab:hover { color: var(--text); }
+.dtab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: var(--surface);
+}
+
+/* Scrollable form body */
+.details-form-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tab panels */
+.dtab-panel {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+}
+.dtab-panel.active { display: flex; flex-direction: column; }
+
+.dtab-panel-inner {
+    padding: 24px 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+
+/* Section label (inside drawer) */
+.details-section-label {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* 2-column grid for fields inside drawer */
+.d-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+@media (max-width: 600px) {
+    .d-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* Monospace textarea for code/flows */
+.field-mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    resize: vertical;
+}
+
+/* Dynamic list (features, timeline, security) */
+.dynamic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.dynamic-row {
+    display: grid;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    position: relative;
+}
+.dynamic-row.feature-row { grid-template-columns: 1fr 2fr auto; align-items: start; }
+.dynamic-row.kv-row      { grid-template-columns: 1fr 2fr auto; align-items: start; }
+.dynamic-row-remove {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    font-size: 16px;
+    line-height: 1;
+    align-self: center;
+    transition: background 0.15s;
+}
+.dynamic-row-remove:hover { background: rgba(184,58,58,0.1); }
+
+/* Drawer footer */
+.details-drawer-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+}
+
+/* Details button style in project card */
+.project-details-btn {
+    color: var(--accent2);
+    border-color: transparent;
+}
+.project-details-btn:hover {
+    background: rgba(55,117,111,0.1);
+    color: var(--accent2);
+}
+
