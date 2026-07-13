@@ -1,5 +1,5 @@
 <?php
-$url = "https://kldc.vercel.app/images/btech-admissions.webp";
+$url = "https://kldc.vercel.app/media/uploads/projects/1783962514_courtconnect.png";
 echo "Fetching: $url\n";
 
 $ch = curl_init($url);
