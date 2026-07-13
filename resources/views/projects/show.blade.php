@@ -30,7 +30,9 @@
         <li class="separator">/</li>
         <li class="current" aria-current="page">{{ $project->title }}</li>
       </ol>
-      <a href="{{ route('projects.index') }}" class="back-link">&larr; Back to Projects</a>
+      <a href="{{ route('projects.index') }}" class="back-link">
+        <i data-lucide="arrow-left" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4.5px;"></i> Back to Projects
+      </a>
     </nav>
 
     <!-- Project Hero Section -->
@@ -194,8 +196,12 @@
               @endforeach
             </div>
           </div>
-          <button class="carousel-btn prev" id="carousel-prev" aria-label="Previous image">&larr;</button>
-          <button class="carousel-btn next" id="carousel-next" aria-label="Next image">&rarr;</button>
+          <button class="carousel-btn prev" id="carousel-prev" aria-label="Previous image">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <button class="carousel-btn next" id="carousel-next" aria-label="Next image">
+            <i data-lucide="chevron-right"></i>
+          </button>
           
           <!-- Carousel Thumbnails -->
           <div class="carousel-thumbnails">
@@ -219,7 +225,7 @@
           @foreach($project->features as $feature)
             <div class="feature-card">
               <div class="feature-icon">
-                <span class="icon-span"></span>
+                <i data-lucide="{{ $feature['icon'] ?? 'check-circle' }}"></i>
               </div>
               <h3 class="feature-title">{{ $feature['title'] }}</h3>
               <p class="feature-desc">{{ $feature['description'] }}</p>
@@ -237,21 +243,21 @@
         <h2 class="section-title-small">Challenges & Resolutions</h2>
         <div class="challenges-track">
           <div class="challenge-node problem">
-            <div class="node-icon">⚠️</div>
+            <div class="node-icon"><i data-lucide="alert-triangle"></i></div>
             <div class="node-content">
               <h3>The Problem</h3>
               <p>{{ $project->challenges['problem'] }}</p>
             </div>
           </div>
           <div class="challenge-node solution">
-            <div class="node-icon">💡</div>
+            <div class="node-icon"><i data-lucide="lightbulb"></i></div>
             <div class="node-content">
               <h3>The Solution</h3>
               <p>{{ $project->challenges['solution'] }}</p>
             </div>
           </div>
           <div class="challenge-node result">
-            <div class="node-icon">✅</div>
+            <div class="node-icon"><i data-lucide="check-circle-2"></i></div>
             <div class="node-content">
               <h3>The Result</h3>
               <p>{{ $project->challenges['result'] }}</p>

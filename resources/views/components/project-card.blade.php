@@ -18,10 +18,7 @@
         <div class="proj-thumb-text">{{ $project->initials ?: 'KH' }}</div>
       @endif
       <div class="proj-arrow">
-        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none">
-          <line x1="7" y1="17" x2="17" y2="7"/>
-          <polyline points="7 7 17 7 17 17"/>
-        </svg>
+        <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
       </div>
     </div>
   </a>

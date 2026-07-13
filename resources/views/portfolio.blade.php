@@ -124,7 +124,7 @@
       <div class="hero-ctas">
         <a href="#projects" class="cta-fill">
           Explore Work
-          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <i data-lucide="arrow-right"></i>
         </a>
         <a href="#contact" class="cta-line">Let&rsquo;s Talk</a>
       </div>
@@ -162,7 +162,7 @@
       @foreach ($services as $service)
         <div class="svc-cell" data-num="{{ $service['num'] }}">
           <div class="svc-icon">
-            <svg viewBox="0 0 24 24">{!! $service['icon'] !!}</svg>
+            <i data-lucide="{{ $service['icon'] }}"></i>
           </div>
           <div class="svc-title">{{ $service['title'] }}</div>
           <div class="svc-body">{{ $service['body'] }}</div>
@@ -231,7 +231,7 @@
       </div>
       <a href="{{ route('projects.index') }}" class="proj-gh-link r d1">
         View All
-        <svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        <i data-lucide="arrow-up-right"></i>
       </a>
     </div>
 
@@ -326,7 +326,7 @@
       </div>
       <a href="#certifications" class="proj-gh-link cert-view-link r d1">
         View All
-        <svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        <i data-lucide="arrow-up-right"></i>
       </a>
     </div>
 
@@ -343,12 +343,7 @@
             @if($isPdfCert)
               <a href="{{ $certUrl }}" target="_blank" rel="noopener" class="cert-file-wrap" aria-label="Open certificate PDF: {{ $cert->title }}">
                 <div class="cert-file-icon">
-                  <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="8" y1="13" x2="16" y2="13"/>
-                    <line x1="8" y1="17" x2="13" y2="17"/>
-                  </svg>
+                  <i data-lucide="file-text"></i>
                 </div>
                 <div>
                   <span class="cert-file-label">PDF Certificate</span>
@@ -372,10 +367,7 @@
                   <img src="{{ $certUrl }}" alt="{{ $cert->title }}" class="cert-img" width="400" height="280" loading="lazy" decoding="async" onload="this.closest('.cert-img-wrap').classList.remove('skeleton')">
                 </picture>
                 <div class="cert-img-overlay">
-                  <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  </svg>
+                  <i data-lucide="search"></i>
                   <span>View Certificate</span>
                 </div>
               </div>
@@ -400,7 +392,7 @@
           @if($cert->credential_url)
             <a href="{{ $cert->credential_url }}" target="_blank" rel="noopener" class="cert-link">
               View Credential
-              <svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              <i data-lucide="arrow-up-right"></i>
             </a>
           @endif
         </div>
@@ -422,26 +414,26 @@
 
       <a href="mailto:hkristianlloyd2@gmail.com" class="contact-link">
         <div class="c-icon">
-          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+          <i data-lucide="mail"></i>
         </div>
         hkristianlloyd2@gmail.com
       </a>
       <div class="contact-link contact-static">
         <div class="c-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <i data-lucide="map-pin"></i>
         </div>
         Bulacan, Philippines
       </div>
 
       <div class="socials">
         <a href="https://github.com/kristian03-design" class="social-btn" aria-label="GitHub">
-          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          <i data-lucide="github"></i>
         </a>
         <a href="https://www.linkedin.com/in/hernandez-kristian/" class="social-btn" aria-label="LinkedIn">
-          <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          <i data-lucide="linkedin"></i>
         </a>
         <a href="https://www.facebook.com/klqtie" class="social-btn" aria-label="Facebook">
-          <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          <i data-lucide="facebook"></i>
         </a>
       </div>
     </div>
@@ -470,7 +462,7 @@
       </div>
       <button class="cf-submit" type="submit">
         Send Message
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <i data-lucide="send"></i>
       </button>
     </form>
   </div>

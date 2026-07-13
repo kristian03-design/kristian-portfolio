@@ -98,6 +98,14 @@
     }
   });
 </script>
+<script src="https://unpkg.com/lucide@0.400.0"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  });
+</script>
 @yield('scripts')
 </body>
 </html>

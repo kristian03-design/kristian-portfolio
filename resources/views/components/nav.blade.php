@@ -39,14 +39,10 @@
     <div class="nav-right">
       <div class="nav-resume-wrapper">
         <a href="{{ route('resume.view') }}" target="_blank" rel="noopener noreferrer" class="nav-resume-premium btn-view-resume" aria-label="View Resume in a new tab">
-          <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <span class="nav-arrow">↗</span>
+          <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <i data-lucide="arrow-up-right" style="width: 13px; height: 13px; display: inline-block; vertical-align: -1px; margin-left: 2.5px;"></i>
         </a>
         <a href="{{ route('resume.download') }}" class="nav-resume-premium btn-download-resume" title="Download Resume" aria-label="Download Resume PDF">
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
+          <i data-lucide="download" style="width: 13px; height: 13px;"></i>
         </a>
       </div>
       <button class="nav-burger" id="burger" aria-label="Menu" aria-expanded="false">
