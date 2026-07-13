@@ -39,14 +39,14 @@
     <div class="nav-right">
       <div class="nav-resume-wrapper">
         <a href="{{ route('resume.view') }}" target="_blank" rel="noopener noreferrer" class="nav-resume-premium btn-view-resume" aria-label="View Resume in a new tab">
-          <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <i data-lucide="arrow-up-right" style="width: 13px; height: 13px; display: inline-block; vertical-align: -1px; margin-left: 2.5px;"></i>
+          <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <i data-lucide="arrow-up-right" style="width: 16px; height: 16px; display: inline-block; vertical-align: -1px; margin-left: 2.5px;"></i>
         </a>
         <a href="{{ route('resume.download') }}" class="nav-resume-premium btn-download-resume" title="Download Resume" aria-label="Download Resume PDF">
-          <i data-lucide="download" style="width: 13px; height: 13px;"></i>
+          <i data-lucide="download" style="width: 16px; height: 16px;"></i>
         </a>
       </div>
       <button class="nav-burger" id="burger" aria-label="Menu" aria-expanded="false">
-        <span></span><span></span><span></span>
+        <i data-lucide="menu" style="width: 16px; height: 16px;"></i>
       </button>
     </div>
   </div>

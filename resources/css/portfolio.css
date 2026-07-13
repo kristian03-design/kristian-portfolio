@@ -223,7 +223,7 @@ button {
   transform: translateY(0);
 }
 
-#mobile-menu a {
+#mobile-menu .mm-link {
   font-family: var(--f-head);
   font-size: 3rem;
   letter-spacing: .04em;
@@ -231,7 +231,7 @@ button {
   transition: color .2s;
 }
 
-#mobile-menu a:hover {
+#mobile-menu .mm-link:hover {
   color: var(--lime);
 }
 
@@ -1848,6 +1848,10 @@ footer {
     display: none;
   }
 
+  #nav .nav-resume-wrapper {
+    display: none;
+  }
+
   .nav-burger {
     display: flex;
     padding: 12px;
@@ -2423,13 +2427,15 @@ body.dark-page .nav-burger span {
   box-shadow: 0 4px 15px rgba(191, 255, 0, 0.45);
 }
 
-body.dark-page .nav-resume-premium {
+body.dark-page .nav-resume-premium,
+#mobile-menu .nav-resume-premium {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(191, 255, 0, 0.3);
   color: var(--lime);
 }
 
-body.dark-page .nav-resume-premium:hover {
+body.dark-page .nav-resume-premium:hover,
+#mobile-menu .nav-resume-premium:hover {
   background: var(--lime);
   color: var(--ink);
   border-color: var(--lime);

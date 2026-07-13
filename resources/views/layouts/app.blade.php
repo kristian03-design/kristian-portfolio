@@ -47,6 +47,14 @@
 <!-- Mobile Menu -->
 <div id="mobile-menu" aria-hidden="true">
   @yield('mobile_menu_links')
+  <div class="nav-resume-wrapper">
+    <a href="{{ route('resume.view') }}" target="_blank" rel="noopener noreferrer" class="nav-resume-premium btn-view-resume" aria-label="View Resume in a new tab">
+      <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <i data-lucide="arrow-up-right" style="width: 16px; height: 16px; display: inline-block; vertical-align: -1px; margin-left: 2.5px;"></i>
+    </a>
+    <a href="{{ route('resume.download') }}" class="nav-resume-premium btn-download-resume" title="Download Resume" aria-label="Download Resume PDF">
+      <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+    </a>
+  </div>
 </div>
 
 <!-- Navigation Bar -->
