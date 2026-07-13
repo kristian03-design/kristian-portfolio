@@ -13,17 +13,91 @@ html {
 
 /* === TOKENS === */
 :root {
-  --bg: #F5F4F0;
-  --ink: #0D0D0D;
-  --ink-60: rgba(13, 13, 13, 0.6);
-  --ink-40: rgba(13, 13, 13, 0.4);
-  --ink-10: rgba(13, 13, 13, 0.08);
-  --lime: #BFFF00;
-  --lime-dim: rgba(191, 255, 0, 0.15);
-  --surface: #FFFFFF;
+  /* Common variables */
+  --primary: #BFFF00;
+  --primary-hover: #a8df00;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  
   --f-head: 'Bebas Neue', sans-serif;
   --f-body: 'Instrument Sans', sans-serif;
   --f-serif: 'Instrument Serif', serif;
+
+  /* Theme variables (Light Mode default) */
+  --background: #F5F4F0;
+  --surface: #FFFFFF;
+  --card: #FFFFFF;
+  --card-hover: #FAFAF9;
+  --text-primary: #0D0D0D;
+  --text-secondary: rgba(13, 13, 13, 0.6);
+  --text-muted: rgba(13, 13, 13, 0.4);
+  --border: rgba(13, 13, 13, 0.08);
+  --input: #FFFFFF;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  --navbar: rgba(245, 244, 240, 0.92);
+  --footer: #F5F4F0;
+  --hero-overlay: rgba(245, 244, 240, 0.85);
+  --badge: rgba(13, 13, 13, 0.04);
+  --modal: #FFFFFF;
+  --dropdown: #FFFFFF;
+  
+  /* Legacy mapping for backward compatibility */
+  --bg: var(--background);
+  --ink: var(--text-primary);
+  --ink-60: var(--text-secondary);
+  --ink-40: var(--text-muted);
+  --ink-10: var(--border);
+  --lime: var(--primary);
+  --lime-dim: rgba(191, 255, 0, 0.15);
+
+  /* Transition timings */
+  --theme-transition: background-color 0.25s ease-in-out, 
+                      color 0.25s ease-in-out, 
+                      border-color 0.25s ease-in-out, 
+                      box-shadow 0.25s ease-in-out;
+}
+
+[data-theme="dark"] {
+  /* Theme variables (Dark Mode overrides) */
+  --background: #0D0D0D;
+  --surface: #111111;
+  --card: #111111;
+  --card-hover: #161616;
+  --text-primary: rgba(245, 244, 240, 0.92);
+  --text-secondary: rgba(245, 244, 240, 0.6);
+  --text-muted: rgba(245, 244, 240, 0.4);
+  --border: rgba(255, 255, 255, 0.08);
+  --input: #1C1C1C;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  --navbar: rgba(13, 13, 13, 0.92);
+  --footer: #0A0A0A;
+  --hero-overlay: rgba(13, 13, 13, 0.85);
+  --badge: rgba(255, 255, 255, 0.05);
+  --modal: #111111;
+  --dropdown: #111111;
+  
+  --lime-dim: rgba(191, 255, 0, 0.1);
+}
+
+/* Smooth transitions for theme switching */
+body, 
+#nav, 
+#nav.scrolled, 
+#mobile-menu, 
+footer, 
+.svc-cell, 
+.a-card, 
+.proj-card, 
+.cert-card, 
+.exp-row, 
+.cform, 
+.cf-input, 
+.theme-toggle-btn,
+.nav-resume-premium,
+.btn-view-resume,
+.btn-download-resume {
+  transition: var(--theme-transition);
 }
 
 /* === BASE === */
@@ -1984,38 +2058,38 @@ footer {
 }
 
 /* === DARK PAGE === */
-body.dark-page {
+[data-theme="dark"] body {
   background: var(--ink);
   color: rgba(245, 244, 240, 0.92);
 }
 
-body.dark-page #nav {
+[data-theme="dark"] #nav {
   background: transparent;
 }
 
-body.dark-page #nav.scrolled {
+[data-theme="dark"] #nav.scrolled {
   background: rgba(13, 13, 13, 0.92);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-body.dark-page .nav-logo {
+[data-theme="dark"] .nav-logo {
   color: rgba(245, 244, 240, 0.92);
 }
 
-body.dark-page .nav-resume {
+[data-theme="dark"] .nav-resume {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--lime);
   transition: background .2s, border-color .2s, transform .15s;
 }
 
-body.dark-page .nav-resume:hover {
+[data-theme="dark"] .nav-resume:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: var(--lime);
   transform: translateY(-1px);
 }
 
-body.dark-page #progress {
+[data-theme="dark"] #progress {
   background: var(--lime);
 }
 
@@ -2029,13 +2103,13 @@ body:has(#mobile-menu.open) .nav-burger span {
   background: rgba(245, 244, 240, 0.92) !important;
 }
 
-body.dark-page .nav-burger span {
+[data-theme="dark"] .nav-burger span {
   background: rgba(245, 244, 240, 0.92) !important;
 }
 
 /* === CERTIFICATIONS === */
 #certifications {
-  background: #F5F4F0;
+  background: var(--bg);
   border-bottom: 1px solid var(--ink-10);
 }
 
@@ -2427,14 +2501,14 @@ body.dark-page .nav-burger span {
   box-shadow: 0 4px 15px rgba(191, 255, 0, 0.45);
 }
 
-body.dark-page .nav-resume-premium,
+[data-theme="dark"] .nav-resume-premium,
 #mobile-menu .nav-resume-premium {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(191, 255, 0, 0.3);
   color: var(--lime);
 }
 
-body.dark-page .nav-resume-premium:hover,
+[data-theme="dark"] .nav-resume-premium:hover,
 #mobile-menu .nav-resume-premium:hover {
   background: var(--lime);
   color: var(--ink);
@@ -3432,4 +3506,129 @@ body.dark-page .nav-resume-premium:hover,
     transform: none !important;
   }
 }
+
+/* === THEME TOGGLE BUTTONS === */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: background-color 0.25s, border-color 0.25s, transform 0.2s, color 0.25s;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--background);
+  border-color: var(--primary);
+  transform: scale(1.05);
+}
+
+.theme-toggle-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Sun/Moon transitions */
+.theme-toggle-btn .sun-wrapper,
+.theme-toggle-btn .moon-wrapper {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+}
+
+/* Light mode state: sun is visible, moon is hidden below */
+[data-theme="light"] .theme-toggle-btn .sun-wrapper {
+  transform: translate(0, 0) rotate(0deg);
+  opacity: 1;
+}
+[data-theme="light"] .theme-toggle-btn .moon-wrapper {
+  transform: translate(0, 30px) rotate(90deg);
+  opacity: 0;
+}
+
+/* Dark mode state: moon is visible, sun is hidden above */
+[data-theme="dark"] .theme-toggle-btn .sun-wrapper {
+  transform: translate(0, -30px) rotate(-90deg);
+  opacity: 0;
+}
+[data-theme="dark"] .theme-toggle-btn .moon-wrapper {
+  transform: translate(0, 0) rotate(0deg);
+  opacity: 1;
+}
+
+/* Mobile Toggle inside Drawer */
+.theme-toggle-btn.mobile-toggle {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  height: 44px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  font-family: var(--f-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: none;
+  overflow: hidden;
+  transition: background-color 0.25s, border-color 0.25s, transform 0.2s, color 0.25s;
+}
+
+.theme-toggle-btn.mobile-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.theme-toggle-btn.mobile-toggle .sun-wrapper,
+.theme-toggle-btn.mobile-toggle .moon-wrapper {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+[data-theme="light"] .theme-toggle-btn.mobile-toggle .sun-wrapper {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+[data-theme="light"] .theme-toggle-btn.mobile-toggle .moon-wrapper {
+  opacity: 0;
+  transform: translateY(20px) scale(0.5);
+}
+
+[data-theme="dark"] .theme-toggle-btn.mobile-toggle .sun-wrapper {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.5);
+}
+[data-theme="dark"] .theme-toggle-btn.mobile-toggle .moon-wrapper {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.theme-toggle-btn.mobile-toggle .toggle-text {
+  margin-left: 1.5rem;
+}
+
 

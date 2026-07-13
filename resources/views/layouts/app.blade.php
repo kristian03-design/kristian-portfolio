@@ -39,6 +39,16 @@
 
   @vite(['resources/css/portfolio.css', 'resources/js/portfolio.js'])
   @yield('styles')
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.classList.remove('dark', 'light');
+      document.documentElement.classList.add(theme);
+    })();
+  </script>
 </head>
 <body class="@yield('body_class')">
 
@@ -47,6 +57,13 @@
 <!-- Mobile Menu -->
 <div id="mobile-menu" aria-hidden="true">
   @yield('mobile_menu_links')
+  
+  <button id="mobile-theme-toggle" class="theme-toggle-btn mobile-toggle" aria-label="Toggle theme">
+    <span class="sun-wrapper"><i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px;"></i></span>
+    <span class="moon-wrapper"><i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px;"></i></span>
+    <span class="toggle-text">Toggle Theme</span>
+  </button>
+
   <div class="nav-resume-wrapper">
     <a href="{{ route('resume.view') }}" target="_blank" rel="noopener noreferrer" class="nav-resume-premium btn-view-resume" aria-label="View Resume in a new tab">
       <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <i data-lucide="arrow-up-right" style="width: 16px; height: 16px; display: inline-block; vertical-align: -1px; margin-left: 2.5px;"></i>

@@ -203,5 +203,40 @@ contactForm?.addEventListener('submit', async event => {
   }
 });
 
+// Theme Toggle Functionality
+const initThemeToggle = () => {
+  const toggles = document.querySelectorAll('#theme-toggle, #mobile-theme-toggle');
+  if (!toggles.length) return;
+  
+  const getTheme = () => document.documentElement.getAttribute('data-theme') || 'light';
+  
+  const setTheme = (theme) => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(theme);
+    localStorage.setItem('theme', theme);
+    
+    // Update ARIA attributes
+    toggles.forEach(btn => {
+      btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      btn.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`);
+    });
+  };
+  
+  toggles.forEach(btn => {
+    // Set initial state
+    const currentTheme = getTheme();
+    btn.setAttribute('aria-pressed', currentTheme === 'dark' ? 'true' : 'false');
+    btn.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} theme`);
+    
+    btn.addEventListener('click', () => {
+      const nextTheme = getTheme() === 'dark' ? 'light' : 'dark';
+      setTheme(nextTheme);
+    });
+  });
+};
+
+document.addEventListener('DOMContentLoaded', initThemeToggle);
+
 
 

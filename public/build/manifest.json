@@ -9,7 +9,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-CHp_CEZE.css",
+    "file": "assets/app-CuXwSHz9.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -36,7 +36,7 @@
     ]
   },
   "resources/css/portfolio.css": {
-    "file": "assets/portfolio-CGDP7wzU.css",
+    "file": "assets/portfolio-DddWn4tI.css",
     "src": "resources/css/portfolio.css",
     "isEntry": true,
     "name": "portfolio",
@@ -69,7 +69,7 @@
     "isEntry": true
   },
   "resources/js/portfolio.js": {
-    "file": "assets/portfolio-BS8pgQvb.js",
+    "file": "assets/portfolio-DZao0qqH.js",
     "name": "portfolio",
     "src": "resources/js/portfolio.js",
     "isEntry": true

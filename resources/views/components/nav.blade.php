@@ -37,6 +37,11 @@
     @endif
 
     <div class="nav-right">
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+        <span class="sun-wrapper"><i data-lucide="sun" class="sun-icon" style="width: 16px; height: 16px;"></i></span>
+        <span class="moon-wrapper"><i data-lucide="moon" class="moon-icon" style="width: 16px; height: 16px;"></i></span>
+      </button>
+
       <div class="nav-resume-wrapper">
         <a href="{{ route('resume.view') }}" target="_blank" rel="noopener noreferrer" class="nav-resume-premium btn-view-resume" aria-label="View Resume in a new tab">
           <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <i data-lucide="arrow-up-right" style="width: 16px; height: 16px; display: inline-block; vertical-align: -1px; margin-left: 2.5px;"></i>

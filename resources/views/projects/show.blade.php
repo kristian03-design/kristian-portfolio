@@ -2,7 +2,6 @@
 
 @section('title', $project->title . ' — Case Study & Project Details')
 @section('meta_description', Str::limit(strip_tags($project->description), 160))
-@section('body_class', 'dark-page')
 
 @section('mobile_menu_links')
   <a href="{{ route('home') }}#about" class="mm-link">About</a>
