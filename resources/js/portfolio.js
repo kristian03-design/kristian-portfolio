@@ -5,22 +5,31 @@ const nav = document.getElementById('nav');
 const navAs = document.querySelectorAll('.nav-links a[data-section]');
 const sectionIds = ['about', 'projects', 'skills', 'certifications', 'experience', 'contact'];
 
+let scrollScheduled = false;
+
 window.addEventListener('scroll', () => {
-  if (prog) {
-    const h = document.documentElement.scrollHeight - innerHeight;
-    prog.style.width = `${h > 0 ? (scrollY / h) * 100 : 0}%`;
-  }
+  if (scrollScheduled) return;
+  scrollScheduled = true;
+  
+  requestAnimationFrame(() => {
+    if (prog) {
+      const h = document.documentElement.scrollHeight - innerHeight;
+      prog.style.width = `${h > 0 ? (scrollY / h) * 100 : 0}%`;
+    }
 
-  nav?.classList.toggle('scrolled', scrollY > 30);
+    nav?.classList.toggle('scrolled', scrollY > 30);
 
-  let current = '';
-  sectionIds.forEach(id => {
-    const sec = document.getElementById(id);
-    if (sec && sec.getBoundingClientRect().top <= 120) current = id;
-  });
+    let current = '';
+    sectionIds.forEach(id => {
+      const sec = document.getElementById(id);
+      if (sec && sec.getBoundingClientRect().top <= 120) current = id;
+    });
 
-  navAs.forEach(a => {
-    a.classList.toggle('active', a.dataset.section === current);
+    navAs.forEach(a => {
+      a.classList.toggle('active', a.dataset.section === current);
+    });
+
+    scrollScheduled = false;
   });
 }, { passive: true });
 
@@ -105,7 +114,12 @@ if (welcomeModal) {
   }
 
   if (!hasSeenWelcome) {
-    window.setTimeout(openWelcomeModal, 450);
+    const triggerWelcome = () => window.setTimeout(openWelcomeModal, 1500);
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(triggerWelcome);
+    } else {
+      window.addEventListener('load', triggerWelcome);
+    }
   }
 
   welcomeModal.querySelectorAll('[data-welcome-close]').forEach(element => {
@@ -118,6 +132,25 @@ if (welcomeModal) {
     }
   });
 }
+
+// Prefetch case study pages on hover for instant transitions
+document.addEventListener('DOMContentLoaded', () => {
+  const prefetchedUrls = new Set();
+  
+  const prefetchLink = (url) => {
+    if (!url || url === '#' || prefetchedUrls.has(url)) return;
+    prefetchedUrls.add(url);
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = url;
+    document.head.appendChild(link);
+  };
+
+  document.querySelectorAll('a[href*="/projects/"]').forEach(a => {
+    a.addEventListener('mouseenter', () => prefetchLink(a.href), { passive: true });
+    a.addEventListener('touchstart', () => prefetchLink(a.href), { passive: true });
+  });
+});
 
 const contactForm = document.getElementById('contactForm');
 const formMessage = document.getElementById('formMessage');

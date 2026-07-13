@@ -265,7 +265,7 @@
               @endphp
               <div class="sk-icon-cell">
                 @if ($icon)
-                  <img class="sk-icon-img" src="{{ $icon }}" alt="{{ $skill->name }}" loading="lazy" decoding="async">
+                  <img class="sk-icon-img" src="{{ $icon }}" alt="{{ $skill->name }}" width="32" height="32" loading="lazy" decoding="async">
                 @else
                   <span class="sk-icon-fallback">{{ strtoupper(substr($skill->name, 0, 2)) }}</span>
                 @endif
@@ -356,11 +356,21 @@
                 </div>
               </a>
             @else
-              <div class="cert-img-wrap"
-                data-lightbox-url="{{ $certUrl }}"
+              @php
+                $rawPath = ltrim($cert->image_path, '/');
+                $webpPath = preg_replace('/\.(png|jpg|jpeg)$/i', '.webp', $rawPath);
+                $lightboxUrl = ($rawPath !== $webpPath && file_exists(public_path($webpPath))) ? asset($webpPath) : $certUrl;
+              @endphp
+              <div class="cert-img-wrap skeleton"
+                data-lightbox-url="{{ $lightboxUrl }}"
                 data-lightbox-caption="{{ $cert->title }} — {{ $cert->issuer }}"
                 onclick="openLightbox(this.dataset.lightboxUrl, this.dataset.lightboxCaption)">
-                <img src="{{ $certUrl }}" alt="{{ $cert->title }}" class="cert-img" loading="lazy" decoding="async">
+                <picture>
+                  @if ($rawPath !== $webpPath && file_exists(public_path($webpPath)))
+                    <source srcset="{{ asset($webpPath) }}" type="image/webp">
+                  @endif
+                  <img src="{{ $certUrl }}" alt="{{ $cert->title }}" class="cert-img" width="400" height="280" loading="lazy" decoding="async" onload="this.closest('.cert-img-wrap').classList.remove('skeleton')">
+                </picture>
                 <div class="cert-img-overlay">
                   <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>

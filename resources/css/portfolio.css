@@ -3382,3 +3382,29 @@ body.dark-page .nav-resume-premium:hover {
   }
 }
 
+/* === RENDERING PERFORMANCE OPTIMIZATIONS === */
+#services, #about, #projects, #skills, #experience, #certifications, #contact {
+  content-visibility: auto;
+  contain-intrinsic-size: 100px 500px;
+}
+
+/* === ACCESSIBILITY & PERFORMANCE: PREFERS REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+  .r {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+

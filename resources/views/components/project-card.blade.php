@@ -2,9 +2,18 @@
 
 <article class="proj-card r d{{ $loop->index % 4 }}">
   <a href="{{ $project->slug ? route('projects.show', $project->slug) : '#' }}" class="proj-card-thumb-link" aria-label="View case study for {{ $project->title }}">
-    <div class="proj-thumb">
+    <div class="proj-thumb skeleton">
       @if ($project->image_path)
-        <img class="proj-image" src="{{ asset(ltrim($project->image_path, '/')) }}" alt="{{ $project->title }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}">
+        @php
+          $rawPath = ltrim($project->image_path, '/');
+          $webpPath = preg_replace('/\.(png|jpg|jpeg)$/i', '.webp', $rawPath);
+        @endphp
+        <picture>
+          @if ($rawPath !== $webpPath && file_exists(public_path($webpPath)))
+            <source srcset="{{ asset($webpPath) }}" type="image/webp">
+          @endif
+          <img class="proj-image" src="{{ asset($rawPath) }}" alt="{{ $project->title }}" width="600" height="380" loading="{{ $loop->first ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ $loop->first ? 'high' : 'auto' }}" onload="this.closest('.proj-thumb').classList.remove('skeleton')">
+        </picture>
       @else
         <div class="proj-thumb-text">{{ $project->initials ?: 'KH' }}</div>
       @endif

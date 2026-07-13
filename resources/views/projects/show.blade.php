@@ -87,7 +87,16 @@
         <div class="project-hero-right">
           <div class="featured-image-wrapper skeleton">
             @if($project->image_path)
-              <img src="{{ asset(ltrim($project->image_path, '/')) }}" alt="{{ $project->title }} Main Screenshot" class="project-hero-img" onload="this.parentElement.classList.remove('skeleton')" onclick="openLightbox(this.src, '{{ $project->title }} — Main View')">
+              @php
+                $rawPath = ltrim($project->image_path, '/');
+                $webpPath = preg_replace('/\.(png|jpg|jpeg)$/i', '.webp', $rawPath);
+              @endphp
+              <picture>
+                @if ($rawPath !== $webpPath && file_exists(public_path($webpPath)))
+                  <source srcset="{{ asset($webpPath) }}" type="image/webp">
+                @endif
+                <img src="{{ asset($rawPath) }}" alt="{{ $project->title }} Main Screenshot" class="project-hero-img" width="800" height="500" loading="eager" decoding="async" fetchpriority="high" onload="this.parentElement.classList.remove('skeleton')" onclick="openLightbox(this.src, '{{ $project->title }} — Main View')">
+              </picture>
             @else
               <div class="project-hero-fallback">{{ $project->initials }}</div>
             @endif
@@ -170,7 +179,16 @@
             <div class="carousel-slides" id="carousel-slides">
               @foreach($project->gallery as $device => $path)
                 <div class="carousel-slide {{ $loop->first ? 'active' : '' }}" data-device="{{ $device }}">
-                  <img src="{{ asset(ltrim($path, '/')) }}" alt="{{ $project->title }} {{ ucfirst($device) }} View" class="carousel-img" onclick="openLightbox(this.src, '{{ $project->title }} — {{ ucfirst($device) }} View')">
+                  @php
+                    $rawPath = ltrim($path, '/');
+                    $webpPath = preg_replace('/\.(png|jpg|jpeg)$/i', '.webp', $rawPath);
+                  @endphp
+                  <picture>
+                    @if ($rawPath !== $webpPath && file_exists(public_path($webpPath)))
+                      <source srcset="{{ asset($webpPath) }}" type="image/webp">
+                    @endif
+                    <img src="{{ asset($rawPath) }}" alt="{{ $project->title }} {{ ucfirst($device) }} View" class="carousel-img" width="800" height="500" loading="lazy" decoding="async" onclick="openLightbox(this.src, '{{ $project->title }} — {{ ucfirst($device) }} View')">
+                  </picture>
                   <div class="slide-badge">{{ ucfirst($device) }} View</div>
                 </div>
               @endforeach

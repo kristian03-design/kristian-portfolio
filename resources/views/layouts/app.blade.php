@@ -13,20 +13,30 @@
   <meta property="og:url" content="{{ request()->url() }}">
   <meta property="og:title" content="@yield('title', 'Kristian Hernandez — Web & Mobile Developer')">
   <meta property="og:description" content="@yield('meta_description', 'Full-stack web and mobile developer based in Bulacan, Philippines. Laravel, Flutter, clean architecture.')">
-  <meta property="og:image" content="@yield('og_image', asset('images/kristian-logo.png'))">
+  <meta property="og:image" content="@yield('og_image', asset('images/chibi-logo-v2.png'))">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="{{ request()->url() }}">
   <meta property="twitter:title" content="@yield('title', 'Kristian Hernandez — Web & Mobile Developer')">
   <meta property="twitter:description" content="@yield('meta_description', 'Full-stack web and mobile developer based in Bulacan, Philippines. Laravel, Flutter, clean architecture.')">
-  <meta property="twitter:image" content="@yield('og_image', asset('images/kristian-logo.png'))">
+  <meta property="twitter:image" content="@yield('og_image', asset('images/chibi-logo-v2.png'))">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="icon" type="image/svg+xml" href="{{ asset('images/chibi-logo.png') }}">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdn.simpleicons.org">
+  
+  <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+  <link rel="apple-touch-icon" href="{{ asset('images/chibi-logo-v2.png') }}">
 
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+  </noscript>
+
   @vite(['resources/css/portfolio.css', 'resources/js/portfolio.js'])
   @yield('styles')
 </head>

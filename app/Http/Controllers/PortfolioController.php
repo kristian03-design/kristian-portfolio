@@ -17,10 +17,18 @@ class PortfolioController extends Controller
 {
     public function index()
     {
-        $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
-        $skills = $this->safeCollection('skills', fn () => Skill::orderBy('proficiency_level', 'desc')->get());
-        $experiences = $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get());
-        $certifications = $this->safeCollection('certifications', fn () => Certification::orderBy('issue_date', 'desc')->get());
+        $cachedData = Cache::remember('portfolio.public.index', now()->addMinutes(10), function() {
+            $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+            $skills = $this->safeCollection('skills', fn () => Skill::orderBy('proficiency_level', 'desc')->get());
+            $experiences = $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get());
+            $certifications = $this->safeCollection('certifications', fn () => Certification::orderBy('issue_date', 'desc')->get());
+            return compact('projects', 'skills', 'experiences', 'certifications');
+        });
+
+        $projects = $cachedData['projects'];
+        $skills = $cachedData['skills'];
+        $experiences = $cachedData['experiences'];
+        $certifications = $cachedData['certifications'];
 
         $services = [
             [
@@ -51,22 +59,20 @@ class PortfolioController extends Controller
 
         return response()
             ->view('portfolio', compact('projects', 'skills', 'experiences', 'certifications', 'services'))
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', '0')
-            ->header('CDN-Cache-Control', 'no-store');
+            ->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=600')
+            ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=3600');
     }
 
     public function projects()
     {
-        $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+        $projects = Cache::remember('portfolio.public.projects', now()->addMinutes(10), function() {
+            return $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+        });
 
         return response()
             ->view('projects', compact('projects'))
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', '0')
-            ->header('CDN-Cache-Control', 'no-store');
+            ->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=600')
+            ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=3600');
     }
 
     public function data()
@@ -178,12 +184,16 @@ class PortfolioController extends Controller
 
     public function show(Project $project)
     {
-        $relatedProjects = Project::where('id', '!=', $project->id)
-            ->orderBy('order', 'asc')
-            ->take(4)
-            ->get();
+        $allProjects = Cache::remember('portfolio.public.projects', now()->addMinutes(10), function() {
+            return $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+        });
 
-        return view('projects.show', compact('project', 'relatedProjects'));
+        $relatedProjects = $allProjects->where('id', '!=', $project->id)->take(4)->values();
+
+        return response()
+            ->view('projects.show', compact('project', 'relatedProjects'))
+            ->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=600')
+            ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=3600');
     }
 
     private function safeCollection(string $label, callable $query)
