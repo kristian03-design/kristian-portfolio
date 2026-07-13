@@ -78,6 +78,12 @@ html {
   --dropdown: #111111;
   
   --lime-dim: rgba(191, 255, 0, 0.1);
+
+  /* Overrides for dark section backgrounds in dark mode */
+  --projects-bg: #0D0D0D;
+  --contact-bg: #0D0D0D;
+  --menu-bg: #0D0D0D;
+  --marquee-bg: #0D0D0D;
 }
 
 /* Smooth transitions for theme switching */
@@ -278,7 +284,7 @@ button {
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--ink);
+  background: var(--menu-bg, var(--ink));
   z-index: 350;
   display: flex;
   flex-direction: column;
@@ -317,7 +323,7 @@ button {
 
 /* === PREMIUM MARQUEE === */
 .marquee-strip {
-  background: var(--ink);
+  background: var(--marquee-bg, var(--ink));
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   overflow: hidden;
@@ -885,7 +891,7 @@ section {
 
 /* === PROJECTS === */
 #projects {
-  background: var(--ink);
+  background: var(--projects-bg, var(--ink));
 }
 
 #projects .s-head {
@@ -1360,7 +1366,7 @@ section {
 
 /* === CONTACT === */
 #contact {
-  background: var(--ink);
+  background: var(--contact-bg, var(--ink));
 }
 
 #contact .s-in {
@@ -2059,7 +2065,7 @@ footer {
 
 /* === DARK PAGE === */
 [data-theme="dark"] body {
-  background: var(--ink);
+  background: var(--background);
   color: rgba(245, 244, 240, 0.92);
 }
 
@@ -3629,6 +3635,12 @@ body:has(#mobile-menu.open) .nav-burger span {
 
 .theme-toggle-btn.mobile-toggle .toggle-text {
   margin-left: 1.5rem;
+}
+
+/* Dark mode button hover overrides */
+[data-theme="dark"] .cta-fill:hover,
+[data-theme="dark"] .welcome-primary:hover {
+  background: rgba(255, 255, 255, 0.85);
 }
 
 

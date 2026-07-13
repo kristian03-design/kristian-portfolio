@@ -51,7 +51,9 @@
         </a>
       </div>
       <button class="nav-burger" id="burger" aria-label="Menu" aria-expanded="false">
-        <i data-lucide="menu" style="width: 16px; height: 16px;"></i>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </div>
   </div>
