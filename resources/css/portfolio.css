@@ -332,9 +332,6 @@ button {
   position: relative;
   display: flex;
   align-items: center;
-  /* Soft fade-out edges at left and right */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
 }
 
 .marquee-track {
