@@ -30,8 +30,8 @@ html {
   --card: #FFFFFF;
   --card-hover: #FAFAF9;
   --text-primary: #0D0D0D;
-  --text-secondary: rgba(13, 13, 13, 0.6);
-  --text-muted: rgba(13, 13, 13, 0.4);
+  --text-secondary: rgba(13, 13, 13, 0.75);
+  --text-muted: rgba(13, 13, 13, 0.58);
   --border: rgba(13, 13, 13, 0.08);
   --input: #FFFFFF;
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
@@ -2582,13 +2582,13 @@ body:has(#mobile-menu.open) .nav-burger span {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--lime);
+  color: var(--text-secondary);
   transition: transform 0.2s, color 0.2s;
 }
 
 .back-link:hover {
   transform: translateX(-3px);
-  color: var(--text-primary);
+  color: var(--lime);
 }
 
 /* Hero Section */
