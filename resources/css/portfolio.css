@@ -49,8 +49,9 @@ html {
   --ink-60: var(--text-secondary);
   --ink-40: var(--text-muted);
   --ink-10: var(--border);
-  --lime: var(--primary);
-  --lime-dim: rgba(191, 255, 0, 0.15);
+  --lime: #4C6E00;
+  --lime-text: #FFFFFF;
+  --lime-dim: rgba(76, 110, 0, 0.1);
 
   /* Transition timings */
   --theme-transition: background-color 0.25s ease-in-out, 
@@ -78,6 +79,8 @@ html {
   --modal: #111111;
   --dropdown: #111111;
   
+  --lime: #BFFF00;
+  --lime-text: #0D0D0D;
   --lime-dim: rgba(191, 255, 0, 0.1);
 
   /* Overrides for dark section backgrounds in dark mode */
@@ -363,7 +366,7 @@ button {
 }
 
 .marquee-item:hover {
-  color: var(--lime) !important;
+  color: #BFFF00 !important;
 }
 
 .marquee-dot {
@@ -371,8 +374,8 @@ button {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--lime);
-  box-shadow: 0 0 8px var(--lime);
+  background: #BFFF00;
+  box-shadow: 0 0 8px #BFFF00;
   margin: 0;
   flex-shrink: 0;
 }
@@ -1107,9 +1110,9 @@ section {
   letter-spacing: .1em;
   text-transform: uppercase;
   padding: .22rem .6rem;
-  background: rgba(255, 255, 255, .05);
-  color: rgba(245, 244, 240, .35);
-  border: 1px solid rgba(255, 255, 255, .06);
+  background: var(--badge);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   border-radius: 1px;
 }
 
@@ -1139,7 +1142,7 @@ section {
   letter-spacing: .1em;
   text-transform: uppercase;
   background: var(--lime);
-  color: #0D0D0D;
+  color: var(--lime-text);
   padding: .5rem 1.1rem;
   border-radius: 1px;
   transition: opacity .2s, transform .2s;
@@ -1155,17 +1158,17 @@ section {
   font-weight: 600;
   letter-spacing: .1em;
   text-transform: uppercase;
-  background: rgba(255, 255, 255, .04);
-  color: rgba(245, 244, 240, .4);
-  border: 1px solid rgba(255, 255, 255, .07);
+  background: var(--badge);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   padding: .5rem 1.1rem;
   border-radius: 1px;
   transition: background .2s, color .2s;
 }
 
 .pl-code:hover {
-  background: rgba(255, 255, 255, .09);
-  color: rgba(245, 244, 240, .85);
+  background: var(--border);
+  color: var(--text-primary);
 }
 
 /* === SKILLS === */
@@ -1547,7 +1550,7 @@ textarea.cf-input {
 .cf-submit {
   width: 100%;
   background: var(--lime);
-  color: #0D0D0D;
+  color: var(--lime-text);
   padding: .95rem;
   font-family: var(--f-body);
   font-size: .7rem;
@@ -2605,9 +2608,9 @@ body:has(#mobile-menu.open) .nav-burger span {
 
 .category-pill {
   display: inline-block;
-  background: rgba(191, 255, 0, 0.1);
+  background: var(--lime-dim);
   color: var(--lime);
-  border: 1px solid rgba(191, 255, 0, 0.2);
+  border: 1px solid var(--lime);
   padding: 0.35rem 1rem;
   border-radius: 100px;
   font-size: 0.62rem;
@@ -3228,7 +3231,7 @@ body:has(#mobile-menu.open) .nav-burger span {
   width: 36px;
   height: 36px;
   background: var(--lime);
-  color: #0D0D0D;
+  color: var(--lime-text);
   border-radius: 50%;
   font-family: var(--f-head);
   font-size: 1.15rem;
@@ -3423,7 +3426,7 @@ body:has(#mobile-menu.open) .nav-burger span {
 
 .pl-details:hover {
   background: var(--lime);
-  color: #0D0D0D;
+  color: var(--lime-text);
   border-color: var(--lime);
   transform: translateY(-1px);
   box-shadow: 0 0 10px rgba(191, 255, 0, 0.25);
