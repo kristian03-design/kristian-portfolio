@@ -111,14 +111,14 @@
     <div class="hero-left">
       <div class="status-pill">
         <span class="status-dot"></span>
-        Available &mdash; Open to entry-level roles
+        <span class="typewriter-target" data-roles='["Available — Open to entry-level roles", "Available — Open to remote work", "Available — Open to freelance"]'>Available &mdash; Open to entry-level roles</span><span class="typewriter-cursor">|</span>
       </div>
       <h1 class="hero-title">KRISTIAN<br>HERNANDEZ</h1>
     </div>
 
     <div class="hero-right">
       <div class="hero-role-tag">
-        <span id="typewriter" data-roles='["Web Developer", "Full-Stack Developer"]'>Web Developer</span><span class="typewriter-cursor">|</span>
+        <span class="typewriter-target" data-roles='["Web Developer", "Full-Stack Developer"]'>Web Developer</span><span class="typewriter-cursor">|</span>
       </div>
       <p class="hero-intro">
         Hi, I'm <strong>Kristian</strong>. I turn ideas into functional digital products &mdash; from responsive interfaces and robust backend systems to cross-platform mobile applications. My goal is to build technology that creates measurable impact and exceptional user experiences. Based in <strong>Bulacan, Philippines</strong>.

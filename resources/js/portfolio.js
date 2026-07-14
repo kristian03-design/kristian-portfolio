@@ -241,45 +241,45 @@ document.addEventListener('DOMContentLoaded', () => {
   initTypewriter();
 });
 
-// Typewriter effect for hero section
+// Typewriter effect for elements with class .typewriter-target
 function initTypewriter() {
-  const el = document.getElementById('typewriter');
-  if (!el) return;
+  const elements = document.querySelectorAll('.typewriter-target');
+  elements.forEach(el => {
+    const roles = JSON.parse(el.getAttribute('data-roles') || '[]');
+    if (!roles.length) return;
 
-  const roles = JSON.parse(el.getAttribute('data-roles') || '[]');
-  if (!roles.length) return;
+    let roleIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    let delay = 150;
 
-  let roleIdx = 0;
-  let charIdx = 0;
-  let isDeleting = false;
-  let delay = 150;
+    const type = () => {
+      const currentRole = roles[roleIdx];
+      
+      if (isDeleting) {
+        el.textContent = currentRole.substring(0, charIdx - 1);
+        charIdx--;
+        delay = 40; // Deleting is faster
+      } else {
+        el.textContent = currentRole.substring(0, charIdx + 1);
+        charIdx++;
+        delay = 100; // Typing speed
+      }
 
-  const type = () => {
-    const currentRole = roles[roleIdx];
-    
-    if (isDeleting) {
-      el.textContent = currentRole.substring(0, charIdx - 1);
-      charIdx--;
-      delay = 60; // Deleting is faster
-    } else {
-      el.textContent = currentRole.substring(0, charIdx + 1);
-      charIdx++;
-      delay = 120; // Typing speed
-    }
+      if (!isDeleting && charIdx === currentRole.length) {
+        isDeleting = true;
+        delay = 2500; // Pause at end of word
+      } else if (isDeleting && charIdx === 0) {
+        isDeleting = false;
+        roleIdx = (roleIdx + 1) % roles.length;
+        delay = 500; // Pause before next word
+      }
 
-    if (!isDeleting && charIdx === currentRole.length) {
-      isDeleting = true;
-      delay = 2000; // Pause at end of word
-    } else if (isDeleting && charIdx === 0) {
-      isDeleting = false;
-      roleIdx = (roleIdx + 1) % roles.length;
-      delay = 400; // Pause before next word
-    }
+      setTimeout(type, delay);
+    };
 
-    setTimeout(type, delay);
-  };
-
-  type();
+    type();
+  });
 }
 
 
