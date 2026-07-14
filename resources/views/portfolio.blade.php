@@ -117,7 +117,9 @@
     </div>
 
     <div class="hero-right">
-      <div class="hero-role-tag">Web Developer</div>
+      <div class="hero-role-tag">
+        <span id="typewriter" data-roles='["Web Developer", "Full-Stack Developer"]'>Web Developer</span><span class="typewriter-cursor">|</span>
+      </div>
       <p class="hero-intro">
         Hi, I'm <strong>Kristian</strong>. I turn ideas into functional digital products &mdash; from responsive interfaces and robust backend systems to cross-platform mobile applications. My goal is to build technology that creates measurable impact and exceptional user experiences. Based in <strong>Bulacan, Philippines</strong>.
       </p>

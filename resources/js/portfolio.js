@@ -236,7 +236,51 @@ const initThemeToggle = () => {
   });
 };
 
-document.addEventListener('DOMContentLoaded', initThemeToggle);
+document.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
+  initTypewriter();
+});
+
+// Typewriter effect for hero section
+function initTypewriter() {
+  const el = document.getElementById('typewriter');
+  if (!el) return;
+
+  const roles = JSON.parse(el.getAttribute('data-roles') || '[]');
+  if (!roles.length) return;
+
+  let roleIdx = 0;
+  let charIdx = 0;
+  let isDeleting = false;
+  let delay = 150;
+
+  const type = () => {
+    const currentRole = roles[roleIdx];
+    
+    if (isDeleting) {
+      el.textContent = currentRole.substring(0, charIdx - 1);
+      charIdx--;
+      delay = 60; // Deleting is faster
+    } else {
+      el.textContent = currentRole.substring(0, charIdx + 1);
+      charIdx++;
+      delay = 120; // Typing speed
+    }
+
+    if (!isDeleting && charIdx === currentRole.length) {
+      isDeleting = true;
+      delay = 2000; // Pause at end of word
+    } else if (isDeleting && charIdx === 0) {
+      isDeleting = false;
+      roleIdx = (roleIdx + 1) % roles.length;
+      delay = 400; // Pause before next word
+    }
+
+    setTimeout(type, delay);
+  };
+
+  type();
+}
 
 
 
