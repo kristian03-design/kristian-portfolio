@@ -60,8 +60,8 @@
   
   <button id="mobile-theme-toggle" class="theme-toggle-btn mobile-toggle" aria-label="Toggle theme">
     <span class="sun-wrapper"><i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px;"></i></span>
-    <span class="moon-wrapper"><i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px;"></i></span>
-    <span class="toggle-text">Toggle Theme</span>
+    <span class="moon-wrapper"><i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px; color:#000000"></i></span>
+    <span class="toggle-text" style="color:#000000">Toggle Theme</span>
   </button>
 
   <div class="nav-resume-wrapper">
