@@ -2468,10 +2468,10 @@ body:has(#mobile-menu.open) .nav-burger span {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   background: var(--ink);
-  color: var(--lime);
+  color: #BFFF00;
   padding: 0.6rem 1.2rem;
   border-radius: 2px;
-  border: 1px solid var(--lime);
+  border: 1px solid #BFFF00;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -2504,7 +2504,7 @@ body:has(#mobile-menu.open) .nav-burger span {
 .btn-view-resume:hover {
   transform: translateY(-2px);
   background: var(--lime);
-  color: var(--ink);
+  color: var(--lime-text);
   box-shadow: 0 4px 15px rgba(191, 255, 0, 0.45);
 }
 
@@ -2521,7 +2521,7 @@ body:has(#mobile-menu.open) .nav-burger span {
 .btn-download-resume:hover {
   transform: translateY(-2px);
   background: var(--lime);
-  color: var(--ink);
+  color: var(--lime-text);
   box-shadow: 0 4px 15px rgba(191, 255, 0, 0.45);
 }
 
