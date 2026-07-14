@@ -547,7 +547,7 @@ button {
 .hero-intro {
   font-size: clamp(.95rem, 1.05vw, 1.05rem);
   line-height: 1.8;
-  color: rgba(13, 13, 13, 0.68);
+  color: var(--text-secondary);
   max-width: 440px;
   margin-bottom: 2rem;
 }
@@ -882,7 +882,7 @@ section {
 .a-body {
   font-size: .76rem;
   line-height: 1.7;
-  color: rgba(13, 13, 13, .68);
+  color: var(--text-secondary);
 }
 
 /* === PROJECTS === */
@@ -1128,7 +1128,7 @@ section {
   letter-spacing: .1em;
   text-transform: uppercase;
   background: var(--lime);
-  color: var(--ink);
+  color: #0D0D0D;
   padding: .5rem 1.1rem;
   border-radius: 1px;
   transition: opacity .2s, transform .2s;
@@ -1536,7 +1536,7 @@ textarea.cf-input {
 .cf-submit {
   width: 100%;
   background: var(--lime);
-  color: var(--ink);
+  color: #0D0D0D;
   padding: .95rem;
   font-family: var(--f-body);
   font-size: .7rem;
@@ -2063,6 +2063,14 @@ footer {
 [data-theme="dark"] body {
   background: var(--background);
   color: rgba(245, 244, 240, 0.92);
+}
+
+[data-theme="dark"] .status-pill {
+  color: var(--lime);
+}
+
+[data-theme="dark"] .hero-ghost {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.035);
 }
 
 [data-theme="dark"] #nav {
@@ -3209,7 +3217,7 @@ body:has(#mobile-menu.open) .nav-burger span {
   width: 36px;
   height: 36px;
   background: var(--lime);
-  color: var(--ink);
+  color: #0D0D0D;
   border-radius: 50%;
   font-family: var(--f-head);
   font-size: 1.15rem;
@@ -3404,7 +3412,7 @@ body:has(#mobile-menu.open) .nav-burger span {
 
 .pl-details:hover {
   background: var(--lime);
-  color: var(--ink);
+  color: #0D0D0D;
   border-color: var(--lime);
   transform: translateY(-1px);
   box-shadow: 0 0 10px rgba(191, 255, 0, 0.25);
