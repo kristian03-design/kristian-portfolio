@@ -41,6 +41,7 @@ html {
   --badge: rgba(13, 13, 13, 0.04);
   --modal: #FFFFFF;
   --dropdown: #FFFFFF;
+  --menu-bg: #F5F4F0;
   
   /* Legacy mapping for backward compatibility */
   --bg: var(--background);
@@ -307,7 +308,7 @@ button {
   font-family: var(--f-head);
   font-size: 3rem;
   letter-spacing: .04em;
-  color: rgba(245, 244, 240, .6);
+  color: var(--text-secondary);
   transition: color .2s;
 }
 
@@ -2115,16 +2116,16 @@ footer {
 
 body.menu-open .nav-logo,
 body:has(#mobile-menu.open) .nav-logo {
-  color: rgba(245, 244, 240, 0.92) !important;
+  color: var(--text-primary) !important;
 }
 
 body.menu-open .nav-burger span,
 body:has(#mobile-menu.open) .nav-burger span {
-  background: rgba(245, 244, 240, 0.92) !important;
+  background: var(--text-primary) !important;
 }
 
 [data-theme="dark"] .nav-burger span {
-  background: rgba(245, 244, 240, 0.92) !important;
+  background: var(--text-primary) !important;
 }
 
 /* === CERTIFICATIONS === */
@@ -2522,16 +2523,16 @@ body:has(#mobile-menu.open) .nav-burger span {
 }
 
 [data-theme="dark"] .nav-resume-premium,
-#mobile-menu .nav-resume-premium {
+[data-theme="dark"] #mobile-menu .nav-resume-premium {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(191, 255, 0, 0.3);
   color: var(--lime);
 }
 
 [data-theme="dark"] .nav-resume-premium:hover,
-#mobile-menu .nav-resume-premium:hover {
+[data-theme="dark"] #mobile-menu .nav-resume-premium:hover {
   background: var(--lime);
-  color: var(--ink);
+  color: #0D0D0D;
   border-color: var(--lime);
   box-shadow: 0 0 18px rgba(191, 255, 0, 0.5);
 }
@@ -3593,8 +3594,8 @@ body:has(#mobile-menu.open) .nav-burger span {
   max-width: 280px;
   height: 44px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--border);
   color: var(--text-primary);
   font-family: var(--f-body);
   font-size: 0.68rem;
@@ -3612,7 +3613,7 @@ body:has(#mobile-menu.open) .nav-burger span {
 }
 
 .theme-toggle-btn.mobile-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card-hover);
   border-color: var(--primary);
   transform: translateY(-1px);
 }
