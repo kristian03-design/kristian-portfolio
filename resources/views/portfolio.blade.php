@@ -358,9 +358,9 @@
         </div>
 
         <div class="beyond-card">
-          <div class="beyond-card-icon"><i data-lucide="dumbbell"></i></div>
-          <h4 class="beyond-card-title">Sports &amp; Fitness</h4>
-          <p class="beyond-card-text">Keeping a sharp mind in a healthy body. Regular workouts and sports build discipline and resilience.</p>
+          <div class="beyond-card-icon"><i data-lucide="gamepad-2"></i></div>
+          <h4 class="beyond-card-title">Sports &amp; Online Games</h4>
+          <p class="beyond-card-text">Balancing active physical sports with competitive online gaming. Both build strategic thinking, teamwork, and quick reflexes.</p>
         </div>
 
         <div class="beyond-card">

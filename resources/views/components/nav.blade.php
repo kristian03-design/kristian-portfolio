@@ -22,7 +22,6 @@
         <li><a href="#projects" data-section="projects">Projects</a></li>
         <li><a href="#skills" data-section="skills">Skills</a></li>
         <li><a href="#experience" data-section="experience">Experience</a></li>
-        <li><a href="#beyond-code" data-section="beyond-code">Beyond Code</a></li>
         <li><a href="#certifications" data-section="certifications">Certifications</a></li>
         <li><a href="#contact" data-section="contact">Contact</a></li>
       </ul>
@@ -32,7 +31,6 @@
         <li><a href="{{ route('home') }}#projects">Projects</a></li>
         <li><a href="{{ route('home') }}#skills">Skills</a></li>
         <li><a href="{{ route('home') }}#experience">Experience</a></li>
-        <li><a href="{{ route('home') }}#beyond-code">Beyond Code</a></li>
         <li><a href="{{ route('home') }}#certifications">Certifications</a></li>
         <li><a href="{{ route('home') }}#contact">Contact</a></li>
       </ul>
