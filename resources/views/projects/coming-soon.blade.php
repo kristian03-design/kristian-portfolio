@@ -110,7 +110,7 @@
 
     <!-- Coming Soon Premium Block -->
     <section class="details-section r d1" style="max-width: 800px; margin: 0 auto; text-align: center; padding: 4rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; box-shadow: var(--shadow);">
-      <div style="font-size: 3rem; margin-bottom: 1.5rem; filter: grayscale(0.2);">📝</div>
+      <div style="font-size: 3rem; margin-bottom: 1.5rem; filter: grayscale(0.2);"></div>
       <h2 style="font-family: var(--f-head); font-size: 2.5rem; letter-spacing: 0.02em; margin-bottom: 1rem; color: var(--text-primary);">
         Project Documentation Coming Soon
       </h2>
