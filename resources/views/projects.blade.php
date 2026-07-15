@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('title', 'All Projects — Kristian Hernandez')
-@section('body_class', 'has-dark-header')
 
 @section('mobile_menu_links')
   <a href="{{ route('home') }}#about" class="mm-link">About</a>

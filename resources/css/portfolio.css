@@ -251,45 +251,7 @@ button {
   transform: translateY(-1px);
 }
 
-/* Overrides for pages with a dark header when transparent/unscrolled in light mode */
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-logo {
-  color: rgba(245, 244, 240, 0.92);
-}
 
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-logo-dot {
-  color: #BFFF00;
-}
-
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-links a {
-  color: rgba(245, 244, 240, 0.6);
-}
-
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-links a:hover,
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-links a.active {
-  color: rgba(245, 244, 240, 0.92);
-}
-
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-links a::after {
-  background: rgba(245, 244, 240, 0.92);
-}
-
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-burger span {
-  background: rgba(245, 244, 240, 0.92);
-}
-
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-resume-premium {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(191, 255, 0, 0.3);
-  color: #BFFF00;
-}
-
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .btn-view-resume:hover,
-[data-theme="light"] .has-dark-header #nav:not(.scrolled) .btn-download-resume:hover {
-  background: #BFFF00;
-  color: #0D0D0D;
-  border-color: #BFFF00;
-  box-shadow: 0 0 18px rgba(191, 255, 0, 0.5);
-}
 
 /* hamburger */
 .nav-burger {
@@ -941,20 +903,20 @@ section {
 
 /* === PROJECTS === */
 #projects {
-  background: var(--projects-bg, var(--ink));
+  background: var(--background);
 }
 
 #projects .s-head {
-  color: rgba(245, 244, 240, .92);
+  color: var(--text-primary);
   margin-bottom: 0;
 }
 
 #projects .s-eyebrow {
-  color: rgba(245, 244, 240, .3);
+  color: var(--text-muted);
 }
 
 #projects .s-eyebrow::before {
-  background: rgba(245, 244, 240, .3);
+  background: var(--text-muted);
 }
 
 .proj-header {
@@ -971,22 +933,22 @@ section {
   font-weight: 600;
   letter-spacing: .15em;
   text-transform: uppercase;
-  color: rgba(245, 244, 240, .88);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: .4rem;
   transition: color .2s, border-color .2s, background .2s, transform .2s;
   padding: .75rem 1rem;
   min-height: 42px;
-  border: 1px solid rgba(245, 244, 240, .14);
-  background: rgba(245, 244, 240, .04);
+  border: 1px solid var(--border);
+  background: var(--badge);
   border-radius: 2px;
 }
 
 .proj-gh-link:hover {
   color: var(--lime);
-  border-color: rgba(191, 255, 0, .45);
-  background: rgba(191, 255, 0, .08);
+  border-color: var(--lime);
+  background: var(--lime-dim);
   transform: translateY(-1px);
 }
 
@@ -1002,12 +964,12 @@ section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1px;
-  background: rgba(245, 244, 240, .06);
-  border: 1px solid rgba(245, 244, 240, .06);
+  background: var(--border);
+  border: 1px solid var(--border);
 }
 
 .proj-card {
-  background: #111;
+  background: var(--card);
   display: flex;
   flex-direction: column;
   transition: background .18s;
@@ -1017,16 +979,16 @@ section {
 }
 
 .proj-card:hover {
-  background: #161616;
+  background: var(--card-hover);
 }
 
 .proj-thumb {
   aspect-ratio: 16/8.5;
-  background: #181818;
+  background: var(--surface2, var(--background));
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid rgba(255, 255, 255, .04);
+  border-bottom: 1px solid var(--border);
   position: relative;
   overflow: hidden;
 }
@@ -1053,7 +1015,7 @@ section {
 .proj-thumb-text {
   font-family: var(--f-head);
   font-size: 5rem;
-  color: rgba(255, 255, 255, .035);
+  color: var(--border);
   letter-spacing: .06em;
   -webkit-user-select: none;
   user-select: none;
@@ -1061,7 +1023,7 @@ section {
 }
 
 .proj-card:hover .proj-thumb-text {
-  color: rgba(191, 255, 0, .07);
+  color: var(--lime-dim);
 }
 
 /* lime sweep line */
@@ -1087,7 +1049,7 @@ section {
   right: 1rem;
   width: 32px;
   height: 32px;
-  border: 1px solid rgba(255, 255, 255, .1);
+  border: 1px solid var(--border);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1099,7 +1061,7 @@ section {
 .proj-arrow svg {
   width: 12px;
   height: 12px;
-  stroke: rgba(245, 244, 240, .6);
+  stroke: var(--text-secondary);
   stroke-width: 2;
   fill: none;
 }
@@ -1119,20 +1081,20 @@ section {
   font-family: var(--f-head);
   font-size: .78rem;
   letter-spacing: .18em;
-  color: rgba(245, 244, 240, .18);
+  color: var(--text-muted);
   margin-bottom: .6rem;
   transition: color .2s;
 }
 
 .proj-card:hover .proj-idx {
-  color: rgba(191, 255, 0, .5);
+  color: var(--lime);
 }
 
 .proj-title {
   font-family: var(--f-head);
   font-size: 1.7rem;
   letter-spacing: .01em;
-  color: rgba(245, 244, 240, .9);
+  color: var(--text-primary);
   margin-bottom: .7rem;
   line-height: 1.05;
 }
@@ -1159,7 +1121,7 @@ section {
 .proj-desc {
   font-size: .78rem;
   line-height: 1.75;
-  color: rgba(245, 244, 240, .35);
+  color: var(--text-secondary);
   flex: 1;
   margin-bottom: 1.5rem;
   display: -webkit-box;
@@ -1173,7 +1135,7 @@ section {
   display: flex;
   gap: .75rem;
   padding-top: 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, .05);
+  border-top: 1px solid var(--border);
 }
 
 .pl-live {
@@ -3455,7 +3417,8 @@ body:has(#mobile-menu.open) .nav-burger span {
   text-transform: uppercase;
   background: transparent;
   color: var(--lime);
-  border: 1px solid rgba(191, 255, 0, 0.3);
+  border: 1px solid var(--lime);
+  opacity: 0.85;
   padding: 0.5rem 1.1rem;
   border-radius: 1px;
   transition: all 0.22s;
@@ -3465,30 +3428,12 @@ body:has(#mobile-menu.open) .nav-burger span {
 }
 
 .pl-details:hover {
+  opacity: 1;
   background: var(--lime);
   color: var(--lime-text);
   border-color: var(--lime);
   transform: translateY(-1px);
-  box-shadow: 0 0 10px rgba(191, 255, 0, 0.25);
-}
-
-/* Static dark-theme overrides for tags and details button inside project card components (which are always dark) */
-.proj-card .p-tag {
-  background: rgba(255, 255, 255, .05);
-  color: rgba(245, 244, 240, .45);
-  border: 1px solid rgba(255, 255, 255, .06);
-}
-
-.proj-card .pl-details {
-  color: #BFFF00;
-  border-color: rgba(191, 255, 0, 0.3);
-}
-
-.proj-card .pl-details:hover {
-  background: #BFFF00;
-  color: #0D0D0D;
-  border-color: #BFFF00;
-  box-shadow: 0 0 10px rgba(191, 255, 0, 0.25);
+  box-shadow: 0 0 10px var(--lime-dim);
 }
 
 /* === SKELETON ANIMATIONS === */
