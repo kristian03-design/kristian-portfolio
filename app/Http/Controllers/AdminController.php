@@ -292,28 +292,29 @@ class AdminController extends Controller
         $project = Project::findOrFail($id);
 
         $request->validate([
-            'slug'              => 'nullable|string|max:255',
-            'category'          => 'nullable|string|max:100',
-            'status'            => 'nullable|string|max:100',
-            'duration'          => 'nullable|string|max:100',
-            'role'              => 'nullable|string|max:100',
-            'documentation_url' => 'nullable|url|max:500',
-            'video_demo_url'    => 'nullable|string|max:500',
+            'slug'                 => 'nullable|string|max:255',
+            'category'             => 'nullable|string|max:100',
+            'status'               => 'nullable|string|max:100',
+            'duration'             => 'nullable|string|max:100',
+            'role'                 => 'nullable|string|max:100',
+            'documentation_url'    => 'nullable|url|max:500',
+            'video_demo_url'       => 'nullable|string|max:500',
+            'documentation_status' => 'required|string|in:published,under_development',
             // JSON fields are sent as raw JSON strings from the form
-            'metrics'           => 'nullable|string',
-            'overview'          => 'nullable|string',
-            'gallery'           => 'nullable|string',
-            'features'          => 'nullable|string',
-            'architecture'      => 'nullable|string',
-            'challenges'        => 'nullable|string',
-            'timeline'          => 'nullable|string',
-            'performance'       => 'nullable|string',
-            'security_details'  => 'nullable|string',
+            'metrics'              => 'nullable|string',
+            'overview'             => 'nullable|string',
+            'gallery'              => 'nullable|string',
+            'features'             => 'nullable|string',
+            'architecture'         => 'nullable|string',
+            'challenges'           => 'nullable|string',
+            'timeline'             => 'nullable|string',
+            'performance'          => 'nullable|string',
+            'security_details'     => 'nullable|string',
         ]);
 
         $jsonFields = ['metrics','overview','gallery','features','architecture','challenges','timeline','performance','security_details'];
 
-        $data = $request->only(['slug','category','status','duration','role','documentation_url','video_demo_url']);
+        $data = $request->only(['slug','category','status','duration','role','documentation_url','video_demo_url','documentation_status']);
 
         // Decode each JSON string field; skip if invalid/empty
         foreach ($jsonFields as $field) {

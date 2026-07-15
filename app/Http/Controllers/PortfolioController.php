@@ -18,7 +18,7 @@ class PortfolioController extends Controller
     public function index()
     {
         $cachedData = Cache::remember('portfolio.public.index', now()->addMinutes(10), function() {
-            $projects = $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+            $projects = $this->safeCollection('projects', fn () => Project::visible()->orderBy('order', 'asc')->get());
             $skills = $this->safeCollection('skills', fn () => Skill::orderBy('proficiency_level', 'desc')->get());
             $experiences = $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get());
             $certifications = $this->safeCollection('certifications', fn () => Certification::orderBy('issue_date', 'desc')->get());
@@ -66,7 +66,7 @@ class PortfolioController extends Controller
     public function projects()
     {
         $projects = Cache::remember('portfolio.public.projects', now()->addMinutes(10), function() {
-            return $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+            return $this->safeCollection('projects', fn () => Project::visible()->orderBy('order', 'asc')->get());
         });
 
         return response()
@@ -78,7 +78,7 @@ class PortfolioController extends Controller
     public function data()
     {
         $data = Cache::remember('portfolio.public.api', now()->addMinutes(10), fn () => [
-            'projects' => $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get()),
+            'projects' => $this->safeCollection('projects', fn () => Project::visible()->orderBy('order', 'asc')->get()),
             'skills' => $this->safeCollection('skills', fn () => Skill::orderBy('category')->orderByDesc('proficiency_level')->orderBy('name')->get()),
             'experiences' => $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get()),
         ]);
@@ -104,7 +104,7 @@ class PortfolioController extends Controller
         return response()->json(Cache::remember(
             'portfolio.public.api.projects',
             now()->addMinutes(10),
-            fn () => $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get())
+            fn () => $this->safeCollection('projects', fn () => Project::visible()->orderBy('order', 'asc')->get())
         ));
     }
 
@@ -184,14 +184,49 @@ class PortfolioController extends Controller
 
     public function show(Project $project)
     {
+        if ($project->status === 'Draft') {
+            abort(404);
+        }
+
+        if (($project->documentation_status ?? 'under_development') === 'under_development') {
+            return redirect()->route('projects.coming-soon', $project->slug);
+        }
+
         $allProjects = Cache::remember('portfolio.public.projects', now()->addMinutes(10), function() {
-            return $this->safeCollection('projects', fn () => Project::orderBy('order', 'asc')->get());
+            return $this->safeCollection('projects', fn () => Project::visible()->orderBy('order', 'asc')->get());
         });
 
         $relatedProjects = $allProjects->where('id', '!=', $project->id)->take(4)->values();
 
         return response()
             ->view('projects.show', compact('project', 'relatedProjects'))
+            ->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=600')
+            ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=3600');
+    }
+
+    public function comingSoon(Project $project)
+    {
+        if ($project->status === 'Draft') {
+            abort(404);
+        }
+
+        if (($project->documentation_status ?? 'under_development') === 'published') {
+            return redirect()->route('projects.show', $project->slug);
+        }
+
+        $allProjects = Cache::remember('portfolio.public.projects', now()->addMinutes(10), function() {
+            return $this->safeCollection('projects', fn () => Project::visible()->orderBy('order', 'asc')->get());
+        });
+
+        $currentIndex = $allProjects->pluck('id')->search($project->id);
+        
+        $prevProject = $currentIndex > 0 ? $allProjects->get($currentIndex - 1) : null;
+        $nextProject = $currentIndex !== -1 && $currentIndex < $allProjects->count() - 1 
+            ? $allProjects->get($currentIndex + 1) 
+            : null;
+
+        return response()
+            ->view('projects.coming-soon', compact('project', 'prevProject', 'nextProject'))
             ->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=600')
             ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=3600');
     }

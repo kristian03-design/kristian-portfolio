@@ -420,7 +420,20 @@
                             @endphp
                             <article class="project-card" id="project-card-{{ $project->id }}">
                                 <div class="min-w-0">
-                                    <div class="proj-title">{{ $project->title }}</div>
+                                    <div class="proj-title" style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                                        {{ $project->title }}
+                                        @if(($project->status ?? 'Draft') === 'Draft')
+                                            <span class="badge-doc under_development" style="font-size: 8px; padding: 1px 4px; margin-left: 6px;">Draft</span>
+                                        @else
+                                            <span class="badge-doc published" style="font-size: 8px; padding: 1px 4px; margin-left: 6px;">Published</span>
+                                        @endif
+                                        
+                                        @if(($project->documentation_status ?? 'under_development') === 'published')
+                                            <span class="badge-doc published" style="font-size: 8px; padding: 1px 4px; margin-left: 4px;">🟢 Doc</span>
+                                        @else
+                                            <span class="badge-doc under_development" style="font-size: 8px; padding: 1px 4px; margin-left: 4px;">🟡 Coming Soon</span>
+                                        @endif
+                                    </div>
                                     <div class="proj-tags">
                                         @foreach($stack as $tech)
                                             <span class="tag">{{ trim($tech) }}</span>
@@ -480,6 +493,7 @@
                                     'role'             => $project->role,
                                     'documentation_url'=> $project->documentation_url,
                                     'video_demo_url'   => $project->video_demo_url,
+                                    'documentation_status'=> $project->documentation_status ?? 'under_development',
                                     'metrics'          => $project->metrics,
                                     'overview'         => $project->overview,
                                     'gallery'          => $project->gallery,
@@ -1097,9 +1111,13 @@
 
     {{-- Drawer header --}}
     <div class="details-drawer-header">
-        <div class="details-drawer-title">
+        <div class="details-drawer-title" style="display: flex; align-items: center;">
             <i class="ti ti-layout-list"></i>
             <span id="details-drawer-project-name">Project Details</span>
+            <span id="details-doc-status-badge" class="doc-status-badge under-development">
+                <span class="status-dot"></span>
+                <span class="status-text">Under Development</span>
+            </span>
         </div>
         <div class="details-drawer-header-right">
             <a id="details-view-link" href="#" target="_blank" class="btn btn-ghost btn-sm">
@@ -1157,10 +1175,19 @@
                     <div class="field-group">
                         <label>Status</label>
                         <select name="status" id="d-status" class="field">
+                            <option value="Published">Published</option>
+                            <option value="Draft">Draft</option>
                             <option value="Completed">Completed</option>
                             <option value="In Progress">In Progress</option>
                             <option value="On Hold">On Hold</option>
                             <option value="Archived">Archived</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>Documentation Status</label>
+                        <select name="documentation_status" id="d-documentation_status" class="field">
+                            <option value="under_development">Under Development</option>
+                            <option value="published">Published</option>
                         </select>
                     </div>
                     <div class="field-group">

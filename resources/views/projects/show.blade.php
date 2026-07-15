@@ -344,23 +344,58 @@
       <hr class="s-rule" style="margin: 4rem 0;">
     @endif
 
-    <!-- Full Video Demo Section -->
-    <section class="details-section r d1">
-      <h2 class="section-title-small">Video Demonstration</h2>
-      <div class="video-container skeleton">
-        @if($project->video_demo_url)
-          <iframe class="video-iframe" src="{{ $project->video_demo_url }}" title="{{ $project->title }} Video Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen onload="this.parentElement.classList.remove('skeleton')"></iframe>
-        @else
-          <div class="video-fallback">
-            <div class="fallback-icon">🎥</div>
-            <h3>Video Demo Unavailable</h3>
-            <p>A video recording of this application is not currently available.</p>
-          </div>
-        @endif
-      </div>
-    </section>
+    <!-- System Architecture -->
+    @if(!empty($project->architecture) && collect($project->architecture)->filter()->isNotEmpty())
+      <section class="details-section r d1">
+        <h2 class="section-title-small">System Architecture</h2>
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          @if(!empty($project->architecture['system_architecture']))
+            <div>
+              <h3 style="font-family: var(--f-head); font-size: 1.15rem; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: uppercase; color: var(--text-primary);">System Overview</h3>
+              <p style="font-size: 0.82rem; line-height: 1.8; color: var(--text-secondary);">{{ $project->architecture['system_architecture'] }}</p>
+            </div>
+          @endif
+          @if(!empty($project->architecture['auth_flow']))
+            <div>
+              <h3 style="font-family: var(--f-head); font-size: 1.15rem; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: uppercase; color: var(--text-primary);">Authentication Flow</h3>
+              <p style="font-size: 0.82rem; line-height: 1.8; color: var(--text-secondary);">{{ $project->architecture['auth_flow'] }}</p>
+            </div>
+          @endif
+          @if(!empty($project->architecture['api_flow']))
+            <div>
+              <h3 style="font-family: var(--f-head); font-size: 1.15rem; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: uppercase; color: var(--text-primary);">API Communication Flow</h3>
+              <p style="font-size: 0.82rem; line-height: 1.8; color: var(--text-secondary);">{{ $project->architecture['api_flow'] }}</p>
+            </div>
+          @endif
+          @if(!empty($project->architecture['database_erd']))
+            <div>
+              <h3 style="font-family: var(--f-head); font-size: 1.15rem; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: uppercase; color: var(--text-primary);">Database ERD Schema</h3>
+              <p style="font-size: 0.82rem; line-height: 1.8; color: var(--text-secondary);">{{ $project->architecture['database_erd'] }}</p>
+            </div>
+          @endif
+          @if(!empty($project->architecture['folder_structure']))
+            <div>
+              <h3 style="font-family: var(--f-head); font-size: 1.15rem; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: uppercase; color: var(--text-primary);">Directory Structure</h3>
+              <pre style="background: var(--surface2, var(--background)); border: 1px solid var(--border); border-radius: 4px; padding: 1.25rem; font-family: monospace; font-size: 0.78rem; line-height: 1.6; color: var(--text-primary); overflow-x: auto; max-height: 350px;"><code>{{ $project->architecture['folder_structure'] }}</code></pre>
+            </div>
+          @endif
+        </div>
+      </section>
 
-    <hr class="s-rule" style="margin: 5rem 0 4rem 0;">
+      <hr class="s-rule" style="margin: 4rem 0;">
+    @endif
+
+    <!-- Full Video Demo Section -->
+    @if(!empty($project->video_demo_url))
+      <section class="details-section r d1">
+        <h2 class="section-title-small">Video Demonstration</h2>
+        <div class="video-container skeleton">
+          <iframe class="video-iframe" src="{{ $project->video_demo_url }}" title="{{ $project->title }} Video Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen onload="this.parentElement.classList.remove('skeleton')"></iframe>
+        </div>
+      </section>
+
+      <hr class="s-rule" style="margin: 5rem 0 4rem 0;">
+    @endif
 
     <!-- Related Projects -->
     <section class="related-projects-section r d1">

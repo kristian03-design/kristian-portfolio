@@ -811,6 +811,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentSlug = '';
 
+    const docStatusSelect = document.getElementById('d-documentation_status');
+    const badgeEl = document.getElementById('details-doc-status-badge');
+    if (docStatusSelect) {
+        docStatusSelect.addEventListener('change', function () {
+            updateDrawerBadge(this.value);
+        });
+    }
+
+    function updateDrawerBadge(status) {
+        if (!badgeEl) return;
+        badgeEl.className = 'doc-status-badge ' + (status === 'published' ? 'published' : 'under-development');
+        badgeEl.querySelector('.status-text').textContent = status === 'published' ? 'Published' : 'Under Development';
+    }
+
     // ── Open / Close ──────────────────────────────────────────────────────────────
     function openDetailsDrawer(projectId) {
         const dataEl = document.getElementById(`project-data-${projectId}`);
@@ -898,6 +912,11 @@ document.addEventListener('DOMContentLoaded', () => {
         val('d-video_demo_url',    p.video_demo_url);
         const statusEl = document.getElementById('d-status');
         if (statusEl) statusEl.value = p.status || 'Completed';
+
+        const docStatusVal = p.documentation_status || 'under_development';
+        const docStatusEl = document.getElementById('d-documentation_status');
+        if (docStatusEl) docStatusEl.value = docStatusVal;
+        updateDrawerBadge(docStatusVal);
     }
 
     function populateMetrics(m) {

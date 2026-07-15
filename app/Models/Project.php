@@ -22,6 +22,7 @@ class Project extends Model
         'role',
         'documentation_url',
         'video_demo_url',
+        'documentation_status',
         'overview',
         'gallery',
         'features',
@@ -54,5 +55,16 @@ class Project extends Model
     {
         $words = preg_split('/\s+/', trim($this->title));
         return collect($words)->filter()->take(2)->map(fn($word) => strtoupper(substr($word, 0, 1)))->implode('');
+    }
+
+    /**
+     * Scope a query to only include visible projects.
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('status', '!=', 'Draft')
+              ->orWhereNull('status');
+        });
     }
 }
