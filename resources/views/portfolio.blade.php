@@ -6,8 +6,9 @@
   <a href="#about" class="mm-link">About</a>
   <a href="#projects" class="mm-link">Projects</a>
   <a href="#skills" class="mm-link">Skills</a>
-  <a href="#certifications" class="mm-link">Certifications</a>
   <a href="#experience" class="mm-link">Experience</a>
+  <a href="#beyond-code" class="mm-link">Beyond Code</a>
+  <a href="#certifications" class="mm-link">Certifications</a>
   <a href="#contact" class="mm-link">Contact</a>
 @endsection
 
@@ -319,11 +320,117 @@
 
 <hr class="s-rule">
 
+<section id="beyond-code">
+  <div class="s-in">
+    <!-- Left Column: Eyebrow, Title & Intro -->
+    <div class="r">
+      <div class="s-eyebrow">05 &mdash; Beyond Code</div>
+      <h2 class="s-head">BEYOND<br>THE CODE.</h2>
+      <p class="section-note" style="margin-bottom: 2rem;">Curiosity, continuous improvement, and the mindset behind the screens.</p>
+      <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem; text-align: justify; text-justify: inter-word;">
+        While I spend most of my days building systems and writing code, I believe that being a great developer is about more than just programming. It's about curiosity, consistency, physical discipline, and a mindset of continuous improvement. Here is a glimpse of who I am when the keyboard is idle.
+      </p>
+    </div>
+
+    <!-- Right Column: Main Cards, Focus & Traits -->
+    <div class="beyond-content r d1">
+      <h3 class="sk-group-label" style="margin-bottom: 1.5rem;">
+        <span>Core Interests &amp; Mindset</span>
+      </h3>
+      <div class="beyond-grid" style="margin-bottom: 4rem;">
+        
+        <div class="beyond-card">
+          <div class="beyond-card-icon"><i data-lucide="folder-git-2"></i></div>
+          <h4 class="beyond-card-title">Personal Projects</h4>
+          <p class="beyond-card-text">Building tools that solve real problems. I love turning ideas into fully functional digital products from scratch.</p>
+        </div>
+
+        <div class="beyond-card">
+          <div class="beyond-card-icon"><i data-lucide="graduation-cap"></i></div>
+          <h4 class="beyond-card-title">Continuous Learning</h4>
+          <p class="beyond-card-text">Exploring new methodologies, software design patterns, and system architectures to write cleaner, more maintainable code.</p>
+        </div>
+
+        <div class="beyond-card">
+          <div class="beyond-card-icon"><i data-lucide="music-4"></i></div>
+          <h4 class="beyond-card-title">Music &amp; Focus</h4>
+          <p class="beyond-card-text">Finding flow state through sound. Lo-fi, classical, and synthwave play in the background of my coding sessions.</p>
+        </div>
+
+        <div class="beyond-card">
+          <div class="beyond-card-icon"><i data-lucide="dumbbell"></i></div>
+          <h4 class="beyond-card-title">Sports &amp; Fitness</h4>
+          <p class="beyond-card-text">Keeping a sharp mind in a healthy body. Regular workouts and sports build discipline and resilience.</p>
+        </div>
+
+        <div class="beyond-card">
+          <div class="beyond-card-icon"><i data-lucide="brain-circuit"></i></div>
+          <h4 class="beyond-card-title">Problem Solving</h4>
+          <p class="beyond-card-text">Tackling logic puzzles and algorithms. The thrill of breaking down complex challenges into simple, elegant steps.</p>
+        </div>
+
+        <div class="beyond-card">
+          <div class="beyond-card-icon"><i data-lucide="rocket"></i></div>
+          <h4 class="beyond-card-title">Tech Exploration</h4>
+          <p class="beyond-card-text">Keeping tabs on emerging tech. Exploring Docker, CI/CD pipelines, and cloud computing for devops maturity.</p>
+        </div>
+
+      </div>
+
+      <h3 class="sk-group-label" style="margin-bottom: 1.5rem;">
+        <span>Current Focus &amp; Habits</span>
+      </h3>
+      <div class="currently-panel" style="margin-bottom: 4rem;">
+        <div class="currently-grid">
+          <div class="currently-item">
+            <span class="currently-label">Learning</span>
+            <span class="currently-val">Advanced System Architectures &amp; DevOps Pipelines</span>
+          </div>
+          <div class="currently-item">
+            <span class="currently-label">Building</span>
+            <span class="currently-val">High-Performance CMS Utilities &amp; Portfolios</span>
+          </div>
+          <div class="currently-item">
+            <span class="currently-label">Career Goal</span>
+            <span class="currently-val">Full-Stack Software Engineer (Open to Entry-Level Roles)</span>
+          </div>
+          <div class="currently-item">
+            <span class="currently-label">Habit</span>
+            <span class="currently-val">1 Hour of Reading/Tech Skill practice every single day</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sk-group-label" style="margin-bottom: 1.5rem;">
+        <span>Professional Traits</span>
+      </h3>
+      <div class="badges-row" style="margin-bottom: 4.5rem;">
+        <span class="badge-item"><i data-lucide="zap"></i> Fast Learner</span>
+        <span class="badge-item"><i data-lucide="puzzle"></i> Problem Solver</span>
+        <span class="badge-item"><i data-lucide="users"></i> Team Player</span>
+        <span class="badge-item"><i data-lucide="target"></i> Detail-Oriented</span>
+        <span class="badge-item"><i data-lucide="palette"></i> UI/UX Enthusiast</span>
+        <span class="badge-item"><i data-lucide="code-2"></i> Laravel Developer</span>
+        <span class="badge-item"><i data-lucide="trending-up"></i> Growth Mindset</span>
+        <span class="badge-item"><i data-lucide="briefcase"></i> Open to Entry-Level Roles</span>
+      </div>
+
+      <blockquote class="beyond-quote">
+        <i data-lucide="quote" class="quote-icon" style="width: 20px; height: 20px;"></i>
+        <p>"Writing code is a craft. Building software that genuinely helps someone is an art. I am committed to continuous learning, refining my skills, and building clean, impactful technology."</p>
+      </blockquote>
+
+    </div>
+  </div>
+</section>
+
+<hr class="s-rule">
+
 <section id="certifications">
   <div class="s-in">
     <div class="proj-header cert-header">
       <div class="r">
-        <div class="s-eyebrow">05 &mdash; Credentials</div>
+        <div class="s-eyebrow">06 &mdash; Credentials</div>
         <h2 class="s-head">CERTIFICATIONS.</h2>
       </div>
       <a href="#certifications" class="proj-gh-link cert-view-link r d1">
@@ -410,7 +517,7 @@
 <section id="contact">
   <div class="s-in">
     <div class="r">
-      <div class="s-eyebrow">06 &mdash; Contact</div>
+      <div class="s-eyebrow">07 &mdash; Contact</div>
       <h2 class="s-head">LET&rsquo;S<br>TALK.</h2>
       <p class="contact-sub">Open to junior dev roles, contract work, and collaborations. Drop a message and I&rsquo;ll get back to you.</p>
 

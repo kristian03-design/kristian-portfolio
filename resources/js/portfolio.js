@@ -3,7 +3,7 @@
 const prog = document.getElementById('progress');
 const nav = document.getElementById('nav');
 const navAs = document.querySelectorAll('.nav-links a[data-section]');
-const sectionIds = ['about', 'projects', 'skills', 'certifications', 'experience', 'contact'];
+const sectionIds = ['about', 'projects', 'skills', 'experience', 'beyond-code', 'certifications', 'contact'];
 
 let scrollScheduled = false;
 

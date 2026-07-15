@@ -2133,6 +2133,231 @@ body:has(#mobile-menu.open) .nav-burger span {
   background: var(--text-primary) !important;
 }
 
+/* === BEYOND THE CODE === */
+#beyond-code {
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+#beyond-code::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 80% 20%, rgba(95, 111, 29, 0.025) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+#beyond-code .s-in {
+  display: grid;
+  grid-template-columns: 4fr 8fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.beyond-content {
+  padding-top: 1rem;
+}
+
+/* Interests Grid */
+.beyond-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.beyond-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.75rem;
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.beyond-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 30px -15px rgba(95, 111, 29, 0.12);
+}
+
+.beyond-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top left, rgba(95, 111, 29, 0.04) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.beyond-card:hover::after {
+  opacity: 1;
+}
+
+.beyond-card-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  background: rgba(95, 111, 29, 0.08);
+  color: var(--accent);
+  margin-bottom: 1.25rem;
+  transition: transform 0.3s ease;
+}
+
+.beyond-card-icon i {
+  width: 18px;
+  height: 18px;
+}
+
+.beyond-card:hover .beyond-card-icon {
+  transform: scale(1.05) rotate(3deg);
+}
+
+.beyond-card-title {
+  font-family: var(--f-head);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.beyond-card-text {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Currently Panel */
+.currently-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.currently-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem 1.5rem;
+}
+
+.currently-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.currently-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+}
+
+.currently-val {
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+/* Badges Row */
+.badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.badge-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.45rem 0.9rem;
+  border-radius: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.badge-item:hover {
+  border-color: var(--accent);
+  background: rgba(95, 111, 29, 0.04);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.badge-item i {
+  width: 13px;
+  height: 13px;
+}
+
+/* Quote */
+.beyond-quote {
+  position: relative;
+  border-left: 2px solid var(--accent);
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  margin: 0;
+}
+
+.beyond-quote .quote-icon {
+  position: absolute;
+  top: -0.5rem;
+  left: 1.5rem;
+  opacity: 0.04;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.beyond-quote p {
+  font-family: var(--f-head);
+  font-size: 1.2rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Responsive adjustment */
+@media (max-width: 900px) {
+  #beyond-code .s-in {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .beyond-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .currently-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 /* === CERTIFICATIONS === */
 #certifications {
   background: var(--bg);
@@ -3510,7 +3735,7 @@ body:has(#mobile-menu.open) .nav-burger span {
 }
 
 /* === RENDERING PERFORMANCE OPTIMIZATIONS === */
-#services, #about, #projects, #skills, #experience, #certifications, #contact {
+#services, #about, #projects, #skills, #experience, #beyond-code, #certifications, #contact {
   content-visibility: auto;
   contain-intrinsic-size: 100px 500px;
 }
