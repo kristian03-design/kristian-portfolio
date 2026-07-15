@@ -1418,13 +1418,19 @@
 .details-tab-nav {
     display: flex;
     flex-shrink: 0;
-    overflow-x: auto;
+    flex-wrap: wrap;
     border-bottom: 1px solid var(--border);
     background: var(--surface2);
     gap: 0;
-    scrollbar-width: none;
 }
-.details-tab-nav::-webkit-scrollbar { display: none; }
+@media (max-width: 600px) {
+    .details-tab-nav {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .details-tab-nav::-webkit-scrollbar { display: none; }
+}
 
 .dtab {
     padding: 10px 16px;

@@ -251,6 +251,46 @@ button {
   transform: translateY(-1px);
 }
 
+/* Overrides for pages with a dark header when transparent/unscrolled in light mode */
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-logo {
+  color: rgba(245, 244, 240, 0.92);
+}
+
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-logo-dot {
+  color: #BFFF00;
+}
+
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-links a {
+  color: rgba(245, 244, 240, 0.6);
+}
+
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-links a:hover,
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-links a.active {
+  color: rgba(245, 244, 240, 0.92);
+}
+
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-links a::after {
+  background: rgba(245, 244, 240, 0.92);
+}
+
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-burger span {
+  background: rgba(245, 244, 240, 0.92);
+}
+
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .nav-resume-premium {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(191, 255, 0, 0.3);
+  color: #BFFF00;
+}
+
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .btn-view-resume:hover,
+[data-theme="light"] .has-dark-header #nav:not(.scrolled) .btn-download-resume:hover {
+  background: #BFFF00;
+  color: #0D0D0D;
+  border-color: #BFFF00;
+  box-shadow: 0 0 18px rgba(191, 255, 0, 0.5);
+}
+
 /* hamburger */
 .nav-burger {
   display: none;
