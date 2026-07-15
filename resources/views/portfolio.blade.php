@@ -256,7 +256,7 @@
       <div class="s-eyebrow">03 &mdash; Toolkit</div>
       <h2 class="s-head">TECH<br>SKILLS.</h2>
       <p class="section-note" style="margin-bottom: 2rem;">A curated collection of languages, frameworks, and tools I use to build robust applications.</p>
-      <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem; text-align: justify; text-justify: inter-word;">
+      <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem;">
         I believe in using the right tool for the job. Over the years, I've developed core proficiencies in full-stack web architectures, cross-platform mobile environments, database design, and cloud workflows, prioritizing system efficiency, security, and clean code maintainability.
       </p>
     </div>
@@ -331,7 +331,7 @@
       <div class="s-eyebrow">05 &mdash; Beyond Code</div>
       <h2 class="s-head">BEYOND<br>THE CODE.</h2>
       <p class="section-note" style="margin-bottom: 2rem;">Curiosity, continuous improvement, and the mindset behind the screens.</p>
-      <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem; text-align: justify; text-justify: inter-word;">
+      <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem;">
         While I spend most of my days building systems and writing code, I believe that being a great developer is about more than just programming. It's about curiosity, consistency, physical discipline, and a mindset of continuous improvement. Here is a glimpse of who I am when the keyboard is idle.
       </p>
     </div>
