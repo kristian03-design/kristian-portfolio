@@ -329,7 +329,7 @@
     <!-- Left Column: Eyebrow, Title & Intro -->
     <div class="r">
       <div class="s-eyebrow">05 &mdash; Beyond Code</div>
-      <h2 class="s-head">BEYOND<br>THE CODE.</h2>
+      <h2 class="s-head">OUTSIDE<br>THE IDE.</h2>
       <p class="section-note" style="margin-bottom: 2rem;">Curiosity, continuous improvement, and the mindset behind the screens.</p>
       <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem;">
         While I spend most of my days building systems and writing code, I believe that being a great developer is about more than just programming. It's about curiosity, consistency, physical discipline, and a mindset of continuous improvement. Here is a glimpse of who I am when the keyboard is idle.
