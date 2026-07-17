@@ -72,6 +72,7 @@ class AdminController extends Controller
         $latestMsg = $messages->first();
         $skillCatalog = self::SKILL_CATALOG;
         $galleryItems = PortfolioGallery::orderBy('display_order')->orderByDesc('created_at')->get();
+        $avgSkill = $skills->count() ? (int) round($skills->avg('proficiency_level')) : 0;
 
         // Fetch logs and active sessions
         $loginHistory = \App\Models\LoginActivity::where('user_id', auth()->id())->latest()->limit(15)->get();
@@ -93,7 +94,12 @@ class AdminController extends Controller
                 ];
             });
         
-        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages', 'skillCatalog', 'unreadCount', 'latestMsg', 'galleryItems', 'loginHistory', 'auditLogs', 'sessions'));
+        return view('admin.admin', compact(
+            'projects', 'skills', 'experiences', 'certifications',
+            'messages', 'skillCatalog', 'unreadCount', 'latestMsg',
+            'galleryItems', 'loginHistory', 'auditLogs', 'sessions',
+            'avgSkill'
+        ));
     }
 
     private function clearPortfolioCache(): void
