@@ -3906,13 +3906,13 @@ body:has(#mobile-menu.open) .nav-burger span {
 
 /* === BEYOND CODE GALLERY SECTION === */
 .gallery-masonry {
-  column-count: 4;
+  column-count: 3;
   column-gap: 20px;
   width: 100%;
 }
 @media (max-width: 1200px) {
   .gallery-masonry {
-    column-count: 3;
+    column-count: 2;
   }
 }
 @media (max-width: 768px) {

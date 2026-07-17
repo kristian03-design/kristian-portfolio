@@ -8,7 +8,6 @@
   <a href="#skills" class="mm-link">Skills</a>
   <a href="#experience" class="mm-link">Experience</a>
   <a href="#beyond-code" class="mm-link">Beyond Code</a>
-  <a href="#beyond-code-gallery" class="mm-link">Gallery</a>
   <a href="#certifications" class="mm-link">Certifications</a>
   <a href="#contact" class="mm-link">Contact</a>
 @endsection
@@ -383,63 +382,9 @@
       </div>
 
       <h3 class="sk-group-label" style="margin-bottom: 1.5rem;">
-        <span>Current Focus &amp; Habits</span>
+        <span>Photo Gallery</span>
       </h3>
-      <div class="currently-panel" style="margin-bottom: 4rem;">
-        <div class="currently-grid">
-          <div class="currently-item">
-            <span class="currently-label">Learning</span>
-            <span class="currently-val">Advanced System Architectures &amp; DevOps Pipelines</span>
-          </div>
-          <div class="currently-item">
-            <span class="currently-label">Building</span>
-            <span class="currently-val">High-Performance CMS Utilities &amp; Portfolios</span>
-          </div>
-          <div class="currently-item">
-            <span class="currently-label">Career Goal</span>
-            <span class="currently-val">Full-Stack Software Engineer (Open to Entry-Level Roles)</span>
-          </div>
-          <div class="currently-item">
-            <span class="currently-label">Habit</span>
-            <span class="currently-val">1 Hour of Reading/Tech Skill practice every single day</span>
-          </div>
-        </div>
-      </div>
 
-      <h3 class="sk-group-label" style="margin-bottom: 1.5rem;">
-        <span>Professional Traits</span>
-      </h3>
-      <div class="badges-row" style="margin-bottom: 4.5rem;">
-        <span class="badge-item"><i data-lucide="zap"></i> Fast Learner</span>
-        <span class="badge-item"><i data-lucide="puzzle"></i> Problem Solver</span>
-        <span class="badge-item"><i data-lucide="users"></i> Team Player</span>
-        <span class="badge-item"><i data-lucide="target"></i> Detail-Oriented</span>
-        <span class="badge-item"><i data-lucide="palette"></i> UI/UX Enthusiast</span>
-        <span class="badge-item"><i data-lucide="code-2"></i> Laravel Developer</span>
-        <span class="badge-item"><i data-lucide="trending-up"></i> Growth Mindset</span>
-        <span class="badge-item"><i data-lucide="briefcase"></i> Open to Entry-Level Roles</span>
-      </div>
-
-      <blockquote class="beyond-quote">
-        <i data-lucide="quote" class="quote-icon" style="width: 20px; height: 20px;"></i>
-        <p>"Writing code is a craft. Building software that genuinely helps someone is an art. I am committed to continuous learning, refining my skills, and building clean, impactful technology."</p>
-      </blockquote>
-
-    </div>
-  </div>
-</section>
-
-<hr class="s-rule">
-
-<section id="beyond-code-gallery">
-  <div class="s-in">
-    <div class="r">
-      <div class="s-eyebrow">06 &mdash; Gallery</div>
-      <h2 class="s-head">BEYOND<br>THE CODE.</h2>
-      <p class="section-note" style="margin-bottom: 2rem;">Snapshots of my journey, interests, and life outside the editor.</p>
-    </div>
-
-    <div class="gallery-col r d1">
       @if ($galleryItems->isEmpty())
         <div class="gallery-empty-state">
           <div class="empty-icon-wrap">
@@ -490,6 +435,7 @@
           @endforeach
         </div>
       @endif
+
     </div>
   </div>
 </section>
@@ -500,7 +446,7 @@
   <div class="s-in">
     <div class="proj-header cert-header">
       <div class="r">
-        <div class="s-eyebrow">07 &mdash; Credentials</div>
+        <div class="s-eyebrow">06 &mdash; Credentials</div>
         <h2 class="s-head">CERTIFICATIONS.</h2>
       </div>
       <a href="#certifications" class="proj-gh-link cert-view-link r d1">
@@ -587,7 +533,7 @@
 <section id="contact">
   <div class="s-in">
     <div class="r">
-      <div class="s-eyebrow">08 &mdash; Contact</div>
+      <div class="s-eyebrow">07 &mdash; Contact</div>
       <h2 class="s-head">LET&rsquo;S<br>TALK.</h2>
       <p class="contact-sub">Open to junior dev roles, contract work, and collaborations. Drop a message and I&rsquo;ll get back to you.</p>
 
