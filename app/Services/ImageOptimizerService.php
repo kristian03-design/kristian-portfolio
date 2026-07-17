@@ -37,6 +37,36 @@ class ImageOptimizerService
             ]);
         }
 
+        // Fallback if GD extension is not loaded (common on read-only/serverless runtimes like Vercel)
+        if (!extension_loaded('gd') || !function_exists('imagecreatefromstring')) {
+            $timestamp = now()->timestamp;
+            $extension = $file->getClientOriginalExtension();
+            $path = "uploads/gallery/{$timestamp}_{$slug}" . ($extension ? '.' . $extension : '');
+            
+            try {
+                $disk = Storage::disk('supabase');
+                $disk->put($path, $file->getContent(), [
+                    'visibility' => 'public',
+                    'ContentType' => $file->getMimeType(),
+                ]);
+            } catch (\Throwable $e) {
+                Log::error('Supabase gallery fallback upload failed', [
+                    'path' => $path,
+                    'message' => $e->getMessage()
+                ]);
+                throw ValidationException::withMessages([
+                    'image' => 'The image could not be uploaded to Supabase Storage: ' . $e->getMessage(),
+                ]);
+            }
+            
+            $url = '/media/' . ltrim($path, '/');
+            return [
+                'thumbnail' => $url,
+                'medium' => $url,
+                'original' => $url,
+            ];
+        }
+
         // Load image resource
         $imageContent = $file->getContent();
         $srcImage = @imagecreatefromstring($imageContent);
