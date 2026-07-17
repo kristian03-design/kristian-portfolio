@@ -9,6 +9,8 @@ use App\Models\Skill;
 use App\Models\Experience;
 use App\Models\Message;
 use App\Models\Certification;
+use App\Models\PortfolioGallery;
+use App\Services\ImageOptimizerService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MessageReplyMail;
@@ -68,8 +70,9 @@ class AdminController extends Controller
         $unreadCount = Message::where('status', 'unread')->count();
         $latestMsg = $messages->first();
         $skillCatalog = self::SKILL_CATALOG;
+        $galleryItems = PortfolioGallery::orderBy('display_order')->orderByDesc('created_at')->get();
         
-        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages', 'skillCatalog', 'unreadCount', 'latestMsg'));
+        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages', 'skillCatalog', 'unreadCount', 'latestMsg', 'galleryItems'));
     }
 
     private function clearPortfolioCache(): void
@@ -493,5 +496,130 @@ class AdminController extends Controller
             Log::error('Failed to send reply email: ' . $e->getMessage());
             return redirect()->back()->withErrors(['message' => 'Failed to send reply email: ' . $e->getMessage()]);
         }
+    }
+
+    public function storeGalleryItem(Request $request, ImageOptimizerService $imageService) {
+        $validated = $request->validate([
+            'title' => 'nullable|string|max:255',
+            'short_description' => 'nullable|string',
+            'category' => 'required|string|in:Sports,Music,Travel,Photography,Gaming,Workstation,Coffee,Learning,Events,Lifestyle,Nature,Other',
+            'image' => 'required|image|max:10240',
+            'display_order' => 'integer|min:0',
+            'is_featured' => 'boolean',
+            'is_published' => 'boolean',
+        ]);
+
+        $slug = Str::slug($validated['title'] ?? $validated['category'] ?? 'gallery');
+        $imageUrls = $imageService->processAndUpload($request->file('image'), $slug);
+
+        PortfolioGallery::create([
+            'title' => $validated['title'] ?? null,
+            'short_description' => $validated['short_description'] ?? null,
+            'category' => $validated['category'],
+            'image' => $imageUrls,
+            'display_order' => $validated['display_order'] ?? 0,
+            'is_featured' => $request->boolean('is_featured'),
+            'is_published' => $request->boolean('is_published', true),
+        ]);
+
+        $this->clearPortfolioCache();
+
+        return redirect()->back()->with('success', 'Gallery item uploaded successfully.');
+    }
+
+    public function updateGalleryItem(Request $request, string $id, ImageOptimizerService $imageService) {
+        $item = PortfolioGallery::findOrFail($id);
+        
+        $validated = $request->validate([
+            'title' => 'nullable|string|max:255',
+            'short_description' => 'nullable|string',
+            'category' => 'required|string|in:Sports,Music,Travel,Photography,Gaming,Workstation,Coffee,Learning,Events,Lifestyle,Nature,Other',
+            'image' => 'nullable|image|max:10240',
+            'display_order' => 'integer|min:0',
+            'is_featured' => 'boolean',
+            'is_published' => 'boolean',
+        ]);
+
+        $updateData = [
+            'title' => $validated['title'] ?? null,
+            'short_description' => $validated['short_description'] ?? null,
+            'category' => $validated['category'],
+            'display_order' => $validated['display_order'] ?? 0,
+            'is_featured' => $request->boolean('is_featured'),
+            'is_published' => $request->boolean('is_published'),
+        ];
+
+        if ($request->hasFile('image')) {
+            if ($item->image) {
+                $imageService->deleteImages($item->image);
+            }
+            
+            $slug = Str::slug($validated['title'] ?? $validated['category'] ?? 'gallery');
+            $updateData['image'] = $imageService->processAndUpload($request->file('image'), $slug);
+        }
+
+        $item->update($updateData);
+        $this->clearPortfolioCache();
+
+        return redirect()->back()->with('success', 'Gallery item updated successfully.');
+    }
+
+    public function destroyGalleryItem(string $id, ImageOptimizerService $imageService) {
+        $item = PortfolioGallery::findOrFail($id);
+        
+        if ($item->image) {
+            $imageService->deleteImages($item->image);
+        }
+
+        $item->delete();
+        $this->clearPortfolioCache();
+
+        return redirect()->back()->with('success', 'Gallery item deleted successfully.');
+    }
+
+    public function toggleGalleryItemPublished(string $id) {
+        $item = PortfolioGallery::findOrFail($id);
+        $item->is_published = !$item->is_published;
+        $item->save();
+        
+        $this->clearPortfolioCache();
+
+        return response()->json([
+            'success' => true,
+            'is_published' => $item->is_published,
+            'message' => $item->is_published ? 'Gallery item published.' : 'Gallery item unpublished.'
+        ]);
+    }
+
+    public function toggleGalleryItemFeatured(string $id) {
+        $item = PortfolioGallery::findOrFail($id);
+        $item->is_featured = !$item->is_featured;
+        $item->save();
+        
+        $this->clearPortfolioCache();
+
+        return response()->json([
+            'success' => true,
+            'is_featured' => $item->is_featured,
+            'message' => $item->is_featured ? 'Gallery item featured.' : 'Gallery item unfeatured.'
+        ]);
+    }
+
+    public function reorderGalleryItems(Request $request) {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:portfolio_gallery,id'
+        ]);
+
+        foreach ($request->input('ids') as $index => $id) {
+            PortfolioGallery::where('id', $id)->update(['display_order' => $index + 1]);
+        }
+
+        $this->clearPortfolioCache();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Gallery reordered successfully.'
+        ]);
     }
 }

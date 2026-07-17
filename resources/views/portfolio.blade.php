@@ -8,6 +8,7 @@
   <a href="#skills" class="mm-link">Skills</a>
   <a href="#experience" class="mm-link">Experience</a>
   <a href="#beyond-code" class="mm-link">Beyond Code</a>
+  <a href="#beyond-code-gallery" class="mm-link">Gallery</a>
   <a href="#certifications" class="mm-link">Certifications</a>
   <a href="#contact" class="mm-link">Contact</a>
 @endsection
@@ -430,11 +431,76 @@
 
 <hr class="s-rule">
 
+<section id="beyond-code-gallery">
+  <div class="s-in">
+    <div class="r">
+      <div class="s-eyebrow">06 &mdash; Gallery</div>
+      <h2 class="s-head">BEYOND<br>THE CODE.</h2>
+      <p class="section-note" style="margin-bottom: 2rem;">Snapshots of my journey, interests, and life outside the editor.</p>
+    </div>
+
+    <div class="gallery-col r d1">
+      @if ($galleryItems->isEmpty())
+        <div class="gallery-empty-state">
+          <div class="empty-icon-wrap">
+            <i data-lucide="image-off" class="empty-icon"></i>
+          </div>
+          <h3 class="empty-title">Gallery Coming Soon</h3>
+          <p class="empty-text">I'm currently preparing more moments to share outside my development journey. Check back soon.</p>
+        </div>
+      @else
+        <div class="gallery-masonry">
+          @foreach ($galleryItems as $item)
+            @php
+              $originalUrl = $item->image['original'] ?? '';
+              $mediumUrl = $item->image['medium'] ?? '';
+              $thumbnailUrl = $item->image['thumbnail'] ?? '';
+              
+              $altText = $item->title 
+                ? "Kristian Hernandez — {$item->title} ({$item->category})"
+                : "Kristian Lloyd Hernandez — {$item->category} photo";
+            @endphp
+            <div class="gallery-card-wrap" 
+                 data-original="{{ $originalUrl }}" 
+                 data-title="{{ $item->title ?? 'Untitled' }}" 
+                 data-category="{{ $item->category }}" 
+                 data-desc="{{ $item->short_description ?? '' }}"
+                 role="button" 
+                 tabindex="0"
+                 aria-label="View larger image: {{ $item->title ?? $item->category }}">
+              <article class="gallery-card">
+                <picture>
+                  <source srcset="{{ $thumbnailUrl }}" media="(max-width: 480px)">
+                  <source srcset="{{ $mediumUrl }}" media="(max-width: 1024px)">
+                  <img src="{{ $mediumUrl }}" alt="{{ $altText }}" class="gallery-img" loading="lazy" decoding="async">
+                </picture>
+                <div class="gallery-overlay">
+                  <div class="gallery-card-meta">
+                    <span class="gallery-card-badge">{{ $item->category }}</span>
+                    @if($item->title)
+                      <h4 class="gallery-card-title">{{ $item->title }}</h4>
+                    @endif
+                    @if($item->short_description)
+                      <p class="gallery-card-desc">{{ Str::limit($item->short_description, 80) }}</p>
+                    @endif
+                  </div>
+                </div>
+              </article>
+            </div>
+          @endforeach
+        </div>
+      @endif
+    </div>
+  </div>
+</section>
+
+<hr class="s-rule">
+
 <section id="certifications">
   <div class="s-in">
     <div class="proj-header cert-header">
       <div class="r">
-        <div class="s-eyebrow">06 &mdash; Credentials</div>
+        <div class="s-eyebrow">07 &mdash; Credentials</div>
         <h2 class="s-head">CERTIFICATIONS.</h2>
       </div>
       <a href="#certifications" class="proj-gh-link cert-view-link r d1">
@@ -521,7 +587,7 @@
 <section id="contact">
   <div class="s-in">
     <div class="r">
-      <div class="s-eyebrow">07 &mdash; Contact</div>
+      <div class="s-eyebrow">08 &mdash; Contact</div>
       <h2 class="s-head">LET&rsquo;S<br>TALK.</h2>
       <p class="contact-sub">Open to junior dev roles, contract work, and collaborations. Drop a message and I&rsquo;ll get back to you.</p>
 
@@ -599,4 +665,166 @@
     </blockquote>
   </section>
 </div>
+
+{{-- Premium Gallery Lightbox Modal --}}
+<div id="gallery-lightbox" class="gallery-lightbox-modal" role="dialog" aria-modal="true" aria-label="Gallery Image Viewer">
+  <span class="lightbox-close-btn" id="glb-close" aria-label="Close modal">&times;</span>
+  <div class="lightbox-nav-btn prev" id="glb-prev" aria-label="Previous image">&lsaquo;</div>
+  <div class="lightbox-nav-btn next" id="glb-next" aria-label="Next image">&rsaquo;</div>
+  
+  <div class="lightbox-content-wrapper">
+    <img class="lightbox-main-img" id="glb-img" src="" alt="Gallery Image Zoom">
+    <div class="lightbox-info">
+      <span class="lightbox-cat" id="glb-cat">Category</span>
+      <h3 class="lightbox-title" id="glb-title">Image Title</h3>
+      <p class="lightbox-desc" id="glb-desc">Short description...</p>
+    </div>
+  </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = Array.from(document.querySelectorAll('.gallery-card-wrap'));
+    if (!cards.length) return;
+
+    const lightbox = document.getElementById('gallery-lightbox');
+    const glbImg = document.getElementById('glb-img');
+    const glbCat = document.getElementById('glb-cat');
+    const glbTitle = document.getElementById('glb-title');
+    const glbDesc = document.getElementById('glb-desc');
+    const glbClose = document.getElementById('glb-close');
+    const glbPrev = document.getElementById('glb-prev');
+    const glbNext = document.getElementById('glb-next');
+
+    let currentIndex = 0;
+
+    function showImage(index) {
+        currentIndex = index;
+        const card = cards[currentIndex];
+        
+        const originalUrl = card.dataset.original;
+        const category = card.dataset.category;
+        const title = card.dataset.title;
+        const desc = card.dataset.desc;
+
+        // Fade out
+        glbImg.classList.remove('active');
+
+        // Delay updating source slightly to let fadeout happen
+        glbImg.src = originalUrl;
+        
+        glbCat.textContent = category;
+        glbTitle.textContent = title && title !== 'Untitled' ? title : '';
+        glbDesc.textContent = desc || '';
+
+        // Hide title if empty
+        if (!title || title === 'Untitled') {
+            glbTitle.style.display = 'none';
+        } else {
+            glbTitle.style.display = 'block';
+        }
+
+        // Hide description if empty
+        if (!desc) {
+            glbDesc.style.display = 'none';
+        } else {
+            glbDesc.style.display = 'block';
+        }
+    }
+
+    glbImg.addEventListener('load', () => {
+        glbImg.classList.add('active');
+    });
+
+    function openGalleryLightbox(index) {
+        showImage(index);
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeGalleryLightbox() {
+        lightbox.classList.remove('open');
+        document.body.style.overflow = '';
+        glbImg.src = '';
+    }
+
+    cards.forEach((card, idx) => {
+        card.addEventListener('click', () => openGalleryLightbox(idx));
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openGalleryLightbox(idx);
+            }
+        });
+    });
+
+    glbClose.addEventListener('click', closeGalleryLightbox);
+    
+    // Close when clicking backdrop
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target.classList.contains('lightbox-content-wrapper')) {
+            closeGalleryLightbox();
+        }
+    });
+
+    function nextImage() {
+        let nextIdx = (currentIndex + 1) % cards.length;
+        showImage(nextIdx);
+    }
+
+    function prevImage() {
+        let prevIdx = (currentIndex - 1 + cards.length) % cards.length;
+        showImage(prevIdx);
+    }
+
+    glbNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        nextImage();
+    });
+    glbPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        prevImage();
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('open')) return;
+
+        if (e.key === 'Escape') {
+            closeGalleryLightbox();
+        } else if (e.key === 'ArrowRight') {
+            nextImage();
+        } else if (e.key === 'ArrowLeft') {
+            prevImage();
+        }
+    });
+
+    // Swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    lightbox.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    lightbox.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const threshold = 50;
+        const delta = touchEndX - touchStartX;
+        if (Math.abs(delta) < threshold) return;
+
+        if (delta > 0) {
+            prevImage();
+        } else {
+            nextImage();
+        }
+    }
+});
+</script>
 @endsection

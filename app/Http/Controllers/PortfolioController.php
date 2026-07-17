@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Experience;
 use App\Models\Certification;
+use App\Models\PortfolioGallery;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -22,13 +23,15 @@ class PortfolioController extends Controller
             $skills = $this->safeCollection('skills', fn () => Skill::orderBy('proficiency_level', 'desc')->get());
             $experiences = $this->safeCollection('experiences', fn () => Experience::orderBy('start_date', 'desc')->get());
             $certifications = $this->safeCollection('certifications', fn () => Certification::orderBy('issue_date', 'desc')->get());
-            return compact('projects', 'skills', 'experiences', 'certifications');
+            $galleryItems = $this->safeCollection('gallery', fn () => PortfolioGallery::where('is_published', true)->orderByDesc('is_featured')->orderBy('display_order', 'asc')->get());
+            return compact('projects', 'skills', 'experiences', 'certifications', 'galleryItems');
         });
 
         $projects = $cachedData['projects'];
         $skills = $cachedData['skills'];
         $experiences = $cachedData['experiences'];
         $certifications = $cachedData['certifications'];
+        $galleryItems = $cachedData['galleryItems'] ?? collect();
 
         $services = [
             [
@@ -58,7 +61,7 @@ class PortfolioController extends Controller
         ];
 
         return response()
-            ->view('portfolio', compact('projects', 'skills', 'experiences', 'certifications', 'services'))
+            ->view('portfolio', compact('projects', 'skills', 'experiences', 'certifications', 'services', 'galleryItems'))
             ->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=600')
             ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=3600');
     }

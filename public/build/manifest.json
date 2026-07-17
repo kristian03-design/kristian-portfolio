@@ -1,6 +1,6 @@
 {
   "resources/css/admin.css": {
-    "file": "assets/admin-Bc-7EKl4.css",
+    "file": "assets/admin-BiEKF5pC.css",
     "src": "resources/css/admin.css",
     "isEntry": true,
     "name": "admin",
@@ -9,7 +9,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-C50VouBE.css",
+    "file": "assets/app-5WltXUhf.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -36,7 +36,7 @@
     ]
   },
   "resources/css/portfolio.css": {
-    "file": "assets/portfolio-BDdkIcVf.css",
+    "file": "assets/portfolio-Dv7XVNbQ.css",
     "src": "resources/css/portfolio.css",
     "isEntry": true,
     "name": "portfolio",
@@ -45,7 +45,7 @@
     ]
   },
   "resources/js/admin.js": {
-    "file": "assets/admin-CF5acc2z.js",
+    "file": "assets/admin-DSoWfCoa.js",
     "name": "admin",
     "src": "resources/js/admin.js",
     "isEntry": true
@@ -69,7 +69,7 @@
     "isEntry": true
   },
   "resources/js/portfolio.js": {
-    "file": "assets/portfolio-C--SIkFY.js",
+    "file": "assets/portfolio-CAsKeyYF.js",
     "name": "portfolio",
     "src": "resources/js/portfolio.js",
     "isEntry": true

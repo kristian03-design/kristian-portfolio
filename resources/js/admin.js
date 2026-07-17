@@ -6,6 +6,7 @@ const tabTitles = {
     certifications: 'Certifications',
     messages: 'Messages',
     profile: 'Profile',
+    gallery: 'Beyond Code Gallery',
 };
 
 function switchTab(name, smooth = true) {
@@ -1125,6 +1126,342 @@ document.addEventListener('DOMContentLoaded', () => {
     function escHtml(str) {
         if (!str) return '';
         return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // --------- GALLERY MANAGEMENT ------------------------------------------------------
+    const galleryForm = document.getElementById('gallery-form');
+    if (galleryForm) {
+        const methodInput = document.getElementById('gallery-form-method');
+        const titleEl = document.getElementById('gallery-form-title');
+        const iconEl = document.getElementById('gallery-form-icon');
+        const cancelBtn = document.getElementById('gallery-edit-cancel');
+        const submitBtnText = document.getElementById('gallery-submit-btn');
+        const imageRequired = document.getElementById('gallery-image-required');
+        const imageInput = document.getElementById('gallery-image-input');
+        const dropzone = document.getElementById('gallery-dropzone');
+        const previewContainer = document.getElementById('gallery-preview-container');
+        const previewImg = document.getElementById('gallery-preview-img');
+        const removePreviewBtn = document.getElementById('remove-preview-btn');
+        const createAction = galleryForm.dataset.createAction;
+
+        function resetGalleryForm() {
+            galleryForm.action = createAction;
+            galleryForm.reset();
+            methodInput.disabled = true;
+            methodInput.value = 'POST';
+            titleEl.textContent = 'New Gallery Item';
+            iconEl.className = 'ti ti-photo-plus';
+            submitBtnText.innerHTML = '<i class="ti ti-device-floppy"></i> Save Gallery Item';
+            cancelBtn.classList.add('hidden');
+            imageRequired.classList.remove('hidden');
+            imageInput.required = true;
+            previewImg.src = '';
+            previewContainer.classList.add('hidden');
+            document.querySelectorAll('.gallery-admin-card.editing').forEach(card => card.classList.remove('editing'));
+        }
+
+        cancelBtn.addEventListener('click', resetGalleryForm);
+
+        // Click on dropzone triggers file input
+        dropzone.addEventListener('click', (e) => {
+            if (e.target !== removePreviewBtn && !removePreviewBtn.contains(e.target)) {
+                imageInput.click();
+            }
+        });
+
+        // Drag and drop states
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+            }, false);
+        });
+
+        // Handle drop event
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) {
+                imageInput.files = files;
+                handlePreview(files[0]);
+            }
+        });
+
+        // Handle input change
+        imageInput.addEventListener('change', () => {
+            if (imageInput.files && imageInput.files[0]) {
+                handlePreview(imageInput.files[0]);
+            }
+        });
+
+        function handlePreview(file) {
+            if (!file.type.match('image.*')) {
+                if (window.showToast) window.showToast('Please upload an image file.', 'error');
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                if (window.showToast) window.showToast('Image is larger than 10MB.', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Remove preview button
+        removePreviewBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            imageInput.value = '';
+            previewImg.src = '';
+            previewContainer.classList.add('hidden');
+            if (methodInput.value === 'PATCH') {
+                imageRequired.classList.add('hidden');
+                imageInput.required = false;
+            } else {
+                imageRequired.classList.remove('hidden');
+                imageInput.required = true;
+            }
+        });
+
+        // Edit button click handler
+        document.querySelectorAll('.btn-edit-gallery').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const dataEl = document.getElementById(`gallery-data-${id}`);
+                if (!dataEl) return;
+
+                try {
+                    const data = JSON.parse(dataEl.textContent);
+                    
+                    // Reset styling
+                    document.querySelectorAll('.gallery-admin-card.editing').forEach(card => card.classList.remove('editing'));
+                    const card = btn.closest('.gallery-admin-card');
+                    if (card) card.classList.add('editing');
+
+                    // Set action & method
+                    galleryForm.action = `/admin/gallery/${id}`;
+                    methodInput.disabled = false;
+                    methodInput.value = 'PATCH';
+
+                    // Populate fields
+                    document.getElementById('gallery-title').value = data.title || '';
+                    document.getElementById('gallery-description').value = data.short_description || '';
+                    document.getElementById('gallery-category').value = data.category;
+                    document.getElementById('gallery-display-order').value = data.display_order;
+                    document.getElementById('gallery-is-featured').checked = !!data.is_featured;
+                    document.getElementById('gallery-is-published').checked = !!data.is_published;
+
+                    // Image is optional on update, show existing thumbnail in preview
+                    imageInput.required = false;
+                    imageRequired.classList.add('hidden');
+                    if (data.image_thumbnail) {
+                        previewImg.src = data.image_thumbnail;
+                        previewContainer.classList.remove('hidden');
+                    } else {
+                        previewImg.src = '';
+                        previewContainer.classList.add('hidden');
+                    }
+
+                    titleEl.textContent = 'Edit Gallery Item';
+                    iconEl.className = 'ti ti-edit';
+                    submitBtnText.innerHTML = '<i class="ti ti-device-floppy"></i> Update Gallery Item';
+                    cancelBtn.classList.remove('hidden');
+
+                    // Scroll to form
+                    galleryForm.scrollIntoView({ behavior: 'smooth' });
+
+                } catch (error) {
+                    console.error('Error parsing gallery data', error);
+                }
+            });
+        });
+
+        // Toggle published click handler
+        document.querySelectorAll('.btn-toggle-publish').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                fetch(`/admin/gallery/${id}/toggle-published`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || galleryForm.querySelector('[name="_token"]')?.value,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const icon = btn.querySelector('i');
+                        if (data.is_published) {
+                            btn.classList.add('is-active');
+                            btn.title = 'Unpublish';
+                            if (icon) {
+                                icon.className = 'ti ti-eye';
+                            }
+                        } else {
+                            btn.classList.remove('is-active');
+                            btn.title = 'Publish';
+                            if (icon) {
+                                icon.className = 'ti ti-eye-off';
+                            }
+                        }
+                        if (window.showToast) window.showToast(data.message, 'success');
+                        
+                        // Dynamically update card badge if any
+                        const badgeContainer = btn.closest('.gallery-admin-card')?.querySelector('.meta-badges');
+                        if (badgeContainer) {
+                            let publishedBadge = badgeContainer.querySelector('.tag-published, .tag-unpublished');
+                            if (publishedBadge) {
+                                if (data.is_published) {
+                                    publishedBadge.className = 'tag tag-published';
+                                    publishedBadge.title = 'Published';
+                                    publishedBadge.innerHTML = '<i class="ti ti-eye"></i>';
+                                } else {
+                                    publishedBadge.className = 'tag tag-unpublished';
+                                    publishedBadge.title = 'Draft';
+                                    publishedBadge.innerHTML = '<i class="ti ti-eye-off"></i>';
+                                }
+                            }
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    if (window.showToast) window.showToast('An error occurred.', 'error');
+                });
+            });
+        });
+
+        // Toggle featured click handler
+        document.querySelectorAll('.btn-toggle-featured').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                fetch(`/admin/gallery/${id}/toggle-featured`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || galleryForm.querySelector('[name="_token"]')?.value,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const icon = btn.querySelector('i');
+                        if (data.is_featured) {
+                            btn.classList.add('is-active');
+                            btn.title = 'Unfeature';
+                            if (icon) {
+                                icon.className = 'ti ti-star-filled';
+                            }
+                        } else {
+                            btn.classList.remove('is-active');
+                            btn.title = 'Feature';
+                            if (icon) {
+                                icon.className = 'ti ti-star';
+                            }
+                        }
+                        if (window.showToast) window.showToast(data.message, 'success');
+
+                        // Dynamically update card badge if any
+                        const badgeContainer = btn.closest('.gallery-admin-card')?.querySelector('.meta-badges');
+                        if (badgeContainer) {
+                            let featuredBadge = badgeContainer.querySelector('.tag-featured');
+                            if (data.is_featured) {
+                                if (!featuredBadge) {
+                                    const newBadge = document.createElement('span');
+                                    newBadge.className = 'tag tag-featured';
+                                    newBadge.title = 'Featured';
+                                    newBadge.innerHTML = '<i class="ti ti-star-filled"></i>';
+                                    badgeContainer.prepend(newBadge);
+                                }
+                            } else {
+                                if (featuredBadge) featuredBadge.remove();
+                            }
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    if (window.showToast) window.showToast('An error occurred.', 'error');
+                });
+            });
+        });
+
+        // HTML5 Drag and Drop sorting
+        const sortableContainer = document.getElementById('gallery-items-list');
+        if (sortableContainer) {
+            let dragEl = null;
+
+            sortableContainer.addEventListener('dragstart', (e) => {
+                const card = e.target.closest('.gallery-admin-card');
+                if (card) {
+                    dragEl = card;
+                    card.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                }
+            });
+
+            sortableContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                const targetCard = e.target.closest('.gallery-admin-card');
+                if (targetCard && targetCard !== dragEl) {
+                    const bounding = targetCard.getBoundingClientRect();
+                    const offset = e.clientY - bounding.top;
+                    if (offset > bounding.height / 2) {
+                        targetCard.after(dragEl);
+                    } else {
+                        targetCard.before(dragEl);
+                    }
+                }
+            });
+
+            sortableContainer.addEventListener('dragend', () => {
+                if (dragEl) {
+                    dragEl.classList.remove('dragging');
+                    dragEl = null;
+                    
+                    // Re-calculate orders and send AJAX save request
+                    const cards = Array.from(sortableContainer.querySelectorAll('.gallery-admin-card'));
+                    const ids = cards.map(c => c.dataset.id);
+                    
+                    // Update UI order texts instantly
+                    cards.forEach((c, idx) => {
+                        const orderLabel = c.querySelector('.meta-order strong');
+                        if (orderLabel) orderLabel.textContent = idx + 1;
+                    });
+
+                    fetch('/admin/gallery/reorder', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || galleryForm.querySelector('[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ ids })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && window.showToast) {
+                            window.showToast(data.message, 'success');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        if (window.showToast) window.showToast('Reorder save failed.', 'error');
+                    });
+                }
+            });
+        }
     }
 })();
 

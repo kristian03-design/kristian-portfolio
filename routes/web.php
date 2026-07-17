@@ -67,6 +67,13 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('/admin/certifications', [AdminController::class, 'storeCertification']);
     Route::delete('/admin/certifications/{id}', [AdminController::class, 'destroyCertification']);
 
+    Route::post('/admin/gallery', [AdminController::class, 'storeGalleryItem']);
+    Route::patch('/admin/gallery/reorder', [AdminController::class, 'reorderGalleryItems']);
+    Route::patch('/admin/gallery/{id}', [AdminController::class, 'updateGalleryItem']);
+    Route::delete('/admin/gallery/{id}', [AdminController::class, 'destroyGalleryItem']);
+    Route::post('/admin/gallery/{id}/toggle-published', [AdminController::class, 'toggleGalleryItemPublished']);
+    Route::post('/admin/gallery/{id}/toggle-featured', [AdminController::class, 'toggleGalleryItemFeatured']);
+
     Route::patch('/admin/messages/{id}/read', [AdminController::class, 'markMessageRead']);
     Route::post('/admin/messages/{id}/reply', [AdminController::class, 'replyMessage']);
 
