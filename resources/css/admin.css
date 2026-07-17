@@ -1867,3 +1867,9 @@
 .card-actions .btn-toggle-featured.is-active {
     color: var(--accent);
 }
+
+/* Spinner Animation Utility */
+.animate-spin {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}

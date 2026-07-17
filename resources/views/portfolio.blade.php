@@ -332,7 +332,7 @@
       <h2 class="s-head">OUTSIDE<br>THE IDE.</h2>
       <p class="section-note" style="margin-bottom: 2rem;">Curiosity, continuous improvement, and the mindset behind the screens.</p>
       <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem;">
-        While I spend most of my days building systems and writing code, I believe that being a great developer is about more than just programming. It's about curiosity, consistency, physical discipline, and a mindset of continuous improvement. Here is a glimpse of who I am when the keyboard is idle.
+        "While I spend most of my days building systems and writing code, I believe that being a great developer is about more than just programming. It's about curiosity, consistency, physical discipline, and a mindset of continuous improvement. Here is a glimpse of who I am when the keyboard is idle."
       </p>
       <p style="font-size: 1.2rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem; font-style: italic;">Writing code is a craft. Building software that genuinely helps someone is an art. I am committed to continuous learning, refining my skills, and building clean, impactful technology.</p>  
     </div>
@@ -418,7 +418,7 @@
                 <picture>
                   <source srcset="{{ $thumbnailUrl }}" media="(max-width: 480px)">
                   <source srcset="{{ $mediumUrl }}" media="(max-width: 1024px)">
-                  <img src="{{ $mediumUrl }}" alt="{{ $altText }}" class="gallery-img" loading="lazy" decoding="async">
+                  <img src="{{ $mediumUrl }}" alt="{{ $altText }}" class="gallery-img" loading="eager" decoding="async">
                 </picture>
                 <div class="gallery-overlay">
                   <div class="gallery-card-meta">

@@ -1,3 +1,61 @@
+// Global Form Submit Loading & Double-Click Protection
+document.addEventListener('submit', (e) => {
+    const form = e.target;
+    
+    // Ignore if already submitting
+    if (form.classList.contains('is-submitting')) {
+        e.preventDefault();
+        return;
+    }
+    
+    // Locate the submit button (handling buttons inside and outside the form)
+    let submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+    if (!submitBtn && form.id) {
+        submitBtn = document.querySelector(`button[type="submit"][form="${form.id}"], input[type="submit"][form="${form.id}"]`);
+    }
+    
+    if (!submitBtn) return;
+    
+    // Mark as submitting
+    form.classList.add('is-submitting');
+    submitBtn.disabled = true;
+    
+    // Disable cancel/reset/ghost buttons inside the form
+    form.querySelectorAll('button[type="reset"], .btn-ghost, .js-cancel-btn').forEach(btn => {
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.5';
+    });
+    
+    // Also handle cancels/resets outside the form (like project-edit-cancel or gallery-edit-cancel)
+    const formName = form.id ? form.id.split('-')[0] : '';
+    if (formName) {
+        document.querySelectorAll(`#${formName}-edit-cancel, #${formName}-cancel-btn`).forEach(btn => {
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.5';
+        });
+    }
+
+    // Determine loading text dynamically
+    let loadingText = 'Processing...';
+    if (submitBtn.dataset.loadingText) {
+        loadingText = submitBtn.dataset.loadingText;
+    } else {
+        const btnText = submitBtn.textContent.trim().toLowerCase();
+        if (btnText.includes('save') || btnText.includes('create') || btnText.includes('add')) {
+            loadingText = 'Saving...';
+        } else if (btnText.includes('update') || btnText.includes('edit')) {
+            loadingText = 'Updating...';
+        } else if (btnText.includes('send') || btnText.includes('reply')) {
+            loadingText = 'Sending...';
+        } else if (btnText.includes('delete') || btnText.includes('remove')) {
+            loadingText = 'Deleting...';
+        }
+    }
+    
+    // Set loading html
+    submitBtn.innerHTML = `<i class="ti ti-loader-2 animate-spin" style="margin-right: 6px;"></i> ${loadingText}`;
+});
+
 const tabTitles = {
     dashboard: 'Dashboard',
     projects: 'Projects',
@@ -1143,6 +1201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const previewImg = document.getElementById('gallery-preview-img');
         const removePreviewBtn = document.getElementById('remove-preview-btn');
         const createAction = galleryForm.dataset.createAction;
+            // Note: Form submission loading states and double-submit protection are handled globally at the top of this file.
 
         function resetGalleryForm() {
             galleryForm.action = createAction;

@@ -3930,11 +3930,12 @@ body:has(#mobile-menu.open) .nav-burger span {
   break-inside: avoid;
   display: inline-block;
   width: 100%;
+  min-height: 180px;
   margin-bottom: 20px;
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  background: var(--surface);
+  background: var(--surface2);
   border: 1px solid var(--border);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   outline: none;

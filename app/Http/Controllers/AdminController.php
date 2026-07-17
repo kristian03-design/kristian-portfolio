@@ -499,82 +499,107 @@ class AdminController extends Controller
     }
 
     public function storeGalleryItem(Request $request, ImageOptimizerService $imageService) {
-        $validated = $request->validate([
-            'title' => 'nullable|string|max:255',
-            'short_description' => 'nullable|string',
-            'category' => 'required|string|in:Sports,Music,Travel,Photography,Gaming,Workstation,Coffee,Learning,Events,Lifestyle,Nature,Other',
-            'image' => 'required|image|max:10240',
-            'display_order' => 'integer|min:0',
-            'is_featured' => 'boolean',
-            'is_published' => 'boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'nullable|string|max:255',
+                'short_description' => 'nullable|string',
+                'category' => 'required|string|in:Sports,Music,Travel,Photography,Gaming,Workstation,Coffee,Learning,Events,Lifestyle,Nature,Other',
+                'image' => 'required|image|max:10240',
+                'display_order' => 'integer|min:0',
+                'is_featured' => 'boolean',
+                'is_published' => 'boolean',
+            ]);
 
-        $slug = Str::slug($validated['title'] ?? $validated['category'] ?? 'gallery');
-        $imageUrls = $imageService->processAndUpload($request->file('image'), $slug);
+            $slug = Str::slug($validated['title'] ?? $validated['category'] ?? 'gallery');
+            $imageUrls = $imageService->processAndUpload($request->file('image'), $slug);
 
-        PortfolioGallery::create([
-            'title' => $validated['title'] ?? null,
-            'short_description' => $validated['short_description'] ?? null,
-            'category' => $validated['category'],
-            'image' => $imageUrls,
-            'display_order' => $validated['display_order'] ?? 0,
-            'is_featured' => $request->boolean('is_featured'),
-            'is_published' => $request->boolean('is_published', true),
-        ]);
+            PortfolioGallery::create([
+                'title' => $validated['title'] ?? null,
+                'short_description' => $validated['short_description'] ?? null,
+                'category' => $validated['category'],
+                'image' => $imageUrls,
+                'display_order' => $validated['display_order'] ?? 0,
+                'is_featured' => $request->boolean('is_featured'),
+                'is_published' => $request->boolean('is_published', true),
+            ]);
 
-        $this->clearPortfolioCache();
+            $this->clearPortfolioCache();
 
-        return redirect()->back()->with('success', 'Gallery item uploaded successfully.');
+            return redirect()->back()->with('success', 'Gallery item uploaded successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error('Gallery item upload failed: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+            return redirect()->back()->withInput()->withErrors(['image' => 'Upload failed: ' . $e->getMessage()]);
+        }
     }
 
     public function updateGalleryItem(Request $request, string $id, ImageOptimizerService $imageService) {
-        $item = PortfolioGallery::findOrFail($id);
-        
-        $validated = $request->validate([
-            'title' => 'nullable|string|max:255',
-            'short_description' => 'nullable|string',
-            'category' => 'required|string|in:Sports,Music,Travel,Photography,Gaming,Workstation,Coffee,Learning,Events,Lifestyle,Nature,Other',
-            'image' => 'nullable|image|max:10240',
-            'display_order' => 'integer|min:0',
-            'is_featured' => 'boolean',
-            'is_published' => 'boolean',
-        ]);
-
-        $updateData = [
-            'title' => $validated['title'] ?? null,
-            'short_description' => $validated['short_description'] ?? null,
-            'category' => $validated['category'],
-            'display_order' => $validated['display_order'] ?? 0,
-            'is_featured' => $request->boolean('is_featured'),
-            'is_published' => $request->boolean('is_published'),
-        ];
-
-        if ($request->hasFile('image')) {
-            if ($item->image) {
-                $imageService->deleteImages($item->image);
-            }
+        try {
+            $item = PortfolioGallery::findOrFail($id);
             
-            $slug = Str::slug($validated['title'] ?? $validated['category'] ?? 'gallery');
-            $updateData['image'] = $imageService->processAndUpload($request->file('image'), $slug);
+            $validated = $request->validate([
+                'title' => 'nullable|string|max:255',
+                'short_description' => 'nullable|string',
+                'category' => 'required|string|in:Sports,Music,Travel,Photography,Gaming,Workstation,Coffee,Learning,Events,Lifestyle,Nature,Other',
+                'image' => 'nullable|image|max:10240',
+                'display_order' => 'integer|min:0',
+                'is_featured' => 'boolean',
+                'is_published' => 'boolean',
+            ]);
+
+            $updateData = [
+                'title' => $validated['title'] ?? null,
+                'short_description' => $validated['short_description'] ?? null,
+                'category' => $validated['category'],
+                'display_order' => $validated['display_order'] ?? 0,
+                'is_featured' => $request->boolean('is_featured'),
+                'is_published' => $request->boolean('is_published'),
+            ];
+
+            if ($request->hasFile('image')) {
+                if ($item->image) {
+                    $imageService->deleteImages($item->image);
+                }
+                
+                $slug = Str::slug($validated['title'] ?? $validated['category'] ?? 'gallery');
+                $updateData['image'] = $imageService->processAndUpload($request->file('image'), $slug);
+            }
+
+            $item->update($updateData);
+            $this->clearPortfolioCache();
+
+            return redirect()->back()->with('success', 'Gallery item updated successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            Log::error('Gallery item update failed: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+            return redirect()->back()->withInput()->withErrors(['image' => 'Update failed: ' . $e->getMessage()]);
         }
-
-        $item->update($updateData);
-        $this->clearPortfolioCache();
-
-        return redirect()->back()->with('success', 'Gallery item updated successfully.');
     }
 
     public function destroyGalleryItem(string $id, ImageOptimizerService $imageService) {
-        $item = PortfolioGallery::findOrFail($id);
-        
-        if ($item->image) {
-            $imageService->deleteImages($item->image);
+        try {
+            $item = PortfolioGallery::findOrFail($id);
+            
+            if ($item->image) {
+                $imageService->deleteImages($item->image);
+            }
+
+            $item->delete();
+            $this->clearPortfolioCache();
+
+            return redirect()->back()->with('success', 'Gallery item deleted successfully.');
+        } catch (\Throwable $e) {
+            Log::error('Gallery item deletion failed: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+            return redirect()->back()->withErrors(['image' => 'Deletion failed: ' . $e->getMessage()]);
         }
-
-        $item->delete();
-        $this->clearPortfolioCache();
-
-        return redirect()->back()->with('success', 'Gallery item deleted successfully.');
     }
 
     public function toggleGalleryItemPublished(string $id) {
