@@ -185,27 +185,37 @@ class ImageOptimizerService
 
     private function uploadToSupabase($imageResource, string $path): void
     {
-        // Output WebP to temporary stream
-        $tempStream = fopen('php://temp', 'r+');
-        imagewebp($imageResource, $tempStream, 85); // 85% quality WebP
-        rewind($tempStream);
-        $content = stream_get_contents($tempStream);
-        fclose($tempStream);
+        // Output WebP to temporary file
+        $tempFile = tempnam(sys_get_temp_dir(), 'gallery');
+        if (!$tempFile) {
+            throw ValidationException::withMessages([
+                'image' => 'Failed to create a temporary file for image processing.',
+            ]);
+        }
 
-        // Upload using storage facade
         try {
+            imagewebp($imageResource, $tempFile, 85); // 85% quality WebP
+            $content = file_get_contents($tempFile);
+            @unlink($tempFile);
+
+            if ($content === false || strlen($content) === 0) {
+                throw new \Exception('Failed to generate WebP image data.');
+            }
+
+            // Upload using storage facade
             $disk = Storage::disk('supabase');
             $disk->put($path, $content, [
                 'visibility' => 'public',
                 'ContentType' => 'image/webp',
             ]);
         } catch (\Throwable $e) {
+            @unlink($tempFile);
             Log::error('Supabase gallery image upload failed', [
                 'path' => $path,
                 'message' => $e->getMessage()
             ]);
             throw ValidationException::withMessages([
-                'image' => 'The image could not be uploaded to Supabase Storage. Check configuration.',
+                'image' => 'The image could not be uploaded to Supabase Storage: ' . $e->getMessage(),
             ]);
         }
     }
