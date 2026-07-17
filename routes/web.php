@@ -80,6 +80,8 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::delete('/profile/sessions/{id}', [ProfileController::class, 'terminateSession'])->name('profile.sessions.terminate');
+    Route::delete('/profile/sessions', [ProfileController::class, 'terminateOtherSessions'])->name('profile.sessions.terminate_others');
 });
 
 require __DIR__.'/auth.php';

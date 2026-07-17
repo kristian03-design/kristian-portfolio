@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('position')->nullable();
             $table->string('status')->default('Active');
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

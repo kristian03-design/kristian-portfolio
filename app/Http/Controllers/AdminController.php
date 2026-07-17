@@ -72,8 +72,28 @@ class AdminController extends Controller
         $latestMsg = $messages->first();
         $skillCatalog = self::SKILL_CATALOG;
         $galleryItems = PortfolioGallery::orderBy('display_order')->orderByDesc('created_at')->get();
+
+        // Fetch logs and active sessions
+        $loginHistory = \App\Models\LoginActivity::where('user_id', auth()->id())->latest()->limit(15)->get();
+        $auditLogs = \App\Models\AuditLog::with('user')->latest()->limit(50)->get();
+
+        $sessions = \Illuminate\Support\Facades\DB::table('sessions')
+            ->where('user_id', auth()->id())
+            ->get()
+            ->map(function ($session) {
+                $parsed = \App\Services\AuditLogger::parseUserAgent($session->user_agent);
+                return (object) [
+                    'id' => $session->id,
+                    'ip_address' => $session->ip_address,
+                    'browser' => $parsed['browser'],
+                    'operating_system' => $parsed['os'],
+                    'device' => $parsed['device'],
+                    'last_activity' => \Carbon\Carbon::createFromTimestamp($session->last_activity),
+                    'is_current' => $session->id === request()->session()->getId(),
+                ];
+            });
         
-        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages', 'skillCatalog', 'unreadCount', 'latestMsg', 'galleryItems'));
+        return view('admin.admin', compact('projects', 'skills', 'experiences', 'certifications', 'messages', 'skillCatalog', 'unreadCount', 'latestMsg', 'galleryItems', 'loginHistory', 'auditLogs', 'sessions'));
     }
 
     private function clearPortfolioCache(): void
@@ -275,8 +295,10 @@ class AdminController extends Controller
             $warning = $e->errors()['image'][0] ?? 'The project was saved, but the preview image could not be uploaded.';
         }
 
-        Project::create($validated);
+        $project = Project::create($validated);
         $this->clearPortfolioCache();
+
+        \App\Services\AuditLogger::log('project_create', 'projects', $project->id, $project->only('title', 'slug', 'status'));
 
         $redirect = redirect()->back()->with('success', 'Project created.');
 
@@ -307,6 +329,8 @@ class AdminController extends Controller
         $project->update($validated);
         $this->clearPortfolioCache();
 
+        \App\Services\AuditLogger::log('project_update', 'projects', $project->id, $project->only('title', 'slug', 'status'));
+
         $redirect = redirect()->back()->with('success', 'Project updated.');
 
         if ($warning) {
@@ -319,6 +343,9 @@ class AdminController extends Controller
     public function destroyProject(string $id) {
         $project = Project::findOrFail($id);
         $this->deleteUpload($project->image_path);
+
+        \App\Services\AuditLogger::log('project_delete', 'projects', $project->id, ['title' => $project->title]);
+
         $project->delete();
         $this->clearPortfolioCache();
 
@@ -368,6 +395,8 @@ class AdminController extends Controller
 
         $project->update($data);
         $this->clearPortfolioCache();
+
+        \App\Services\AuditLogger::log('project_details_update', 'projects', $project->id, ['slug' => $project->slug]);
 
         return redirect()->route('admin.dashboard', ['tab' => 'projects'])
                          ->with('success', 'Project details updated for "' . $project->title . '".');
@@ -434,11 +463,12 @@ class AdminController extends Controller
         }
 
         $skillsToCreate->each(function (array $skill) use ($validated) {
-            Skill::create([
+            $created = Skill::create([
                 'name' => $skill['name'],
                 'category' => $skill['category'],
                 'proficiency_level' => $validated['proficiency_level'],
             ]);
+            \App\Services\AuditLogger::log('skill_create', 'skills', $created->id, ['name' => $created->name]);
         });
 
         $this->clearPortfolioCache();
@@ -446,7 +476,10 @@ class AdminController extends Controller
         return redirect()->back()->with('success', $skillsToCreate->count() === 1 ? 'Skill created.' : 'Skills created.');
     }
     public function destroySkill(string $id) {
-        Skill::findOrFail($id)->delete();
+        $skill = Skill::findOrFail($id);
+        \App\Services\AuditLogger::log('skill_delete', 'skills', $skill->id, ['name' => $skill->name]);
+
+        $skill->delete();
         $this->clearPortfolioCache();
 
         return redirect()->back()->with('success', 'Skill deleted.');
@@ -460,13 +493,18 @@ class AdminController extends Controller
             'end_date' => 'nullable|date',
             'description' => 'nullable|string',
         ]);
-        Experience::create($validated);
+        $exp = Experience::create($validated);
         $this->clearPortfolioCache();
+
+        \App\Services\AuditLogger::log('experience_create', 'experiences', $exp->id, ['role' => $exp->role, 'company' => $exp->company]);
 
         return redirect()->back()->with('success', 'Experience created.');
     }
     public function destroyExperience(string $id) {
-        Experience::findOrFail($id)->delete();
+        $exp = Experience::findOrFail($id);
+        \App\Services\AuditLogger::log('experience_delete', 'experiences', $exp->id, ['role' => $exp->role, 'company' => $exp->company]);
+
+        $exp->delete();
         $this->clearPortfolioCache();
 
         return redirect()->back()->with('success', 'Experience deleted.');
@@ -490,8 +528,10 @@ class AdminController extends Controller
             $validated['image_path'] = $this->storeUpload($request->file('certificate_image'), 'uploads/certifications');
         }
 
-        Certification::create($validated);
+        $cert = Certification::create($validated);
         $this->clearPortfolioCache();
+
+        \App\Services\AuditLogger::log('certification_create', 'certifications', $cert->id, ['title' => $cert->title]);
 
         return redirect()->back()->with('success', 'Certification created.');
     }
@@ -499,6 +539,9 @@ class AdminController extends Controller
     public function destroyCertification(string $id) {
         $cert = Certification::findOrFail($id);
         $this->deleteUpload($cert->image_path);
+
+        \App\Services\AuditLogger::log('certification_delete', 'certifications', $cert->id, ['title' => $cert->title]);
+
         $cert->delete();
         $this->clearPortfolioCache();
 
@@ -547,7 +590,7 @@ class AdminController extends Controller
             $slug = Str::slug($validated['title'] ?? $validated['category'] ?? 'gallery');
             $imageUrls = $imageService->processAndUpload($request->file('image'), $slug);
 
-            PortfolioGallery::create([
+            $item = PortfolioGallery::create([
                 'title' => $validated['title'] ?? null,
                 'short_description' => $validated['short_description'] ?? null,
                 'category' => $validated['category'],
@@ -558,6 +601,8 @@ class AdminController extends Controller
             ]);
 
             $this->clearPortfolioCache();
+
+            \App\Services\AuditLogger::log('gallery_item_create', 'portfolio_gallery', $item->id, ['title' => $item->title, 'category' => $item->category]);
 
             return redirect()->back()->with('success', 'Gallery item uploaded successfully.');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -605,6 +650,8 @@ class AdminController extends Controller
             $item->update($updateData);
             $this->clearPortfolioCache();
 
+            \App\Services\AuditLogger::log('gallery_item_update', 'portfolio_gallery', $item->id, ['title' => $item->title, 'category' => $item->category]);
+
             return redirect()->back()->with('success', 'Gallery item updated successfully.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
@@ -623,6 +670,8 @@ class AdminController extends Controller
             if ($item->image) {
                 $imageService->deleteImages($item->image);
             }
+
+            \App\Services\AuditLogger::log('gallery_item_delete', 'portfolio_gallery', $item->id, ['title' => $item->title]);
 
             $item->delete();
             $this->clearPortfolioCache();

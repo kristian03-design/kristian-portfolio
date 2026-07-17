@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -26,8 +27,21 @@ class AuthenticationTest extends TestCase
             'password' => 'password',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        // Stage 1 redirects to OTP verify screen
+        $response->assertRedirect(route('otp.verify'));
+        $this->assertGuest();
+
+        // Retrieve generated OTP directly from DB (otp_code is in $hidden)
+        $otp = DB::table('adminlist')->where('id', $user->id)->value('otp_code');
+        $this->assertNotNull($otp);
+
+        // Submit OTP — carry the session-stored otp_user_id across test requests
+        $otpResponse = $this
+            ->withSession(['otp_user_id' => $user->id])
+            ->post('/otp/verify', ['otp' => $otp]);
+
+        $this->assertAuthenticatedAs($user);
+        $otpResponse->assertRedirect(route('dashboard', absolute: false));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
