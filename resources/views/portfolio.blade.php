@@ -332,11 +332,11 @@
       <h2 class="s-head">OUTSIDE<br>THE IDE.</h2>
       <p class="section-note" style="margin-bottom: 2rem;">Curiosity, continuous improvement, and the mindset behind the screens.</p>
       <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 2rem;">
-        "While I spend most of my days building systems and writing code, I believe that being a great developer is about more than just programming. It's about curiosity, consistency, physical discipline, and a mindset of continuous improvement. Here is a glimpse of who I am when the keyboard is idle."
+        While I spend most of my days building systems and writing code, I believe that being a great developer is about more than just programming. It's about curiosity, consistency, physical discipline, and a mindset of continuous improvement. Here is a glimpse of who I am when the keyboard is idle.
       </p>
       <blockquote style="font-size: 1.15rem; line-height: 1.8; color: var(--text-secondary); border-left: 3px solid var(--lime); padding-left: 1.5rem; margin: 2.5rem 0; font-style: italic;">
         "Writing code is a craft. Building software that genuinely helps someone is an art. I am committed to continuous learning, refining my skills, and building clean, impactful technology."
-      </blockquote>  
+      </blockquote>
     </div>
 
     <!-- Right Column: Main Cards, Focus & Traits -->
