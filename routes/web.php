@@ -53,8 +53,8 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     })->name('dashboard');
 
     // API-like routes for admin panel (since UI is single page)
-    Route::post('/admin/projects', [AdminController::class, 'storeProject']);
-    Route::patch('/admin/projects/{id}', [AdminController::class, 'updateProject']);
+    Route::post('/admin/projects', [AdminController::class, 'storeProject'])->middleware('throttle:uploads');
+    Route::patch('/admin/projects/{id}', [AdminController::class, 'updateProject'])->middleware('throttle:uploads');
     Route::patch('/admin/projects/{id}/details', [AdminController::class, 'updateProjectDetails']);
     Route::delete('/admin/projects/{id}', [AdminController::class, 'destroyProject']);
 
@@ -64,12 +64,12 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('/admin/experiences', [AdminController::class, 'storeExperience']);
     Route::delete('/admin/experiences/{id}', [AdminController::class, 'destroyExperience']);
 
-    Route::post('/admin/certifications', [AdminController::class, 'storeCertification']);
+    Route::post('/admin/certifications', [AdminController::class, 'storeCertification'])->middleware('throttle:uploads');
     Route::delete('/admin/certifications/{id}', [AdminController::class, 'destroyCertification']);
 
-    Route::post('/admin/gallery', [AdminController::class, 'storeGalleryItem']);
+    Route::post('/admin/gallery', [AdminController::class, 'storeGalleryItem'])->middleware('throttle:uploads');
     Route::patch('/admin/gallery/reorder', [AdminController::class, 'reorderGalleryItems']);
-    Route::patch('/admin/gallery/{id}', [AdminController::class, 'updateGalleryItem']);
+    Route::patch('/admin/gallery/{id}', [AdminController::class, 'updateGalleryItem'])->middleware('throttle:uploads');
     Route::delete('/admin/gallery/{id}', [AdminController::class, 'destroyGalleryItem']);
     Route::post('/admin/gallery/{id}/toggle-published', [AdminController::class, 'toggleGalleryItemPublished']);
     Route::post('/admin/gallery/{id}/toggle-featured', [AdminController::class, 'toggleGalleryItemFeatured']);

@@ -11,6 +11,7 @@ use App\Models\Message;
 use App\Models\Certification;
 use App\Models\PortfolioGallery;
 use App\Services\ImageOptimizerService;
+use App\Services\FileSecurityValidator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MessageReplyMail;
@@ -137,6 +138,9 @@ class AdminController extends Controller
 
     private function storeUpload(UploadedFile $file, string $directory): string
     {
+        // 1. Validate file for security (whitelist, MIME check, getimagesize, PHP tag check)
+        FileSecurityValidator::validate($file);
+
         $required = [
             'SUPABASE_STORAGE_BUCKET' => config('filesystems.disks.supabase.bucket'),
             'SUPABASE_STORAGE_ACCESS_KEY_ID' => config('filesystems.disks.supabase.key'),
@@ -150,15 +154,45 @@ class AdminController extends Controller
             ]);
         }
 
-        $filename = now()->timestamp . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-        $extension = $file->getClientOriginalExtension();
-        $path = trim($directory, '/') . '/' . $filename . ($extension ? '.' . $extension : '');
+        // 2. Secure file naming using UUIDs
+        $extension = strtolower($file->getClientOriginalExtension());
+        $uuid = (string) Str::uuid();
+        $path = trim($directory, '/') . '/' . $uuid . '.' . $extension;
+
+        // 3. EXIF metadata stripping and optimization if GD is loaded
+        $fileContent = $file->getContent();
+        $mime = $file->getMimeType();
+
+        if (str_starts_with($mime, 'image/') && extension_loaded('gd') && function_exists('imagecreatefromstring')) {
+            $srcImage = @imagecreatefromstring($fileContent);
+            if ($srcImage) {
+                imagealphablending($srcImage, false);
+                imagesavealpha($srcImage, true);
+
+                ob_start();
+                if ($mime === 'image/jpeg') {
+                    imagejpeg($srcImage, null, 90);
+                } elseif ($mime === 'image/png') {
+                    imagepng($srcImage, null, 9);
+                } elseif ($mime === 'image/webp') {
+                    imagewebp($srcImage, null, 85);
+                } elseif ($mime === 'image/gif') {
+                    imagegif($srcImage);
+                }
+                $cleaned = ob_get_clean();
+                imagedestroy($srcImage);
+
+                if ($cleaned !== false && strlen($cleaned) > 0) {
+                    $fileContent = $cleaned;
+                }
+            }
+        }
 
         try {
             $disk = Storage::disk('supabase');
-            $disk->put($path, $file->getContent(), [
+            $disk->put($path, $fileContent, [
                 'visibility' => 'public',
-                'ContentType' => $file->getMimeType(),
+                'ContentType' => $mime,
             ]);
         } catch (\Throwable $e) {
             Log::error('Supabase upload failed.', [

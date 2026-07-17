@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
+use App\Services\FileSecurityValidator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -21,27 +22,14 @@ class ImageOptimizerService
      */
     public function processAndUpload(UploadedFile $file, string $slug): array
     {
-        // 1. Validate File Size (over 10MB)
-        if ($file->getSize() > 10 * 1024 * 1024) {
-            throw ValidationException::withMessages([
-                'image' => 'The image size cannot exceed 10MB.',
-            ]);
-        }
-
-        // 2. Validate format
-        $mime = $file->getMimeType();
-        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        if (!in_array($mime, $allowedMimes)) {
-            throw ValidationException::withMessages([
-                'image' => 'Unsupported image format. Allowed formats: JPEG, PNG, WebP, GIF.',
-            ]);
-        }
+        // 1. Validate File for security (whitelist, MIME check, getimagesize, PHP tag check, max 5MB image limit)
+        FileSecurityValidator::validate($file, 'image');
 
         // Fallback if GD extension is not loaded (common on read-only/serverless runtimes like Vercel)
         if (!extension_loaded('gd') || !function_exists('imagecreatefromstring')) {
-            $timestamp = now()->timestamp;
-            $extension = $file->getClientOriginalExtension();
-            $path = "uploads/gallery/{$timestamp}_{$slug}" . ($extension ? '.' . $extension : '');
+            $uuid = (string) Str::uuid();
+            $extension = strtolower($file->getClientOriginalExtension());
+            $path = "uploads/gallery/{$uuid}" . ($extension ? '.' . $extension : '');
             
             try {
                 $disk = Storage::disk('supabase');
@@ -92,12 +80,12 @@ class ImageOptimizerService
         imagesavealpha($srcImage, true);
 
         // Generate sizes
-        $timestamp = now()->timestamp;
+        $uuid = (string) Str::uuid();
         
         // Target paths
-        $thumbnailPath = "uploads/gallery/{$timestamp}_{$slug}_thumb.webp";
-        $mediumPath = "uploads/gallery/{$timestamp}_{$slug}_medium.webp";
-        $originalPath = "uploads/gallery/{$timestamp}_{$slug}_original.webp";
+        $thumbnailPath = "uploads/gallery/{$uuid}_thumb.webp";
+        $mediumPath = "uploads/gallery/{$uuid}_medium.webp";
+        $originalPath = "uploads/gallery/{$uuid}_original.webp";
 
         // Create Thumbnail: 400x400 px, cropped automatically from center
         $thumbImage = $this->cropToSquare($srcImage, $width, $height, 400);

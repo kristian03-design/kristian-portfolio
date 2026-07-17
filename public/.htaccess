@@ -5,6 +5,24 @@
 
     RewriteEngine On
 
+    # Block access to sensitive files and folders
+    RewriteCond %{REQUEST_URI} ^/\.env [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/\.git [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/composer\.(json|lock) [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/package(-lock)?\.json [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/vite\.config\..* [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/webpack\..* [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/phpunit\.xml [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/README [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/LICENSE [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/artisan [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/insert_admin\.php [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/tests/ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/vendor/ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/node_modules/ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/storage/logs/ [NC]
+    RewriteRule .* - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

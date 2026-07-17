@@ -131,6 +131,15 @@ class PortfolioController extends Controller
     {
         $path = ltrim($path, '/');
 
+        // Prevent directory traversal attacks
+        if (str_contains($path, '..') || str_starts_with($path, '/') || str_starts_with($path, '\\')) {
+            \Illuminate\Support\Facades\Log::warning('Directory traversal attempt blocked in media endpoint', [
+                'path' => $path,
+                'ip' => request()->ip(),
+            ]);
+            abort(400, 'Invalid path');
+        }
+
         try {
             $disk = Storage::disk('supabase');
 

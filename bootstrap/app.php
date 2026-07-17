@@ -19,7 +19,29 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->respond(function ($response, \Throwable $e, \Illuminate\Http\Request $request) {
+            if (!config('app.debug') && ($request->expectsJson() || $request->is('api/*') || $request->ajax())) {
+                $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+
+                // Let Laravel's ValidationException flow through untouched
+                if ($e instanceof \Illuminate\Validation\ValidationException) {
+                    return $response;
+                }
+
+                // Clean response for HTTP exceptions
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface) {
+                    return response()->json([
+                        'message' => $e->getMessage() ?: \Symfony\Component\HttpFoundation\Response::$statusTexts[$status],
+                    ], $status);
+                }
+
+                // Mask database, file, and code exceptions in production
+                return response()->json([
+                    'message' => 'An internal server error occurred. Please try again later.',
+                ], 500);
+            }
+            return $response;
+        });
     })->create();
 
 if ($storagePath = env('LARAVEL_STORAGE_PATH')) {

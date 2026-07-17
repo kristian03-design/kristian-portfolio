@@ -525,7 +525,7 @@
           @endif
         </div>
       @empty
-        <div class="empty-state light">Certifications will appear here once they are added from the CMS.</div>
+        <div class="empty-state light">I'm currently collecting certifications that are worth sharing.</div>
       @endforelse
     </div>
   </div>

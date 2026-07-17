@@ -18,6 +18,16 @@ class SecurityHeaders
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
         $response->headers->remove('X-Powered-By');
 
+        $csp = "default-src 'self'; " .
+               "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " .
+               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " .
+               "img-src 'self' data: https://cdn.jsdelivr.net https://cdn.simpleicons.org; " .
+               "font-src 'self' https://fonts.gstatic.com; " .
+               "connect-src 'self'; " .
+               "frame-ancestors 'none'; " .
+               "form-action 'self';";
+        $response->headers->set('Content-Security-Policy', $csp);
+
         if ($request->is('admin*', 'dashboard*', 'profile*', 'login', 'register', 'otp*', 'forgot-password', 'reset-password*', 'media*')) {
             $response->headers->set('X-Robots-Tag', 'noindex, nofollow, noarchive');
         }

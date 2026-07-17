@@ -1,0 +1,22 @@
+# Disable directory listing
+Options -Indexes
+
+# Disable execution of scripts
+<FilesMatch "\.(php|php3|php4|php5|phtml|phar|cgi|pl|py|jsp|asp|aspx|exe|dll|bat|cmd|com|msi|sh|bash|jar|apk|iso|zip|rar|7z|svg|js|html|htm)$">
+    Require all denied
+</FilesMatch>
+
+# Turn off the PHP engine (if PHP is running as an Apache module)
+<IfModule mod_php5.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+# Remove any handler that might execute scripts
+RemoveHandler .php .phtml .php3 .php4 .php5 .cgi .pl .py .jsp .asp .aspx .sh .bash
+RemoveType .php .phtml .php3 .php4 .php5 .cgi .pl .py .jsp .asp .aspx .sh .bash
