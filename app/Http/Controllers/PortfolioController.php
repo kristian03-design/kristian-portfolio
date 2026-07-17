@@ -62,8 +62,7 @@ class PortfolioController extends Controller
 
         return response()
             ->view('portfolio', compact('projects', 'skills', 'experiences', 'certifications', 'services', 'galleryItems'))
-            ->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=600')
-            ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=3600');
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
     }
 
     public function projects()
@@ -74,8 +73,7 @@ class PortfolioController extends Controller
 
         return response()
             ->view('projects', compact('projects'))
-            ->header('Cache-Control', 'public, max-age=60, stale-while-revalidate=600')
-            ->header('CDN-Cache-Control', 'public, max-age=600, stale-while-revalidate=3600');
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
     }
 
     public function data()
