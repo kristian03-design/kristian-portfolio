@@ -1,0 +1,1 @@
+function n(){typeof window.initLucideIcons=="function"?window.initLucideIcons():window.lucide&&typeof window.lucide.createIcons=="function"&&window.lucide.createIcons()}document.addEventListener("DOMContentLoaded",n);window.addEventListener("load",n);n();

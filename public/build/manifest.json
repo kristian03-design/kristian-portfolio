@@ -1,6 +1,6 @@
 {
   "resources/css/admin.css": {
-    "file": "assets/admin-DK6qsHbt.css",
+    "file": "assets/admin-Xsy7Fb0c.css",
     "src": "resources/css/admin.css",
     "isEntry": true,
     "name": "admin",
@@ -9,7 +9,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-5WltXUhf.css",
+    "file": "assets/app-BT7AirLd.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -36,7 +36,7 @@
     ]
   },
   "resources/css/portfolio.css": {
-    "file": "assets/portfolio-T4Uccaas.css",
+    "file": "assets/portfolio-B8CwOPLR.css",
     "src": "resources/css/portfolio.css",
     "isEntry": true,
     "name": "portfolio",
@@ -57,19 +57,19 @@
     "isEntry": true
   },
   "resources/js/auth-login.js": {
-    "file": "assets/auth-login-DkxEt9dA.js",
+    "file": "assets/auth-login-Czb5tH2n.js",
     "name": "auth-login",
     "src": "resources/js/auth-login.js",
     "isEntry": true
   },
   "resources/js/auth-otp.js": {
-    "file": "assets/auth-otp-CqXTDcbT.js",
+    "file": "assets/auth-otp-MpMkXL-N.js",
     "name": "auth-otp",
     "src": "resources/js/auth-otp.js",
     "isEntry": true
   },
   "resources/js/portfolio.js": {
-    "file": "assets/portfolio-C--SIkFY.js",
+    "file": "assets/portfolio-4ww9uMu9.js",
     "name": "portfolio",
     "src": "resources/js/portfolio.js",
     "isEntry": true

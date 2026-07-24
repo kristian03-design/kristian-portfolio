@@ -3,13 +3,13 @@
 @section('title', 'Kristian Hernandez — Web & Mobile Developer')
 
 @section('mobile_menu_links')
-  <a href="#about" class="mm-link">About</a>
-  <a href="#projects" class="mm-link">Projects</a>
-  <a href="#skills" class="mm-link">Skills</a>
-  <a href="#experience" class="mm-link">Experience</a>
-  <a href="#beyond-code" class="mm-link">Beyond Code</a>
-  <a href="#certifications" class="mm-link">Certifications</a>
-  <a href="#contact" class="mm-link">Contact</a>
+  <a href="#about" class="mm-link" style="--i: 1;">About</a>
+  <a href="#projects" class="mm-link" style="--i: 2;">Projects</a>
+  <a href="#skills" class="mm-link" style="--i: 3;">Skills</a>
+  <a href="#experience" class="mm-link" style="--i: 4;">Experience</a>
+  <a href="#beyond-code" class="mm-link" style="--i: 5;">Beyond Code</a>
+  <a href="#certifications" class="mm-link" style="--i: 6;">Certifications</a>
+  <a href="#contact" class="mm-link" style="--i: 7;">Contact</a>
 @endsection
 
 @section('navigation')

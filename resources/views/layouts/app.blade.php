@@ -54,23 +54,36 @@
 
 <div id="progress"></div>
 
-<!-- Mobile Menu -->
-<div id="mobile-menu" aria-hidden="true">
-  @yield('mobile_menu_links')
-  
-  <button id="mobile-theme-toggle" class="theme-toggle-btn mobile-toggle" aria-label="Toggle theme">
-    <span class="sun-wrapper"><i data-lucide="sun" class="sun-icon" style="width: 20px; height: 20px;"></i></span>
-    <span class="moon-wrapper"><i data-lucide="moon" class="moon-icon" style="width: 20px; height: 20px;"></i></span>
-    <span class="toggle-text">Toggle Theme</span>
-  </button>
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile Navigation" aria-hidden="true">
+  <div class="mm-header">
+    <a href="{{ route('home') }}" class="mm-logo">Kristian<span class="nav-logo-dot">.</span></a>
+    <div class="mm-header-actions">
+      <button id="mobile-theme-toggle" class="theme-toggle-btn mobile-toggle" aria-label="Toggle theme">
+        <span class="sun-wrapper"><i data-lucide="sun" class="sun-icon" style="width: 18px; height: 18px;"></i></span>
+        <span class="moon-wrapper"><i data-lucide="moon" class="moon-icon" style="width: 18px; height: 18px;"></i></span>
+      </button>
+      <button id="mm-close" class="mm-close-btn" aria-label="Close navigation menu">
+        <i data-lucide="x" style="width: 22px; height: 22px;"></i>
+      </button>
+    </div>
+  </div>
 
-  <div class="nav-resume-wrapper">
-    <a href="{{ route('resume.view') }}" target="_blank" rel="noopener noreferrer" class="nav-resume-premium btn-view-resume" aria-label="View Resume in a new tab">
-      <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <i data-lucide="arrow-up-right" style="width: 16px; height: 16px; display: inline-block; vertical-align: -1px; margin-left: 2.5px;"></i>
-    </a>
-    <a href="{{ route('resume.download') }}" class="nav-resume-premium btn-download-resume" title="Download Resume" aria-label="Download Resume PDF">
-      <i data-lucide="download" style="width: 16px; height: 16px;"></i>
-    </a>
+  <div class="mm-scroll-container">
+    <nav class="mm-nav" aria-label="Mobile Navigation Links">
+      @yield('mobile_menu_links')
+    </nav>
+    
+    <div class="mm-footer">
+      <div class="nav-resume-wrapper">
+        <a href="{{ route('resume.view') }}" target="_blank" rel="noopener noreferrer" class="nav-resume-premium btn-view-resume" aria-label="View Resume in a new tab">
+          <span class="btn-icon"></span> <span class="btn-text">View Resume</span> <i data-lucide="arrow-up-right" style="width: 16px; height: 16px; display: inline-block; vertical-align: -1px; margin-left: 2.5px;"></i>
+        </a>
+        <a href="{{ route('resume.download') }}" class="nav-resume-premium btn-download-resume" title="Download Resume" aria-label="Download Resume PDF">
+          <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -120,14 +133,6 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeLightbox();
-    }
-  });
-</script>
-<script src="https://unpkg.com/lucide@0.400.0"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    if (typeof lucide !== 'undefined') {
-      lucide.createIcons();
     }
   });
 </script>

@@ -50,7 +50,7 @@
           <i data-lucide="download" style="width: 16px; height: 16px;"></i>
         </a>
       </div>
-      <button class="nav-burger" id="burger" aria-label="Menu" aria-expanded="false">
+      <button class="nav-burger" id="burger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
         <span></span>
         <span></span>
         <span></span>

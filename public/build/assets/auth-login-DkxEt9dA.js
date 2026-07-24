@@ -1,1 +1,0 @@
-function c(){if(window.lucide){window.lucide.createIcons();return}const e=document.createElement("script");e.src="https://unpkg.com/lucide@latest",e.onload=()=>window.lucide?.createIcons(),document.head.appendChild(e)}c();

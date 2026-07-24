@@ -1,4 +1,4 @@
-﻿const boxes = Array.from(document.querySelectorAll('.otp-box'));
+const boxes = Array.from(document.querySelectorAll('.otp-box'));
   const hiddenOtp = document.getElementById('otp');
   const submitBtn = document.getElementById('submitBtn');
 
@@ -78,15 +78,12 @@
   }, 1000);
 
   function loadLucide() {
-    if (window.lucide) {
+    if (typeof window.initLucideIcons === 'function') {
+      window.initLucideIcons();
+    } else if (window.lucide && typeof window.lucide.createIcons === 'function') {
       window.lucide.createIcons();
-      return;
     }
-
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/lucide@latest';
-    script.onload = () => window.lucide?.createIcons();
-    document.head.appendChild(script);
   }
 
+  document.addEventListener('DOMContentLoaded', loadLucide);
   loadLucide();

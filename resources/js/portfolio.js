@@ -1,5 +1,139 @@
+import { createIcons, icons } from 'lucide';
 
+// Lucide Icon Initialization Engine & Robust Fallback
+export function initLucideIcons() {
+  try {
+    if (typeof createIcons === 'function') {
+      createIcons({ icons });
+    } else if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Lucide icon render notice:', err);
+    }
+  }
+}
 
+// Expose on global window scope for dynamic scripts & Blade components
+if (typeof window !== 'undefined') {
+  window.initLucideIcons = initLucideIcons;
+  window.lucide = { createIcons: initLucideIcons, icons };
+}
+
+// Auto-run icon initialization on key lifecycle events
+document.addEventListener('DOMContentLoaded', initLucideIcons);
+window.addEventListener('load', initLucideIcons);
+document.addEventListener('livewire:navigated', initLucideIcons);
+document.addEventListener('alpine:initialized', initLucideIcons);
+
+// Mobile Menu Navigation Controller
+let savedScrollPosition = 0;
+
+const burger = document.getElementById('burger');
+const mmenu = document.getElementById('mobile-menu');
+const mmClose = document.getElementById('mm-close');
+
+function lockBodyScroll() {
+  savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedScrollPosition}px`;
+  document.body.style.width = '100%';
+  document.body.classList.add('menu-open');
+}
+
+function unlockBodyScroll() {
+  document.body.style.removeProperty('overflow');
+  document.body.style.removeProperty('position');
+  document.body.style.removeProperty('top');
+  document.body.style.removeProperty('width');
+  document.body.classList.remove('menu-open');
+  window.scrollTo(0, savedScrollPosition);
+}
+
+function openMobileMenu() {
+  if (!mmenu || !burger) return;
+  burger.classList.add('open');
+  burger.setAttribute('aria-expanded', 'true');
+  mmenu.classList.add('open');
+  mmenu.setAttribute('aria-hidden', 'false');
+  lockBodyScroll();
+  initLucideIcons();
+
+  // Focus trap / auto-focus first link inside drawer
+  setTimeout(() => {
+    const focusable = mmenu.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (focusable.length > 0) {
+      focusable[0].focus();
+    }
+  }, 100);
+}
+
+function closeMobileMenu() {
+  if (!mmenu || !burger) return;
+  burger.classList.remove('open');
+  burger.setAttribute('aria-expanded', 'false');
+  mmenu.classList.remove('open');
+  mmenu.setAttribute('aria-hidden', 'true');
+  unlockBodyScroll();
+  burger.focus();
+}
+
+function toggleMobileMenu() {
+  const isOpen = mmenu?.classList.contains('open');
+  if (isOpen) {
+    closeMobileMenu();
+  } else {
+    openMobileMenu();
+  }
+}
+
+if (burger) {
+  burger.addEventListener('click', toggleMobileMenu);
+}
+
+if (mmClose) {
+  mmClose.addEventListener('click', closeMobileMenu);
+}
+
+document.querySelectorAll('.mm-link').forEach(a => {
+  a.addEventListener('click', closeMobileMenu);
+});
+
+// Close mobile menu on Escape key press
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && mmenu?.classList.contains('open')) {
+    closeMobileMenu();
+  }
+});
+
+// Trap Focus inside open mobile menu
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Tab' || !mmenu?.classList.contains('open')) return;
+
+  const focusables = Array.from(
+    mmenu.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')
+  );
+  if (!focusables.length) return;
+
+  const firstEl = focusables[0];
+  const lastEl = focusables[focusables.length - 1];
+
+  if (e.shiftKey) {
+    if (document.activeElement === firstEl) {
+      lastEl.focus();
+      e.preventDefault();
+    }
+  } else {
+    if (document.activeElement === lastEl) {
+      firstEl.focus();
+      e.preventDefault();
+    }
+  }
+});
+
+// Scroll progress bar and active section highlight
 const prog = document.getElementById('progress');
 const nav = document.getElementById('nav');
 const navAs = document.querySelectorAll('.nav-links a[data-section]');
@@ -33,30 +167,7 @@ window.addEventListener('scroll', () => {
   });
 }, { passive: true });
 
-const burger = document.getElementById('burger');
-const mmenu = document.getElementById('mobile-menu');
-const mmClose = document.getElementById('mm-close');
-
-burger?.addEventListener('click', () => {
-  const isOpen = burger.classList.toggle('open');
-  mmenu?.classList.toggle('open');
-  document.body.classList.toggle('menu-open', isOpen);
-});
-
-mmClose?.addEventListener('click', () => {
-  burger?.classList.remove('open');
-  mmenu?.classList.remove('open');
-  document.body.classList.remove('menu-open');
-});
-
-document.querySelectorAll('.mm-link').forEach(a => {
-  a.addEventListener('click', () => {
-    burger?.classList.remove('open');
-    mmenu?.classList.remove('open');
-    document.body.classList.remove('menu-open');
-  });
-});
-
+// Reveal on scroll elements
 const revEls = document.querySelectorAll('.r');
 const ro = new IntersectionObserver(entries => {
   entries.forEach(e => {
@@ -81,32 +192,29 @@ const so = new IntersectionObserver(entries => {
 }, { threshold: 0.3 });
 document.querySelectorAll('.sk-fill').forEach(fill => so.observe(fill));
 
+// Welcome Modal
 const welcomeModal = document.getElementById('welcome-modal');
 const welcomeSeenKey = 'portfolio_welcome_seen';
 
 function closeWelcomeModal() {
   if (!welcomeModal) return;
-
   welcomeModal.classList.remove('open');
   welcomeModal.setAttribute('aria-hidden', 'true');
-
   try {
     localStorage.setItem(welcomeSeenKey, 'true');
   } catch (error) {
-    // Ignore storage failures so the modal never blocks browsing.
+    // Ignore storage errors
   }
 }
 
 function openWelcomeModal() {
   if (!welcomeModal) return;
-
   welcomeModal.classList.add('open');
   welcomeModal.setAttribute('aria-hidden', 'false');
 }
 
 if (welcomeModal) {
   let hasSeenWelcome = false;
-
   try {
     hasSeenWelcome = localStorage.getItem(welcomeSeenKey) === 'true';
   } catch (error) {
@@ -133,10 +241,9 @@ if (welcomeModal) {
   });
 }
 
-// Prefetch case study pages on hover for instant transitions
+// Prefetch case study pages on hover/touch for instant transitions
 document.addEventListener('DOMContentLoaded', () => {
   const prefetchedUrls = new Set();
-  
   const prefetchLink = (url) => {
     if (!url || url === '#' || prefetchedUrls.has(url)) return;
     prefetchedUrls.add(url);
@@ -152,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Contact Form Handler
 const contactForm = document.getElementById('contactForm');
 const formMessage = document.getElementById('formMessage');
 
@@ -216,15 +324,16 @@ const initThemeToggle = () => {
     document.documentElement.classList.add(theme);
     localStorage.setItem('theme', theme);
     
-    // Update ARIA attributes
     toggles.forEach(btn => {
       btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
       btn.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`);
     });
+
+    // Re-initialize icons to ensure dark/light mode icons render properly
+    initLucideIcons();
   };
   
   toggles.forEach(btn => {
-    // Set initial state
     const currentTheme = getTheme();
     btn.setAttribute('aria-pressed', currentTheme === 'dark' ? 'true' : 'false');
     btn.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} theme`);
@@ -241,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTypewriter();
 });
 
-// Typewriter effect for elements with class .typewriter-target
+// Typewriter effect
 function initTypewriter() {
   const elements = document.querySelectorAll('.typewriter-target');
   elements.forEach(el => {
@@ -259,20 +368,20 @@ function initTypewriter() {
       if (isDeleting) {
         el.textContent = currentRole.substring(0, charIdx - 1);
         charIdx--;
-        delay = 40; // Deleting is faster
+        delay = 40;
       } else {
         el.textContent = currentRole.substring(0, charIdx + 1);
         charIdx++;
-        delay = 100; // Typing speed
+        delay = 100;
       }
 
       if (!isDeleting && charIdx === currentRole.length) {
         isDeleting = true;
-        delay = 2500; // Pause at end of word
+        delay = 2500;
       } else if (isDeleting && charIdx === 0) {
         isDeleting = false;
         roleIdx = (roleIdx + 1) % roles.length;
-        delay = 500; // Pause before next word
+        delay = 500;
       }
 
       setTimeout(type, delay);
@@ -281,6 +390,3 @@ function initTypewriter() {
     type();
   });
 }
-
-
-
