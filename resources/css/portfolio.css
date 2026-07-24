@@ -1545,6 +1545,7 @@ section {
   align-items: start;
 }
 
+/* Contact text colors — always rendered on dark bg, so use fixed light tones */
 #contact .s-head {
   color: rgba(245, 244, 240, .92);
   margin-bottom: 1.25rem;
@@ -1561,7 +1562,7 @@ section {
 .contact-sub {
   font-size: .85rem;
   line-height: 1.82;
-  color: rgba(245, 244, 240, .38);
+  color: rgba(245, 244, 240, .5);
   margin-bottom: 2.75rem;
 }
 
@@ -1570,7 +1571,7 @@ section {
   align-items: center;
   gap: 1rem;
   font-size: .8rem;
-  color: rgba(245, 244, 240, .5);
+  color: rgba(245, 244, 240, .55);
   margin-bottom: 1rem;
   transition: color .2s;
 }
@@ -1584,30 +1585,34 @@ section {
 }
 
 .c-icon {
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(245, 244, 240, .1);
-  border-radius: 2px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(245, 244, 240, .15);
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: border-color .2s, background .2s;
+  color: rgba(245, 244, 240, .6);
+  transition: border-color .2s, background .2s, color .2s;
 }
 
 .contact-link:hover .c-icon {
   border-color: var(--lime);
   background: var(--lime-dim);
+  color: var(--lime);
 }
 
-.c-icon svg {
-  width: 13px;
-  height: 13px;
+.c-icon svg,
+.c-icon i svg {
+  width: 14px;
+  height: 14px;
   stroke: currentColor;
   stroke-width: 1.8;
   fill: none;
 }
 
+/* Social icon buttons — always on contact dark bg */
 .socials {
   display: flex;
   gap: .75rem;
@@ -1615,29 +1620,36 @@ section {
 }
 
 .social-btn {
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(245, 244, 240, .1);
-  border-radius: 2px;
-  display: flex;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(245, 244, 240, .15);
+  border-radius: 4px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: rgba(245, 244, 240, .35);
-  transition: border-color .2s, color .2s, background .2s;
+  color: rgba(245, 244, 240, .55);
+  background: transparent;
+  transition: border-color .25s ease, color .25s ease, background .25s ease, transform .2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.social-btn:hover {
+.social-btn:hover,
+.social-btn:focus-visible {
   border-color: var(--lime);
   color: var(--lime);
   background: var(--lime-dim);
+  transform: translateY(-2px);
 }
 
-.social-btn svg {
-  width: 14px;
-  height: 14px;
+.social-btn svg,
+.social-btn .social-icon {
+  width: 18px;
+  height: 18px;
   stroke: currentColor;
   stroke-width: 1.8;
   fill: none;
+  display: block;
 }
 
 /* contact form */
@@ -4365,44 +4377,75 @@ body:has(#mobile-menu.open) .nav-burger span {
   }
 }
 
-/* Contact Section Social Buttons */
-.socials {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 1.75rem;
+/* Light mode contact section color overrides.
+   The #contact section uses a dark bg in both themes by default,
+   but in light mode we want the icons/text to be dark-on-light instead. */
+[data-theme="light"] #contact {
+  background: var(--background);
 }
 
-.social-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: var(--surface);
+[data-theme="light"] #contact .s-head {
   color: var(--text-primary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 
-.social-btn:hover,
-.social-btn:focus-visible {
+[data-theme="light"] #contact .s-eyebrow {
+  color: var(--text-muted);
+}
+
+[data-theme="light"] #contact .s-eyebrow::before {
+  background: var(--text-muted);
+}
+
+[data-theme="light"] .contact-sub {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .contact-link {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .c-icon {
+  border-color: var(--border);
+  color: var(--text-secondary);
+  background: var(--surface);
+}
+
+[data-theme="light"] .contact-link:hover .c-icon {
   border-color: var(--lime);
-  color: var(--lime);
-  background: var(--badge);
-  transform: translateY(-2px);
+  background: var(--lime-dim);
+  color: #4C6E00;
 }
 
-.social-btn svg,
-.social-btn .social-icon {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  stroke-width: 2;
-  fill: none;
-  display: block;
+[data-theme="light"] .social-btn {
+  border-color: var(--border);
+  color: var(--text-secondary);
+  background: var(--surface);
+}
+
+[data-theme="light"] .social-btn:hover,
+[data-theme="light"] .social-btn:focus-visible {
+  border-color: var(--lime);
+  color: #4C6E00;
+  background: var(--lime-dim);
+}
+
+/* Light mode contact form */
+[data-theme="light"] .cform {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .cf-lbl {
+  color: var(--text-muted);
+}
+
+[data-theme="light"] .cf-input {
+  background: var(--input);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .cf-input::placeholder {
+  color: var(--text-muted);
 }
 
