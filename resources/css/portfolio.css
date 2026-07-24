@@ -4364,3 +4364,45 @@ body:has(#mobile-menu.open) .nav-burger span {
     max-height: 60vh;
   }
 }
+
+/* Contact Section Social Buttons */
+.socials {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.social-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.social-btn:hover,
+.social-btn:focus-visible {
+  border-color: var(--lime);
+  color: var(--lime);
+  background: var(--badge);
+  transform: translateY(-2px);
+}
+
+.social-btn svg,
+.social-btn .social-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  display: block;
+}
+
