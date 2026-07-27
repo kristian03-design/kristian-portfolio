@@ -30,9 +30,9 @@ html {
   --card: #FFFFFF;
   --card-hover: #FAFAF9;
   --text-primary: #0D0D0D;
-  --text-secondary: rgba(13, 13, 13, 0.75);
-  --text-muted: rgba(13, 13, 13, 0.58);
-  --border: rgba(13, 13, 13, 0.08);
+  --text-secondary: rgba(13, 13, 13, 0.88);
+  --text-muted: rgba(13, 13, 13, 0.72);
+  --border: rgba(13, 13, 13, 0.12);
   --input: #FFFFFF;
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
   --navbar: rgba(245, 244, 240, 0.92);
@@ -66,9 +66,9 @@ html {
   --surface: #111111;
   --card: #111111;
   --card-hover: #161616;
-  --text-primary: rgba(245, 244, 240, 0.92);
-  --text-secondary: rgba(245, 244, 240, 0.6);
-  --text-muted: rgba(245, 244, 240, 0.4);
+  --text-primary: rgba(245, 244, 240, 0.98);
+  --text-secondary: rgba(245, 244, 240, 0.85);
+  --text-muted: rgba(245, 244, 240, 0.72);
   --border: rgba(255, 255, 255, 0.08);
   --input: #1C1C1C;
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
@@ -1680,20 +1680,20 @@ section {
 
 .cf-lbl {
   display: block;
-  font-size: .58rem;
+  font-size: .62rem;
   font-weight: 600;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: rgba(245, 244, 240, .28);
+  color: rgba(245, 244, 240, .75);
   margin-bottom: .45rem;
 }
 
 .cf-input {
   width: 100%;
   background: #1c1c1c;
-  border: 1px solid rgba(255, 255, 255, .07);
+  border: 1px solid rgba(255, 255, 255, .15);
   padding: .8rem 1rem;
-  color: rgba(245, 244, 240, .85);
+  color: rgba(245, 244, 240, .95);
   font-family: var(--f-body);
   font-size: .825rem;
   outline: none;
@@ -1701,7 +1701,7 @@ section {
 }
 
 .cf-input::placeholder {
-  color: rgba(245, 244, 240, .18);
+  color: rgba(245, 244, 240, .45);
 }
 
 .cf-input:focus {
@@ -1780,24 +1780,26 @@ textarea.cf-input {
 footer {
   background: var(--footer);
   border-top: 1px solid var(--border);
-  padding: 1.5rem 3rem;
+  padding: 1.75rem 3rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: .75rem;
-  font-size: .62rem;
+  font-size: .72rem;
+  font-weight: 500;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   transition: var(--theme-transition);
 }
 
 .footer-logo {
   font-family: var(--f-head);
-  font-size: 1rem;
+  font-size: 1.15rem;
   letter-spacing: .04em;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .footer-logo span {
