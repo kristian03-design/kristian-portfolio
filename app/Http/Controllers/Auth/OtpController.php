@@ -49,7 +49,22 @@ class OtpController extends Controller
             ]);
         }
 
-        if ($user->otp_code == $request->otp && now()->lt($user->otp_expires_at)) {
+        // Primary check: session-stored OTP (reliable on all environments)
+        $sessionOtp     = session('otp_code');
+        $sessionExpiry  = session('otp_expires_at'); // unix timestamp
+
+        $validBySession = $sessionOtp !== null
+            && (string) $sessionOtp === (string) $request->otp
+            && $sessionExpiry !== null
+            && now()->timestamp < (int) $sessionExpiry;
+
+        // Fallback check: DB-stored OTP
+        $validByDb = !$validBySession
+            && $user->otp_code == $request->otp
+            && $user->otp_expires_at !== null
+            && now()->lt($user->otp_expires_at);
+
+        if ($validBySession || $validByDb) {
             // Clear OTP
             $user->update([
                 'otp_code' => null,
@@ -61,7 +76,7 @@ class OtpController extends Controller
             // Log user in
             Auth::login($user);
 
-            session()->forget('otp_user_id');
+            session()->forget(['otp_user_id', 'otp_code', 'otp_expires_at']);
             $request->session()->regenerate();
 
             // Set trusted device cookie for 30 days if checked
@@ -114,8 +129,14 @@ class OtpController extends Controller
 
         $otp = rand(100000, 999999);
         $user->update([
-            'otp_code' => $otp,
-            'otp_expires_at' => now()->addMinutes(5), // 5 min expiry
+            'otp_code'       => $otp,
+            'otp_expires_at' => now()->addMinutes(5),
+        ]);
+
+        // Refresh session OTP values
+        session([
+            'otp_code'       => (string) $otp,
+            'otp_expires_at' => now()->addMinutes(5)->timestamp,
         ]);
 
         try {

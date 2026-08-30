@@ -56,7 +56,11 @@ class AuthenticatedSessionController extends Controller
             'otp_expires_at' => now()->addMinutes(5),
         ]);
 
-        session(['otp_user_id' => $user->id]);
+        session([
+            'otp_user_id'    => $user->id,
+            'otp_code'       => (string) $otp,
+            'otp_expires_at' => now()->addMinutes(5)->timestamp,
+        ]);
 
         // Log successful credential stage
         AuditLogger::logLoginActivity(true, $request->email, $user->id, 'login');
