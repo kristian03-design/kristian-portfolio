@@ -76,27 +76,72 @@ if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
     $_SERVER['APP_ROUTES_CACHE'] = $storagePath . '/framework/cache/routes.php';
     $_ENV['APP_EVENTS_CACHE'] = $storagePath . '/framework/cache/events.php';
     $_SERVER['APP_EVENTS_CACHE'] = $storagePath . '/framework/cache/events.php';
-    $_ENV['SESSION_DRIVER'] = 'cookie';
-    $_SERVER['SESSION_DRIVER'] = 'cookie';
-    $_ENV['SESSION_SECURE_COOKIE'] = 'true';
-    $_SERVER['SESSION_SECURE_COOKIE'] = 'true';
-    $_ENV['SESSION_HTTP_ONLY'] = 'true';
-    $_SERVER['SESSION_HTTP_ONLY'] = 'true';
-    $_ENV['SESSION_SAME_SITE'] = 'lax';
-    $_SERVER['SESSION_SAME_SITE'] = 'lax';
-    $_ENV['CACHE_STORE'] = 'file';
-    $_SERVER['CACHE_STORE'] = 'file';
-    $_ENV['LOG_CHANNEL'] = 'stderr';
-    $_SERVER['LOG_CHANNEL'] = 'stderr';
+    // --- App ---
+    $_ENV['APP_KEY']   = $_ENV['APP_KEY']   ?? 'base64:qEFsC1p+ZNR6ahdY3WCncSeMV4EighpwVLh0HPkJMt0=';
+    $_SERVER['APP_KEY'] = $_ENV['APP_KEY'];
+    $_ENV['APP_ENV']   = 'production';
+    $_SERVER['APP_ENV'] = 'production';
     $_ENV['APP_DEBUG'] = 'false';
     $_SERVER['APP_DEBUG'] = 'false';
-    $_ENV['ADMIN_EMAILS'] = $_ENV['ADMIN_EMAILS'] ?? $_SERVER['ADMIN_EMAILS'] ?? 'hkristianlloyd2@gmail.com';
-    $_SERVER['ADMIN_EMAILS'] = $_ENV['ADMIN_EMAILS'];
+    $_ENV['APP_URL']   = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'kldc.vercel.app');
+    $_SERVER['APP_URL'] = $_ENV['APP_URL'];
+    $_SERVER['HTTPS']  = 'on';
+
+    // --- Database (Supabase PostgreSQL pooler) ---
+    $_ENV['DB_CONNECTION'] = 'pgsql';
+    $_SERVER['DB_CONNECTION'] = 'pgsql';
+    $_ENV['DB_HOST']       = 'aws-0-ap-southeast-2.pooler.supabase.com';
+    $_SERVER['DB_HOST']    = $_ENV['DB_HOST'];
+    $_ENV['DB_PORT']       = '6543';
+    $_SERVER['DB_PORT']    = '6543';
+    $_ENV['DB_DATABASE']   = 'postgres';
+    $_SERVER['DB_DATABASE'] = 'postgres';
+    $_ENV['DB_USERNAME']   = 'postgres.hyunfbzhturtcytvvkki';
+    $_SERVER['DB_USERNAME'] = $_ENV['DB_USERNAME'];
+    $_ENV['DB_PASSWORD']   = 'Ashedpowder03';
+    $_SERVER['DB_PASSWORD'] = $_ENV['DB_PASSWORD'];
+    $_ENV['DB_SSLMODE']    = 'require';
+    $_SERVER['DB_SSLMODE'] = 'require';
+
+    // --- Session ---
+    $_ENV['SESSION_DRIVER']        = 'cookie';
+    $_SERVER['SESSION_DRIVER']     = 'cookie';
+    $_ENV['SESSION_SECURE_COOKIE'] = 'true';
+    $_SERVER['SESSION_SECURE_COOKIE'] = 'true';
+    $_ENV['SESSION_HTTP_ONLY']     = 'true';
+    $_SERVER['SESSION_HTTP_ONLY']  = 'true';
+    $_ENV['SESSION_SAME_SITE']     = 'lax';
+    $_SERVER['SESSION_SAME_SITE']  = 'lax';
+
+    // --- Cache / Logging ---
+    $_ENV['CACHE_STORE']  = 'file';
+    $_SERVER['CACHE_STORE'] = 'file';
+    $_ENV['LOG_CHANNEL']  = 'stderr';
+    $_SERVER['LOG_CHANNEL'] = 'stderr';
+
+    // --- Mail (Gmail SMTP) ---
+    $_ENV['MAIL_MAILER']       = $_ENV['MAIL_MAILER']       ?? 'smtp';
+    $_SERVER['MAIL_MAILER']    = $_ENV['MAIL_MAILER'];
+    $_ENV['MAIL_HOST']         = $_ENV['MAIL_HOST']         ?? 'smtp.gmail.com';
+    $_SERVER['MAIL_HOST']      = $_ENV['MAIL_HOST'];
+    $_ENV['MAIL_PORT']         = $_ENV['MAIL_PORT']         ?? '465';
+    $_SERVER['MAIL_PORT']      = $_ENV['MAIL_PORT'];
+    $_ENV['MAIL_USERNAME']     = $_ENV['MAIL_USERNAME']     ?? 'hkristianlloyd2@gmail.com';
+    $_SERVER['MAIL_USERNAME']  = $_ENV['MAIL_USERNAME'];
+    $_ENV['MAIL_PASSWORD']     = $_ENV['MAIL_PASSWORD']     ?? 'vdziuwvzejbgpaxh';
+    $_SERVER['MAIL_PASSWORD']  = $_ENV['MAIL_PASSWORD'];
+    $_ENV['MAIL_ENCRYPTION']   = $_ENV['MAIL_ENCRYPTION']   ?? 'ssl';
+    $_SERVER['MAIL_ENCRYPTION'] = $_ENV['MAIL_ENCRYPTION'];
+    $_ENV['MAIL_FROM_ADDRESS'] = $_ENV['MAIL_FROM_ADDRESS'] ?? 'hkristianlloyd2@gmail.com';
+    $_SERVER['MAIL_FROM_ADDRESS'] = $_ENV['MAIL_FROM_ADDRESS'];
+    $_ENV['MAIL_FROM_NAME']    = $_ENV['MAIL_FROM_NAME']    ?? 'Kristian Hernandez';
+    $_SERVER['MAIL_FROM_NAME'] = $_ENV['MAIL_FROM_NAME'];
+
+    // --- Admin ---
+    $_ENV['ADMIN_EMAILS']              = $_ENV['ADMIN_EMAILS'] ?? $_SERVER['ADMIN_EMAILS'] ?? 'hkristianlloyd2@gmail.com';
+    $_SERVER['ADMIN_EMAILS']           = $_ENV['ADMIN_EMAILS'];
     $_ENV['ADMIN_REGISTRATION_ENABLED'] = 'false';
     $_SERVER['ADMIN_REGISTRATION_ENABLED'] = 'false';
-    $_ENV['APP_URL'] = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'kristian-portfolio-two.vercel.app');
-    $_SERVER['APP_URL'] = $_ENV['APP_URL'];
-    $_SERVER['HTTPS'] = 'on';
 
     foreach ([
         $storagePath . '/app',
