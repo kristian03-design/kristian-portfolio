@@ -15,6 +15,8 @@ export default defineConfig({
                 'resources/js/auth-login.js',
                 'resources/css/auth-otp.css',
                 'resources/js/auth-otp.js',
+                'resources/css/loading.css',
+                'resources/js/auth.js',
             ],
             refresh: true,
         }),

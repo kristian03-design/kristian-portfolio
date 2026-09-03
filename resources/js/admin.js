@@ -1,60 +1,6 @@
-// Global Form Submit Loading & Double-Click Protection
-document.addEventListener('submit', (e) => {
-    const form = e.target;
-    
-    // Ignore if already submitting
-    if (form.classList.contains('is-submitting')) {
-        e.preventDefault();
-        return;
-    }
-    
-    // Locate the submit button (handling buttons inside and outside the form)
-    let submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
-    if (!submitBtn && form.id) {
-        submitBtn = document.querySelector(`button[type="submit"][form="${form.id}"], input[type="submit"][form="${form.id}"]`);
-    }
-    
-    if (!submitBtn) return;
-    
-    // Mark as submitting
-    form.classList.add('is-submitting');
-    submitBtn.disabled = true;
-    
-    // Disable cancel/reset/ghost buttons inside the form
-    form.querySelectorAll('button[type="reset"], .btn-ghost, .js-cancel-btn').forEach(btn => {
-        btn.style.pointerEvents = 'none';
-        btn.style.opacity = '0.5';
-    });
-    
-    // Also handle cancels/resets outside the form (like project-edit-cancel or gallery-edit-cancel)
-    const formName = form.id ? form.id.split('-')[0] : '';
-    if (formName) {
-        document.querySelectorAll(`#${formName}-edit-cancel, #${formName}-cancel-btn`).forEach(btn => {
-            btn.style.pointerEvents = 'none';
-            btn.style.opacity = '0.5';
-        });
-    }
+import toast from './toast';
+import { setButtonLoading, resetButtonLoading, resetFormLoading } from './loading';
 
-    // Determine loading text dynamically
-    let loadingText = 'Processing...';
-    if (submitBtn.dataset.loadingText) {
-        loadingText = submitBtn.dataset.loadingText;
-    } else {
-        const btnText = submitBtn.textContent.trim().toLowerCase();
-        if (btnText.includes('save') || btnText.includes('create') || btnText.includes('add')) {
-            loadingText = 'Saving...';
-        } else if (btnText.includes('update') || btnText.includes('edit')) {
-            loadingText = 'Updating...';
-        } else if (btnText.includes('send') || btnText.includes('reply')) {
-            loadingText = 'Sending...';
-        } else if (btnText.includes('delete') || btnText.includes('remove')) {
-            loadingText = 'Deleting...';
-        }
-    }
-    
-    // Set loading html
-    submitBtn.innerHTML = `<i class="ti ti-loader-2 animate-spin" style="margin-right: 6px;"></i> ${loadingText}`;
-});
 
 const tabTitles = {
     dashboard: 'Dashboard',
@@ -207,50 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --------- TOAST SYSTEM -------------------------------------------------------------
-window.showToast = function(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
-
-    const toast = document.createElement('div');
-    toast.style.background = type === 'success' ? '#5f6f1d' : '#b83a3a';
-    toast.style.color = '#ffffff';
-    toast.style.padding = '12px 20px';
-    toast.style.borderRadius = '8px';
-    toast.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-    toast.style.fontSize = '13px';
-    toast.style.fontWeight = '500';
-    toast.style.display = 'flex';
-    toast.style.alignItems = 'center';
-    toast.style.gap = '8px';
-    toast.style.minWidth = '250px';
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateY(20px)';
-    toast.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-
-    const icon = document.createElement('i');
-    icon.className = type === 'success' ? 'ti ti-circle-check' : 'ti ti-alert-circle';
-    icon.style.fontSize = '16px';
-
-    const text = document.createElement('span');
-    text.textContent = message;
-
-    toast.appendChild(icon);
-    toast.appendChild(text);
-    container.appendChild(toast);
-
-    setTimeout(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
-    }, 10);
-
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(-20px)';
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }, 4000);
-};
+// Centralized Sonner toast is handled by resources/js/toast.js
 
 // --------- OCR CERTIFICATE AUTO-FILL -----------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
@@ -1345,9 +1248,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Toggle published click handler
+        // Toggle published click handler with loading feedback
         document.querySelectorAll('.btn-toggle-publish').forEach(btn => {
             btn.addEventListener('click', () => {
+                if (btn.disabled) return;
+                btn.disabled = true;
+                const icon = btn.querySelector('i');
+                const oldIconClass = icon ? icon.className : '';
+                if (icon) icon.className = 'ti ti-loader-2 animate-spin';
+
                 const id = btn.dataset.id;
                 fetch(`/admin/gallery/${id}/toggle-published`, {
                     method: 'POST',
@@ -1359,21 +1268,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        const icon = btn.querySelector('i');
                         if (data.is_published) {
                             btn.classList.add('is-active');
                             btn.title = 'Unpublish';
-                            if (icon) {
-                                icon.className = 'ti ti-eye';
-                            }
+                            if (icon) icon.className = 'ti ti-eye';
                         } else {
                             btn.classList.remove('is-active');
                             btn.title = 'Publish';
-                            if (icon) {
-                                icon.className = 'ti ti-eye-off';
-                            }
+                            if (icon) icon.className = 'ti ti-eye-off';
                         }
-                        if (window.showToast) window.showToast(data.message, 'success');
+                        if (window.toast) window.toast.success(data.message);
                         
                         // Dynamically update card badge if any
                         const badgeContainer = btn.closest('.gallery-admin-card')?.querySelector('.meta-badges');
@@ -1391,18 +1295,31 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             }
                         }
+                    } else {
+                        if (icon) icon.className = oldIconClass;
+                        if (window.toast) window.toast.error(data.message || 'Action failed.');
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    if (window.showToast) window.showToast('An error occurred.', 'error');
+                    if (icon) icon.className = oldIconClass;
+                    if (window.toast) window.toast.error('An error occurred.');
+                })
+                .finally(() => {
+                    btn.disabled = false;
                 });
             });
         });
 
-        // Toggle featured click handler
+        // Toggle featured click handler with loading feedback
         document.querySelectorAll('.btn-toggle-featured').forEach(btn => {
             btn.addEventListener('click', () => {
+                if (btn.disabled) return;
+                btn.disabled = true;
+                const icon = btn.querySelector('i');
+                const oldIconClass = icon ? icon.className : '';
+                if (icon) icon.className = 'ti ti-loader-2 animate-spin';
+
                 const id = btn.dataset.id;
                 fetch(`/admin/gallery/${id}/toggle-featured`, {
                     method: 'POST',
@@ -1414,21 +1331,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        const icon = btn.querySelector('i');
                         if (data.is_featured) {
                             btn.classList.add('is-active');
                             btn.title = 'Unfeature';
-                            if (icon) {
-                                icon.className = 'ti ti-star-filled';
-                            }
+                            if (icon) icon.className = 'ti ti-star-filled';
                         } else {
                             btn.classList.remove('is-active');
                             btn.title = 'Feature';
-                            if (icon) {
-                                icon.className = 'ti ti-star';
-                            }
+                            if (icon) icon.className = 'ti ti-star';
                         }
-                        if (window.showToast) window.showToast(data.message, 'success');
+                        if (window.toast) window.toast.success(data.message);
 
                         // Dynamically update card badge if any
                         const badgeContainer = btn.closest('.gallery-admin-card')?.querySelector('.meta-badges');
@@ -1446,11 +1358,18 @@ document.addEventListener('DOMContentLoaded', () => {
                                 if (featuredBadge) featuredBadge.remove();
                             }
                         }
+                    } else {
+                        if (icon) icon.className = oldIconClass;
+                        if (window.toast) window.toast.error(data.message || 'Action failed.');
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    if (window.showToast) window.showToast('An error occurred.', 'error');
+                    if (icon) icon.className = oldIconClass;
+                    if (window.toast) window.toast.error('An error occurred.');
+                })
+                .finally(() => {
+                    btn.disabled = false;
                 });
             });
         });
@@ -1510,13 +1429,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     })
                     .then(res => res.json())
                     .then(data => {
-                        if (data.success && window.showToast) {
-                            window.showToast(data.message, 'success');
+                        if (data.success && window.toast) {
+                            window.toast.success(data.message || 'Gallery order updated.');
                         }
                     })
                     .catch(err => {
                         console.error(err);
-                        if (window.showToast) window.showToast('Reorder save failed.', 'error');
+                        if (window.toast) window.toast.error('Reorder save failed.');
                     });
                 }
             });

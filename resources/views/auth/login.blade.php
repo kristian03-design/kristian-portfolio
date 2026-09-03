@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="{{ asset('images/chibi-logo.png') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/auth-premium.css') }}">
+    @vite(['resources/js/auth.js'])
 </head>
 <body>
     <div class="auth-split-container">
@@ -92,7 +93,7 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn-primary" style="margin-top: 10px;">
+                    <button type="submit" class="btn-primary" data-loading-text="Signing in..." style="margin-top: 10px;">
                         Sign In <i class="ti ti-arrow-right"></i>
                     </button>
                 </form>
@@ -107,17 +108,19 @@
     </div>
 
     <script>
-        function togglePass() {
-            const input = document.getElementById('password');
-            const icon = document.getElementById('password-toggle-icon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('ti-eye', 'ti-eye-off');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('ti-eye-off', 'ti-eye');
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.toast) {
+                @if (session('status'))
+                    window.toast.info(@json(session('status')));
+                @endif
+                @if (session('success'))
+                    window.toast.success(@json(session('success')));
+                @endif
+                @if ($errors->any())
+                    window.toast.error(@json($errors->first()));
+                @endif
             }
-        }
+        });
     </script>
 </body>
 </html>

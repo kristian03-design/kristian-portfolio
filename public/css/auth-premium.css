@@ -317,6 +317,35 @@ body {
     cursor: not-allowed;
 }
 
+.btn-primary.is-loading {
+    opacity: 0.85;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-spinner-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.btn-spinner-icon svg {
+    animation: btn-spin 0.75s linear infinite;
+    display: block;
+}
+
+.btn-loading-text {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+@keyframes btn-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 /* OTP Code Box */
 .otp-input-container {
     display: flex;

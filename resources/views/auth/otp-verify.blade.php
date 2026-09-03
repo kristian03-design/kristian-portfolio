@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="{{ asset('images/chibi-logo.png') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/auth-premium.css') }}">
+    @vite(['resources/js/auth.js'])
 </head>
 <body>
     <div class="auth-split-container">
@@ -101,13 +102,13 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn-primary" id="submitBtn" disabled>
+                    <button type="submit" class="btn-primary" id="submitBtn" data-loading-text="Verifying..." disabled>
                         Verify &amp; Enter <i class="ti ti-arrow-right"></i>
                     </button>
                 </form>
 
                 <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <a href="{{ route('otp.resend') }}" class="form-link" style="display: inline-flex; align-items: center; gap: 4px; font-size: 13px;">
+                    <a href="{{ route('otp.resend') }}" class="form-link" id="resendBtn" onclick="if(!this.classList.contains('is-loading')){this.classList.add('is-loading');this.innerHTML='<i class=\"ti ti-loader-2 animate-spin\"></i> Sending...';}" style="display: inline-flex; align-items: center; gap: 4px; font-size: 13px;">
                         <i class="ti ti-refresh"></i> Resend code
                     </a>
                     <a href="{{ route('login') }}" class="form-link" style="display: inline-flex; align-items: center; gap: 4px; font-size: 13px;">
@@ -225,8 +226,21 @@
                     submitBtn.disabled = true;
                     countdownEl.textContent = "Expired";
                     countdownEl.style.color = "var(--error-color)";
+                    if (window.toast) {
+                        window.toast.error('The verification code has expired. Please click "Resend code".');
+                    }
                 }
             }, 1000);
+
+            // Sonner flash notifications
+            if (window.toast) {
+                @if (session('success'))
+                    window.toast.success(@json(session('success')));
+                @endif
+                @if ($errors->any())
+                    window.toast.error(@json($errors->first()));
+                @endif
+            }
         });
     </script>
 </body>

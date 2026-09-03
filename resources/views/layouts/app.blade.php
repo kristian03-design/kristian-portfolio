@@ -136,6 +136,23 @@
     }
   });
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!window.toast) return;
+    @if (session('success'))
+      window.toast.success(@json(session('success')));
+    @endif
+    @if (session('status'))
+      window.toast.info(@json(session('status')));
+    @endif
+    @if (session('error'))
+      window.toast.error(@json(session('error')));
+    @endif
+    @if ($errors->any())
+      window.toast.error(@json($errors->first()));
+    @endif
+  });
+</script>
 @yield('scripts')
 </body>
 </html>

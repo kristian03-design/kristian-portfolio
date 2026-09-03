@@ -1,6 +1,10 @@
 {
+  "_loading-BKY2VS99.js": {
+    "file": "assets/loading-BKY2VS99.js",
+    "name": "loading"
+  },
   "resources/css/admin.css": {
-    "file": "assets/admin-Xsy7Fb0c.css",
+    "file": "assets/admin-BiGxlfFA.css",
     "src": "resources/css/admin.css",
     "isEntry": true,
     "name": "admin",
@@ -9,7 +13,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-BT7AirLd.css",
+    "file": "assets/app-kd_zyvyX.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -35,8 +39,17 @@
       "auth-otp.css"
     ]
   },
+  "resources/css/loading.css": {
+    "file": "assets/loading-BaKzNtLI.css",
+    "src": "resources/css/loading.css",
+    "isEntry": true,
+    "name": "loading",
+    "names": [
+      "loading.css"
+    ]
+  },
   "resources/css/portfolio.css": {
-    "file": "assets/portfolio-CF2amF70.css",
+    "file": "assets/portfolio-CR91NbLX.css",
     "src": "resources/css/portfolio.css",
     "isEntry": true,
     "name": "portfolio",
@@ -45,10 +58,13 @@
     ]
   },
   "resources/js/admin.js": {
-    "file": "assets/admin-R0muy1fq.js",
+    "file": "assets/admin-BR9CNyaM.js",
     "name": "admin",
     "src": "resources/js/admin.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_loading-BKY2VS99.js"
+    ]
   },
   "resources/js/app.js": {
     "file": "assets/app-DRzmipv6.js",
@@ -68,10 +84,25 @@
     "src": "resources/js/auth-otp.js",
     "isEntry": true
   },
+  "resources/js/auth.js": {
+    "file": "assets/auth-Cl1XdMHw.js",
+    "name": "auth",
+    "src": "resources/js/auth.js",
+    "isEntry": true,
+    "imports": [
+      "_loading-BKY2VS99.js"
+    ],
+    "css": [
+      "assets/loading-BaKzNtLI.css"
+    ]
+  },
   "resources/js/portfolio.js": {
-    "file": "assets/portfolio-4ww9uMu9.js",
+    "file": "assets/portfolio-DwzQ5jR7.js",
     "name": "portfolio",
     "src": "resources/js/portfolio.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_loading-BKY2VS99.js"
+    ]
   }
 }

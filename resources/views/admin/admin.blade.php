@@ -50,9 +50,6 @@
 <!-- Message Email Reply Modal Overlay -->
 @include('admin.partials.modal')
 
-<!-- Toast Notifications Container -->
-<div id="toast-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px;"></div>
-
 <!-- Core Admin Script Bindings -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -92,24 +89,30 @@
             }
         }
 
-        // Toasts Triggering from Session Flash
-        if (!window.showToast) return;
+        // Toasts Triggering from Session Flash (Sonner)
+        if (window.toast) {
+            @if(session('success'))
+                window.toast.success(@json(session('success')));
+            @endif
 
-        @if(session('success'))
-            window.showToast(@json(session('success')), 'success');
-        @endif
+            @if(session('status') === 'password-updated')
+                window.toast.success('Password updated successfully.');
+            @elseif(session('status'))
+                window.toast.info(@json(session('status')));
+            @endif
 
-        @if(session('status') === 'password-updated')
-            window.showToast('Password updated successfully.', 'success');
-        @endif
+            @if(session('warning'))
+                window.toast.warning(@json(session('warning')));
+            @endif
 
-        @if(session('warning'))
-            window.showToast(@json(session('warning')), 'error');
-        @endif
+            @if(session('error'))
+                window.toast.error(@json(session('error')));
+            @endif
 
-        @if($errors->any())
-            window.showToast(@json($errors->first()), 'error');
-        @endif
+            @if($errors->any())
+                window.toast.error(@json($errors->first()));
+            @endif
+        }
     });
 </script>
 

@@ -1,4 +1,6 @@
 import { createIcons, icons } from 'lucide';
+import toast from './toast';
+import { setButtonLoading, resetButtonLoading } from './loading';
 
 // Lucide Icon Initialization Engine & Robust Fallback
 export function initLucideIcons() {
@@ -282,7 +284,9 @@ contactForm?.addEventListener('submit', async event => {
   }
 
   formData.delete('subject');
-  submit.disabled = true;
+  if (submit) {
+    setButtonLoading(submit, 'Sending message...');
+  }
   showFormMessage('success', 'Sending your message...');
 
   try {
@@ -303,11 +307,17 @@ contactForm?.addEventListener('submit', async event => {
     }
 
     contactForm.reset();
-    showFormMessage('success', data.message || 'Your message has been sent successfully.');
+    const successMsg = data.message || 'Your message has been sent successfully.';
+    showFormMessage('success', successMsg);
+    toast.success(successMsg);
   } catch (error) {
-    showFormMessage('error', error.message || 'Something went wrong. Please try again.');
+    const errorMsg = error.message || 'Something went wrong. Please try again.';
+    showFormMessage('error', errorMsg);
+    toast.error(errorMsg);
   } finally {
-    submit.disabled = false;
+    if (submit) {
+      resetButtonLoading(submit);
+    }
   }
 });
 
