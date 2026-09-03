@@ -46,6 +46,10 @@ $app = Application::configure(basePath: dirname(__DIR__))
 
 if ($storagePath = env('LARAVEL_STORAGE_PATH')) {
     $app->useStoragePath($storagePath);
+
+    if (method_exists($app, 'addAbsoluteCachePathPrefix')) {
+        $app->addAbsoluteCachePathPrefix($storagePath);
+    }
 }
 
 return $app;

@@ -148,7 +148,7 @@
     @if (session('error'))
       window.toast.error(@json(session('error')));
     @endif
-    @if ($errors->any())
+    @if (isset($errors) && $errors->any())
       window.toast.error(@json($errors->first()));
     @endif
   });
